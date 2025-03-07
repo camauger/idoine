@@ -164,5 +164,5 @@ module.exports = function (grunt) {
     "cssmin:prod",
     "copy"
   ]);
-
+  grunt.registerTask("both", ["build", "dev"]);
 };
