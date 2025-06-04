@@ -63,7 +63,7 @@ class GlossaryBuilder:
                     'slug': slug,
                     'summary': metadata.get('summary', ''),
                     'categories': metadata.get('categories', []),
-                    'meta_keywords': metadata.  get('meta_keywords', []),
+                    'meta_keywords': metadata.get('meta_keywords', []),
                     'tags': metadata.get('tags', []),
 
                     'thumbnail': metadata.get('thumbnail', ''),
