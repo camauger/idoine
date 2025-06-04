@@ -31,7 +31,7 @@ class GalleryBuilder:
 
         if self.unilingual:
             lang = self.languages[0]
-            gallery_url = "/gallery/"            # URL pour la page de détail de l'image
+            gallery_url = "/gallery/"            # URL de la page principale de la galerie
             prefix = "/assets/gallery_images/"    # Préfixe pour accéder aux images copiées
             output_gallery_dir = self.dist_path / "gallery"
             output_gallery_dir.mkdir(parents=True, exist_ok=True)
