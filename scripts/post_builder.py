@@ -62,15 +62,16 @@ class PostBuilder:
     def paginate_posts(self, posts: list, lang: str) -> list:
         total_pages = math.ceil(len(posts) / self.posts_per_page)
         paginated = []
+        prefix = "" if self.unilingual else f"/{lang}"
         for i in range(total_pages):
             page_posts = posts[i *
                                self.posts_per_page: (i + 1) * self.posts_per_page]
             paginated.append({
                 'posts': page_posts,
                 'current_page': i + 1,
-                'prev_page': None if i == 0 else f"/{lang}/{self.blog_url}/page/{i + 1}",
-                'next_page': None if i == total_pages - 1 else f"/{lang}/{self.blog_url}/page/{i + 2}",
-                'pages': [{'number': j + 1, 'url': f"/{lang}/{self.blog_url}/page/{j + 1}"} for j in range(total_pages)]
+                'prev_page': None if i == 0 else f"{prefix}/{self.blog_url}/page/{i + 1}",
+                'next_page': None if i == total_pages - 1 else f"{prefix}/{self.blog_url}/page/{i + 2}",
+                'pages': [{'number': j + 1, 'url': f"{prefix}/{self.blog_url}/page/{j + 1}"} for j in range(total_pages)]
             })
         logging.info(
             f"📢 Pagination créée pour {lang}: {total_pages} pages, {len(posts)} articles")
