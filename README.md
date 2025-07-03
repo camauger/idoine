@@ -1,6 +1,6 @@
 # IDOINE - Générateur de Site Statique
 
-IDOINE est un générateur de site statique et de blog, puissant et modulable, conçu pour offrir une flexibilité maximale grâce à son architecture basée sur Python et Grunt. Il intègre un support multilingue natif, une gestion de contenu via Markdown, et un pipeline de build moderne pour optimiser les performances.
+IDOINE est un générateur de site statique et de blog puissant et modulable, conçu pour offrir une flexibilité maximale grâce à son architecture basée sur Python et Grunt. Il intègre un support multilingue natif, une gestion de contenu via Markdown et un pipeline de build moderne pour optimiser les performances.
 
 [![Node Version](https://img.shields.io/badge/node-18%2B-brightgreen.svg)]()
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
