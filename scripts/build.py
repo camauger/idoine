@@ -17,7 +17,14 @@ sys.path.insert(0, str(scripts_dir))
 
 from utils import format_date_filter, markdown_filter, slugify  # type: ignore
 
-# sys.stdout.reconfigure(encoding="utf-8")  # Removed due to linter compatibility
+# Ensure UTF-8 encoding for stdout/stderr to handle emoji and Unicode characters
+if hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
+        sys.stderr.reconfigure(encoding="utf-8")  # type: ignore
+    except OSError:
+        # Fallback for systems where reconfigure fails
+        pass
 
 logging.basicConfig(
     level=logging.INFO,
