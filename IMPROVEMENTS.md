@@ -4,13 +4,7 @@ Ce document présente une analyse approfondie du générateur de site statique I
 
 ## 1. Code Quality and Readability
 
-### 1.1. Frontmatter Parsing Logic Duplication
 
-* **Priority:** High
-* **Title:** Centraliser la logique de parsing du frontmatter dupliquée
-* **File & Lines:** `scripts/frontmatter_parser.py: 6-30`, `scripts/glossary_builder.py: 38-63`, `scripts/metadata.py: 6-25`
-* **Description:** La logique de parsing du front matter est implémentée différemment dans trois fichiers distincts, ce qui viole le principe DRY et rend la maintenance difficile. Chaque implémentation gère différemment les erreurs et les types de données.
-* **Suggested Improvement:** Créer une seule fonction centralisée dans `frontmatter_parser.py` qui utilise la bibliothèque `python-frontmatter` déjà disponible au lieu d'implémenter un parser manuel. Refactoriser tous les autres modules pour utiliser cette fonction unique.
 
 ### 1.2. Complex Constructor Parameters
 
