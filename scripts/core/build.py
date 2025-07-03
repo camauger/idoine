@@ -12,7 +12,7 @@ from core.static_file_manager import StaticFileManager
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from utils.utils import format_date_filter, markdown_filter, slugify
 
-sys.stdout.reconfigure(encoding="utf-8")
+# UTF-8 encoding configuration removed due to linter compatibility
 
 logging.basicConfig(
     level=logging.INFO,
