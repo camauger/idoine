@@ -7,4 +7,3 @@ Unidecode
 pytest
 black
 flake8
-pathlib

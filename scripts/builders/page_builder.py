@@ -1,9 +1,14 @@
 import logging
+import sys
 from pathlib import Path
 
+# Add scripts directory to Python path
+scripts_dir = Path(__file__).parent
+sys.path.insert(0, str(scripts_dir))
+
 import frontmatter
-from utils.metadata import extract_metadata
-from utils.utils import markdown_filter, slugify
+from metadata import extract_metadata
+from utils import markdown_filter, slugify  # type: ignore
 
 
 class PageBuilder:

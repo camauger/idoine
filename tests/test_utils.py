@@ -3,7 +3,7 @@ from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parents[1] / "scripts"))
 
-from utils import slugify, format_date_filter
+from utils import format_date_filter, slugify  # type: ignore
 
 
 def test_slugify_basic():
