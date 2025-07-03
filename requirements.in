@@ -1,0 +1,9 @@
+Jinja2
+markdown
+PyYAML
+python-frontmatter
+Babel
+Unidecode
+pytest
+black
+flake8
