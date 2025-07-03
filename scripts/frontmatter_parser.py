@@ -1,29 +1,27 @@
 import logging
-
+import frontmatter
 
 def parse_frontmatter(content: str):
     """
-    Analyse le front matter d'un fichier Markdown.
+    Analyse le front matter d'un fichier Markdown en utilisant python-frontmatter.
     Renvoie un tuple (metadata, markdown_content).
     """
-    if content.startswith('---'):
-        parts = content.split('---', 2)
-        if len(parts) >= 3:
-            _, frontmatter, markdown_content = parts
-            metadata = {}
-            for line in frontmatter.strip().split('\n'):
-                if ':' in line:
-                    key, value = line.split(':', 1)
-                    if key.strip() in ['categories', 'meta_keywords']:
-                        try:
-                            value = value.strip().strip('[]').split(',')
-                            value = [v.strip() for v in value if v.strip()]
-                        except Exception as e:
-                            logging.error(
-                                f"Erreur lors du parsing de {key}: {e}")
-                            value = []
-                    else:
-                        value = value.strip()
-                    metadata[key.strip()] = value
-            return metadata, markdown_content
-    return {}, content
+    try:
+        post = frontmatter.loads(content)
+        metadata = post.metadata
+        markdown_content = post.content
+
+        # Ensure specific keys are lists
+        for key in ['categories', 'meta_keywords', 'tags']:
+            if key in metadata and not isinstance(metadata[key], list):
+                # If it's a string, split it by commas
+                if isinstance(metadata[key], str):
+                    metadata[key] = [item.strip() for item in metadata[key].split(',') if item.strip()]
+                else:
+                    # For other types, wrap in a list if not already a list
+                    metadata[key] = [metadata[key]]
+        
+        return metadata, markdown_content
+    except Exception as e:
+        logging.error(f"Erreur lors du parsing du frontmatter: {e}")
+        return {}, content
