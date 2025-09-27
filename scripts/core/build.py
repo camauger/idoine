@@ -8,6 +8,7 @@ from builders.glossary_builder import GlossaryBuilder
 from builders.page_builder import PageBuilder
 from builders.post_builder import PostBuilder
 from core.config_loader import ConfigLoader
+from core.context import BuildContext
 from core.static_file_manager import StaticFileManager
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 from utils.utils import format_date_filter, markdown_filter, slugify
@@ -74,13 +75,17 @@ class SiteBuilder:
             self.projects,
         )
 
+        ctx = BuildContext(
+            src_path=self.src_path,
+            dist_path=self.dist_path,
+            site_config=self.site_config,
+            translations=self.translations,
+            jinja_env=self.jinja_env,
+            projects=self.projects,
+        )
+
         self.page_builder = PageBuilder(
-            self.src_path,
-            self.dist_path,
-            self.site_config,
-            self.translations,
-            self.jinja_env,
-            self.projects,
+            ctx,
             post_builder=self.post_builder,
         )
 
