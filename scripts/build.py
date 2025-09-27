@@ -121,9 +121,6 @@ class SiteBuilder:
                 for keyword in post.get("meta_keywords", []):
                     keywords.setdefault(keyword, []).append(post)
 
-            self.page_builder.build_category_pages(categories)
-            self.page_builder.build_keyword_pages(keywords)
-
             logging.info(f"{ICON_CATEGORY} Génération des pages pour les catégories...")
             self.page_builder.build_category_pages(categories)
             logging.info(f"{ICON_CATEGORY} Génération des pages pour les mots-clés...")
