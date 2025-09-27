@@ -7,6 +7,7 @@ scripts_dir = Path(__file__).parent
 sys.path.insert(0, str(scripts_dir))
 
 import frontmatter
+from core.context import BuildContext
 from utils import markdown_filter, slugify  # type: ignore
 from utils.metadata import extract_metadata
 
@@ -14,20 +15,15 @@ from utils.metadata import extract_metadata
 class PageBuilder:
     def __init__(
         self,
-        src_path: Path,
-        dist_path: Path,
-        site_config: dict,
-        translations: dict,
-        jinja_env,
-        projects: list,
+        context: BuildContext,
         post_builder=None,
     ):
-        self.src_path = src_path
-        self.dist_path = dist_path
-        self.site_config = site_config
-        self.translations = translations
-        self.jinja_env = jinja_env
-        self.projects = projects
+        self.src_path = context.src_path
+        self.dist_path = context.dist_path
+        self.site_config = context.site_config
+        self.translations = context.translations
+        self.jinja_env = context.jinja_env
+        self.projects = context.projects
         self.post_builder = post_builder
 
     def _build_page_translation_map(self) -> dict:

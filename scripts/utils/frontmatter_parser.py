@@ -2,6 +2,8 @@ import logging
 
 import frontmatter
 
+from .errors import FrontmatterParsingError
+
 
 def _ensure_list(value):
     """
@@ -33,4 +35,4 @@ def parse_frontmatter(content: str):
         return metadata, parsed.content
     except Exception as e:
         logging.error(f"Erreur lors du parsing du front matter: {e}")
-        return {}, content
+        raise FrontmatterParsingError(str(e))

@@ -2,25 +2,21 @@ import logging
 import math
 from pathlib import Path
 
+from core.context import BuildContext
 from utils import build_page, parse_frontmatter  # type: ignore
 
 
 class PostBuilder:
     def __init__(
         self,
-        src_path: Path,
-        dist_path: Path,
-        site_config: dict,
-        translations: dict,
-        jinja_env,
-        projects,
+        context: BuildContext,
     ):
-        self.src_path = src_path
-        self.dist_path = dist_path
-        self.site_config = site_config
-        self.translations = translations
-        self.jinja_env = jinja_env
-        self.projects = projects
+        self.src_path = context.src_path
+        self.dist_path = context.dist_path
+        self.site_config = context.site_config
+        self.translations = context.translations
+        self.jinja_env = context.jinja_env
+        self.projects = context.projects
         self.blog_url = self.site_config.get("blog_url", "/blog/").strip("/")
         self.posts_per_page = self.site_config.get("posts_per_page", 5)
         self.post_template = self.site_config.get("post_template", "posts/post.html")

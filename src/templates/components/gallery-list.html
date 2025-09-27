@@ -6,13 +6,16 @@
     <li class="gallery-item" role="listitem">
       <a href="{{ image_page }}" aria-label="{{ t.image_page }} {{ image_name|replace('_', ' ') }}">
         <figure>
-          <img
-            src="{{ image_src }}"
-            alt="{{ t.image_preview }} {{ image_name|replace('_', ' ') }}"
-            loading="lazy"
-            width="300"
-            height="200"
-          >
+          <picture>
+            <source srcset="{{ prefix }}small/{{ image_name }}.webp" type="image/webp">
+            <img
+              src="{{ prefix }}small/{{ image }}"
+              alt="{{ t.image_preview }} {{ image_name|replace('_', ' ') }}"
+              loading="lazy"
+              width="300"
+              height="200"
+            >
+          </picture>
           <figcaption>{{ image_name|replace('_', ' ')|title }}</figcaption>
         </figure>
       </a>

@@ -3,13 +3,14 @@ import logging
 import sys
 from pathlib import Path
 
-from config_loader import ConfigLoader
-from gallery_builder import GalleryBuilder
+from builders.gallery_builder import GalleryBuilder
+from builders.page_builder import PageBuilder
+from core.config_loader import ConfigLoader
+from core.context import BuildContext
+from core.static_file_manager import StaticFileManager
 from glossary_builder import GlossaryBuilder
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from page_builder import PageBuilder
 from post_builder import PostBuilder
-from static_file_manager import StaticFileManager
 
 # Add scripts directory to Python path
 scripts_dir = Path(__file__).parent
@@ -66,33 +67,23 @@ class SiteBuilder:
         self.jinja_env.globals["is_multilingual"] = self.is_multilingual
         self.jinja_env.globals["is_unilingual"] = not self.is_multilingual
 
+        ctx = BuildContext(
+            src_path=self.src_path,
+            dist_path=self.dist_path,
+            site_config=self.site_config,
+            translations=self.translations,
+            jinja_env=self.jinja_env,
+            projects=self.projects,
+        )
+
         self.static_manager = StaticFileManager(self.src_path, self.dist_path)
 
-        self.post_builder = PostBuilder(
-            self.src_path,
-            self.dist_path,
-            self.site_config,
-            self.translations,
-            self.jinja_env,
-            self.projects,
-        )
+        self.post_builder = PostBuilder(ctx)
 
-        self.glossary_builder = GlossaryBuilder(
-            self.src_path,
-            self.dist_path,
-            self.site_config,
-            self.translations,
-            self.jinja_env,
-            self.projects,
-        )
+        self.glossary_builder = GlossaryBuilder(ctx)
 
         self.page_builder = PageBuilder(
-            self.src_path,
-            self.dist_path,
-            self.site_config,
-            self.translations,
-            self.jinja_env,
-            self.projects,
+            ctx,
             post_builder=self.post_builder,
         )
 

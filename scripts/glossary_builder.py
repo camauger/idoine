@@ -8,19 +8,18 @@ sys.path.insert(0, str(scripts_dir))
 
 import logging
 
+from core.context import BuildContext
 from utils import build_page, slugify  # type: ignore
 
 
 class GlossaryBuilder:
-    def __init__(
-        self, src_path, dist_path, site_config, translations, jinja_env, projects
-    ):
-        self.src_path = src_path
-        self.dist_path = dist_path
-        self.site_config = site_config
-        self.translations = translations
-        self.jinja_env = jinja_env
-        self.projects = projects
+    def __init__(self, context: BuildContext):
+        self.src_path = context.src_path
+        self.dist_path = context.dist_path
+        self.site_config = context.site_config
+        self.translations = context.translations
+        self.jinja_env = context.jinja_env
+        self.projects = context.projects
         self.glossary_url = self.site_config.get("glossary_url", "/glossaire/").strip(
             "/"
         )

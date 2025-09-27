@@ -3,7 +3,12 @@ import os
 from pathlib import Path
 
 from jinja2 import Environment
-from utils.gallery_utils import copy_images, find_image_files, find_images_dir
+from utils.gallery_utils import (
+    copy_images,
+    find_image_files,
+    find_images_dir,
+    generate_resized_images,
+)
 
 
 class GalleryBuilder:
@@ -36,6 +41,7 @@ class GalleryBuilder:
             images_dir = find_images_dir(self.src_path)
 
         copy_images(images_dir, self.dist_path)
+        generate_resized_images(images_dir, self.dist_path)
 
         images = find_image_files(images_dir)
 
