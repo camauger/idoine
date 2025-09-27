@@ -7,8 +7,8 @@ scripts_dir = Path(__file__).parent
 sys.path.insert(0, str(scripts_dir))
 
 import frontmatter
-from metadata import extract_metadata
 from utils import markdown_filter, slugify  # type: ignore
+from utils.metadata import extract_metadata
 
 
 class PageBuilder:

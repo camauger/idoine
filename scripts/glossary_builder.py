@@ -34,33 +34,18 @@ class GlossaryBuilder:
         self.unilingual = len(self.site_config.get("languages", [])) == 1
 
     def _parse_frontmatter(self, content):
-        if content.startswith("---"):
-            parts = content.split("---", 2)
-            if len(parts) >= 3:
-                _, frontmatter, markdown_content = parts
-                metadata = {}
-                for line in frontmatter.strip().split("\n"):
-                    if ":" in line:
-                        key, value = line.split(":", 1)
-                        key = key.strip()
-                        value = value.strip()
+        # Delegate to centralized parser for consistency
+        try:
+            from utils.frontmatter_parser import (
+                parse_frontmatter,  # local import to avoid cycles
+            )
 
-                        if key in ["categories", "meta_keywords", "tags"]:
-                            if value.startswith("[") and value.endswith("]"):
-                                try:
-                                    value = [
-                                        v.strip() for v in value.strip("[]").split(",")
-                                    ]
-                                except:
-                                    value = []
-                            else:
-                                value = [
-                                    v.strip() for v in value.split(",") if v.strip()
-                                ]
-
-                        metadata[key] = value
-                return metadata, markdown_content
-        return {}, content
+            return parse_frontmatter(content)
+        except Exception:
+            logging.exception(
+                "Erreur lors de l'appel au parseur de front matter centralisé"
+            )
+            return {}, content
 
     def load_terms(self, lang):
         terms = []

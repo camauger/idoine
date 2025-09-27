@@ -2,8 +2,7 @@ import logging
 import math
 from pathlib import Path
 
-from frontmatter_parser import parse_frontmatter
-from utils import build_page  # type: ignore
+from utils import build_page, parse_frontmatter  # type: ignore
 
 
 class PostBuilder:

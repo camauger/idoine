@@ -1,6 +1,6 @@
+import errno
 import os
 import shutil
-import errno
 import stat
 
 
@@ -23,7 +23,10 @@ class StaticFileManager:
         self.dist_path.mkdir(parents=True)
 
     def copy_static_files(self):
-        static_dirs = ['styles', 'scripts', 'assets']
+        """
+        Copy only non-processed assets. Leave styles and scripts to the frontend build (Grunt).
+        """
+        static_dirs = ["assets"]
         for dir_name in static_dirs:
             src = self.src_path / dir_name
             if src.exists():
