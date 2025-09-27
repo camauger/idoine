@@ -20,8 +20,11 @@
   <section>
 
     <figure>
-      <img src="{{ image_versions.original }}" alt="{{ t.image_preview }} {{ image_name|replace('_', ' ')|title }}"
-        width="800" height="600" loading="eager">
+      <picture>
+        <source srcset="{{ prefix }}large/{{ image_name }}.webp" type="image/webp">
+        <img src="{{ image_versions.large }}" alt="{{ t.image_preview }} {{ image_name|replace('_', ' ')|title }}"
+          width="800" height="600" loading="eager">
+      </picture>
       <figcaption>
         {{ image_name|replace('_', ' ')|title }}
       </figcaption>

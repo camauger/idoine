@@ -5,12 +5,14 @@
     "main": "Gruntfile.js",
     "scripts": {
         "dev": "grunt dev",
-        "build": "grunt sass:prod && python scripts/build.py --build"
+        "build": "grunt sass:prod && python scripts/build.py --build",
+        "audit": "npm audit --audit-level=moderate || true",
+        "audit:fix": "npm audit fix || true"
     },
     "author": "Christian Amauger <christian@amauger.com>",
     "license": "MIT",
     "devDependencies": {
-        "autoprefixer": "9.8.6",
+        "autoprefixer": "^10.4.20",
         "gray-matter": "^4.0.3",
         "grunt": "^1.6.1",
         "grunt-cli": "^1.5.0",

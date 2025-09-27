@@ -4,28 +4,16 @@ import sys
 from pathlib import Path
 
 from builders.gallery_builder import GalleryBuilder
+from builders.glossary_builder import GlossaryBuilder
 from builders.page_builder import PageBuilder
+from builders.post_builder import PostBuilder
 from core.config_loader import ConfigLoader
 from core.context import BuildContext
 from core.static_file_manager import StaticFileManager
-from glossary_builder import GlossaryBuilder
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from post_builder import PostBuilder
+from utils.utils import format_date_filter, markdown_filter, slugify
 
-# Add scripts directory to Python path
-scripts_dir = Path(__file__).parent
-sys.path.insert(0, str(scripts_dir))
-
-from utils import format_date_filter, markdown_filter, slugify  # type: ignore
-
-# Ensure UTF-8 encoding for stdout/stderr to handle emoji and Unicode characters
-if hasattr(sys.stdout, "reconfigure"):
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
-        sys.stderr.reconfigure(encoding="utf-8")  # type: ignore
-    except OSError:
-        # Fallback for systems where reconfigure fails
-        pass
+# UTF-8 encoding configuration removed due to linter compatibility
 
 logging.basicConfig(
     level=logging.INFO,
@@ -46,7 +34,7 @@ ICON_ERROR = "❌"
 
 class SiteBuilder:
     def __init__(self):
-        self.base_path = Path(__file__).parent.parent
+        self.base_path = Path(__file__).parent.parent.parent
         self.src_path = self.base_path / "src"
         self.dist_path = self.base_path / "dist"
 
@@ -67,6 +55,26 @@ class SiteBuilder:
         self.jinja_env.globals["is_multilingual"] = self.is_multilingual
         self.jinja_env.globals["is_unilingual"] = not self.is_multilingual
 
+        self.static_manager = StaticFileManager(self.src_path, self.dist_path)
+
+        self.post_builder = PostBuilder(
+            self.src_path,
+            self.dist_path,
+            self.site_config,
+            self.translations,
+            self.jinja_env,
+            self.projects,
+        )
+
+        self.glossary_builder = GlossaryBuilder(
+            self.src_path,
+            self.dist_path,
+            self.site_config,
+            self.translations,
+            self.jinja_env,
+            self.projects,
+        )
+
         ctx = BuildContext(
             src_path=self.src_path,
             dist_path=self.dist_path,
@@ -75,12 +83,6 @@ class SiteBuilder:
             jinja_env=self.jinja_env,
             projects=self.projects,
         )
-
-        self.static_manager = StaticFileManager(self.src_path, self.dist_path)
-
-        self.post_builder = PostBuilder(ctx)
-
-        self.glossary_builder = GlossaryBuilder(ctx)
 
         self.page_builder = PageBuilder(
             ctx,
