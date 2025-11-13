@@ -8,7 +8,7 @@
 
   /* Couleurs de texte et fond */
   --color-text: #333333;
-  --color-text-light: #7d7d7d;
+  --color-text-light: #666666; /* Amélioré pour WCAG AA (5.74:1) */
   --color-background: #fafafa;
   --color-background-alt: #f5f5f5;
   --color-border: #e0e0e0;
@@ -71,7 +71,7 @@
 /* Dark mode */
 [data-theme="dark"] {
   --color-text: #e0e0e0;
-  --color-text-light: #a0aec0;
+  --color-text-light: #b8b8b8; /* Amélioré pour WCAG AA (9.5:1) */
   --color-background: #121212;
   --color-background-alt: #1e1e1e;
   --color-border: #2d3748;

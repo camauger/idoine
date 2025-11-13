@@ -111,6 +111,10 @@ fr:
   keywords: Mots-clés
   tags: Étiquettes
   hero_cta: En savoir plus sur Idoine
+  toggle_theme: Basculer le thème
+  header_actions: Actions d'en-tête
+  language_switcher: Changer de langue
+  main_nav: Navigation principale
 
 en:
   about_title: About
@@ -225,4 +229,8 @@ en:
   keywords: Keywords
   tags: Tags
   hero_cta: Learn more about Idoine
+  toggle_theme: Toggle theme
+  header_actions: Header actions
+  language_switcher: Switch language
+  main_nav: Main navigation
 
