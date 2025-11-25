@@ -3,6 +3,10 @@ import logging
 import sys
 from pathlib import Path
 
+# Add scripts directory to Python path
+scripts_dir = Path(__file__).parent.parent
+sys.path.insert(0, str(scripts_dir))
+
 from builders.gallery_builder import GalleryBuilder
 from builders.glossary_builder import GlossaryBuilder
 from builders.post_builder import PostBuilder
@@ -56,24 +60,6 @@ class SiteBuilder:
 
         self.static_manager = StaticFileManager(self.src_path, self.dist_path)
 
-        self.post_builder = PostBuilder(
-            self.src_path,
-            self.dist_path,
-            self.site_config,
-            self.translations,
-            self.jinja_env,
-            self.projects,
-        )
-
-        self.glossary_builder = GlossaryBuilder(
-            self.src_path,
-            self.dist_path,
-            self.site_config,
-            self.translations,
-            self.jinja_env,
-            self.projects,
-        )
-
         ctx = BuildContext(
             src_path=self.src_path,
             dist_path=self.dist_path,
@@ -82,6 +68,10 @@ class SiteBuilder:
             jinja_env=self.jinja_env,
             projects=self.projects,
         )
+
+        # Initialize builders with BuildContext
+        self.post_builder = PostBuilder(ctx)
+        self.glossary_builder = GlossaryBuilder(ctx)
 
         # Import locally to avoid circular dependency
         from builders.page_builder import PageBuilder

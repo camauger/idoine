@@ -1,19 +1,27 @@
 import logging
 import math
 
+from core.context import BuildContext
+from utils.frontmatter_parser import parse_frontmatter
 from utils.utils import build_page, slugify
 
 
 class GlossaryBuilder:
-    def __init__(
-        self, src_path, dist_path, site_config, translations, jinja_env, projects
-    ):
-        self.src_path = src_path
-        self.dist_path = dist_path
-        self.site_config = site_config
-        self.translations = translations
-        self.jinja_env = jinja_env
-        self.projects = projects
+    """Builder for glossary terms with pagination and tag support."""
+
+    def __init__(self, context: BuildContext):
+        """
+        Initialize GlossaryBuilder with a BuildContext.
+
+        Args:
+            context: BuildContext containing all shared build configuration.
+        """
+        self.src_path = context.src_path
+        self.dist_path = context.dist_path
+        self.site_config = context.site_config
+        self.translations = context.translations
+        self.jinja_env = context.jinja_env
+        self.projects = context.projects
         self.glossary_url = self.site_config.get("glossary_url", "/glossaire/").strip(
             "/"
         )
@@ -26,42 +34,13 @@ class GlossaryBuilder:
         )
         self.unilingual = len(self.site_config.get("languages", [])) == 1
 
-    def _parse_frontmatter(self, content):
-        if content.startswith("---"):
-            parts = content.split("---", 2)
-            if len(parts) >= 3:
-                _, frontmatter, markdown_content = parts
-                metadata = {}
-                for line in frontmatter.strip().split("\n"):
-                    if ":" in line:
-                        key, value = line.split(":", 1)
-                        key = key.strip()
-                        value = value.strip()
-
-                        if key in ["categories", "meta_keywords", "tags"]:
-                            if value.startswith("[") and value.endswith("]"):
-                                try:
-                                    value = [
-                                        v.strip() for v in value.strip("[]").split(",")
-                                    ]
-                                except:
-                                    value = []
-                            else:
-                                value = [
-                                    v.strip() for v in value.split(",") if v.strip()
-                                ]
-
-                        metadata[key] = value
-                return metadata, markdown_content
-        return {}, content
-
     def load_terms(self, lang):
         terms = []
         terms_dir = self.src_path / "locales" / lang / "glossaire"
         if terms_dir.exists():
             for term_file in terms_dir.glob("*.md"):
                 content = term_file.read_text(encoding="utf-8")
-                metadata, _ = self._parse_frontmatter(content)
+                metadata, _ = parse_frontmatter(content)
                 slug = metadata.get("slug", term_file.stem)
                 term_data = {
                     "title": metadata.get("title", "Terme sans titre"),
@@ -115,7 +94,7 @@ class GlossaryBuilder:
 
     def _build_individual_term(self, term_file, lang):
         content = term_file.read_text(encoding="utf-8")
-        metadata, _ = self._parse_frontmatter(content)
+        metadata, _ = parse_frontmatter(content)
         slug = metadata.get("slug", term_file.stem)
         output = build_page(
             content,

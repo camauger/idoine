@@ -1,30 +1,21 @@
+/**
+ * Gruntfile.js - IDOINE Static Site Generator
+ *
+ * This Gruntfile handles frontend asset processing:
+ * - Sass compilation (SCSS → CSS)
+ * - PostCSS processing (Autoprefixer)
+ * - CSS minification (production)
+ * - Asset copying (fonts, images)
+ * - Development server with live reload
+ *
+ * Content generation (Markdown → HTML) is handled by Python.
+ * See: scripts/core/build.py
+ */
 module.exports = function (grunt) {
   // Chargement automatique de tous les plugins grunt
   require("load-grunt-tasks")(grunt);
 
-  const fs = require("fs");
   const sass = require("sass");
-  const marked = require("marked");
-  const matter = require("gray-matter");
-
-  // Tâche personnalisée pour convertir du Markdown en HTML avec gestion d'erreur
-  grunt.registerTask(
-    "convertMarkdown",
-    "Convertit du contenu Markdown en HTML",
-    function () {
-      const filePath = "src/locales/fr/pages/home.md";
-      try {
-        const fileContent = fs.readFileSync(filePath, "utf8");
-        const parsed = matter(fileContent);
-        const markdownContent = parsed.content;
-        const htmlContent = marked.parse(markdownContent);
-        grunt.log.writeln("Contenu HTML converti :\n" + htmlContent);
-      } catch (error) {
-        grunt.log.error("Erreur lors de la conversion Markdown : " + error);
-        return false;
-      }
-    }
-  );
 
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
@@ -118,7 +109,7 @@ module.exports = function (grunt) {
 
     shell: {
       build_html: {
-        command: "python scripts/build.py --build",
+        command: "python scripts/core/build.py --build",
       },
     },
 
@@ -138,17 +129,46 @@ module.exports = function (grunt) {
     watch: {
       options: {
         livereload: true,
+        // Debounce to avoid multiple rebuilds
+        debounceDelay: 250,
       },
       styles: {
         files: ["src/styles/**/*.scss"],
         tasks: ["clean:styles", "sass:dev", "postcss:dev"],
       },
       assets: {
-        files: "src/assets/**/*",
-        tasks: ["newer:copy"],
+        files: ["src/assets/**/*", "!src/assets/fonts/**/*"],
+        tasks: ["newer:copy:images"],
       },
+      fonts: {
+        files: ["src/assets/fonts/**/*"],
+        tasks: ["newer:copy:fonts"],
+      },
+      // Watch Markdown content files
       content: {
-        files: ["content/**/*", "templates/**/*"],
+        files: [
+          "src/locales/**/*.md",
+          "src/locales/**/*.yaml",
+          "src/locales/**/*.yml",
+        ],
+        tasks: ["shell:build_html"],
+      },
+      // Watch Jinja2 templates
+      templates: {
+        files: [
+          "src/templates/**/*.html",
+          "src/templates/**/*.jinja2",
+        ],
+        tasks: ["shell:build_html"],
+      },
+      // Watch configuration files
+      config: {
+        files: [
+          "src/config/**/*.yaml",
+          "src/config/**/*.yml",
+          "src/data/**/*.yaml",
+          "src/data/**/*.yml",
+        ],
         tasks: ["shell:build_html"],
       },
     },
@@ -157,7 +177,6 @@ module.exports = function (grunt) {
   grunt.registerTask("default", ["dev"]);
   grunt.registerTask("dev", [
     "shell:build_html",
-    "convertMarkdown",
     "sass:dev",
     "postcss:dev",
     "copy",
