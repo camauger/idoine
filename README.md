@@ -1,6 +1,6 @@
-# IDOINE - Générateur de Site Statique
+# IDOINE - Générateur de Site Statique & Constructeur de Thèmes
 
-IDOINE est un générateur de site statique et de blog puissant et modulable, conçu pour offrir une flexibilité maximale grâce à son architecture basée sur Python et Grunt. Il intègre un support multilingue natif, une gestion de contenu via Markdown et un pipeline de build moderne pour optimiser les performances.
+IDOINE est un générateur de site statique et un **constructeur de thèmes** puissant et modulable, conçu pour offrir une flexibilité maximale grâce à son architecture basée sur Python et Grunt. Il intègre un support multilingue natif, une gestion de contenu via Markdown, un système de thèmes personnalisables et un pipeline de build moderne pour optimiser les performances.
 
 [![Node Version](https://img.shields.io/badge/node-18%2B-brightgreen.svg)]()
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
@@ -8,6 +8,7 @@ IDOINE est un générateur de site statique et de blog puissant et modulable, co
 
 ## ✨ Fonctionnalités
 
+- **Constructeur de thèmes :** Système de thèmes flexible basé sur les variables CSS avec support du mode sombre.
 - **Multilingue :** Support natif pour la gestion de contenu en plusieurs langues avec sélecteur de langue intégré.
 - **Moteur de templates :** Utilise Jinja2 pour des templates flexibles et puissants.
 - **Contenu en Markdown :** Rédigez vos pages et articles en Markdown avec support du Front Matter YAML.
@@ -28,9 +29,10 @@ IDOINE est un générateur de site statique et de blog puissant et modulable, co
 4. [Structure du projet](#-structure-du-projet)
 5. [Pipeline de build](#-pipeline-de-build)
 6. [Configuration](#-configuration)
-7. [Déploiement](#-déploiement)
-8. [Tests](#-tests)
-9. [Contribution](#-contribution)
+7. [Thèmes](#-thèmes)
+8. [Déploiement](#-déploiement)
+9. [Tests](#-tests)
+10. [Contribution](#-contribution)
 
 ## 🔧 Prérequis
 
@@ -294,6 +296,66 @@ template: pages/custom.html
 thumbnail: image.jpg
 ---
 ```
+
+## 🎨 Thèmes
+
+IDOINE est conçu comme un **constructeur de thèmes** avec un système de personnalisation flexible basé sur les variables CSS.
+
+### Système de variables CSS
+
+Toutes les valeurs du thème sont définies dans `src/styles/base/_variables.scss` :
+
+```scss
+:root {
+  /* Couleurs */
+  --color-primary: #2a9d8f;
+  --color-secondary: #e76f51;
+  --color-text: #333333;
+  --color-background: #fafafa;
+
+  /* Typographie */
+  --font-primary: "Montserrat", sans-serif;
+  --font-display: "Cinzel Decorative", serif;
+
+  /* Espacement */
+  --spacing-4: 1.6rem;
+  --spacing-8: 3.2rem;
+
+  /* Ombres et bordures */
+  --border-radius: 0.4rem;
+  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+```
+
+### Mode sombre
+
+Le mode sombre est intégré via le sélecteur `[data-theme="dark"]` :
+
+```scss
+[data-theme="dark"] {
+  --color-text: #e0e0e0;
+  --color-background: #121212;
+  --color-background-alt: #1e1e1e;
+}
+```
+
+### Créer un thème personnalisé
+
+1. Créez un fichier `src/styles/themes/_mon-theme.scss`
+2. Définissez vos variables dans un sélecteur `[data-theme="mon-theme"]`
+3. Importez le thème dans `main.scss`
+
+```scss
+[data-theme="mon-theme"] {
+  --color-primary: #6366f1;
+  --color-secondary: #f59e0b;
+  --font-primary: "Inter", sans-serif;
+}
+```
+
+### Documentation complète
+
+Pour un guide détaillé sur la création de thèmes, consultez **[docs/THEMING.md](docs/THEMING.md)**.
 
 ## 🌐 Déploiement
 

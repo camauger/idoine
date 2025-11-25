@@ -365,3 +365,30 @@ Pages are built by `page_builder.py` which:
 1. Scans all language directories
 2. Builds a translation map from `translation_id`
 3. Passes `content_translations` to templates
+
+## Theming
+
+IDOINE is designed as a **theme builder** with a flexible theming system based on CSS custom properties.
+
+For detailed theming documentation, see **[THEMING.md](./THEMING.md)**.
+
+### Quick Overview
+
+- **CSS Variables**: All theme tokens (colors, fonts, spacing) are defined in `src/styles/base/_variables.scss`
+- **Dark Mode**: Built-in support via `[data-theme="dark"]` selector
+- **Custom Themes**: Create new themes by overriding CSS variables
+- **Self-Hosted Fonts**: Fonts are bundled in `src/assets/fonts/` for privacy and performance
+- **Modular SCSS**: Component-based architecture for easy customization
+
+### Theme Files
+
+```
+src/styles/
+├── base/
+│   ├── _variables.scss    # Theme tokens (colors, fonts, spacing)
+│   ├── _fonts.scss        # @font-face declarations
+│   └── _typography.scss   # Text styles
+├── components/            # Reusable UI components
+├── layout/                # Structural styles
+└── pages/                 # Page-specific styles
+```
