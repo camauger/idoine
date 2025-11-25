@@ -3,19 +3,17 @@ import logging
 import sys
 from pathlib import Path
 
-from builders.gallery_builder import GalleryBuilder
-from builders.page_builder import PageBuilder
 from core.config_loader import ConfigLoader
 from core.context import BuildContext
 from core.static_file_manager import StaticFileManager
-from glossary_builder import GlossaryBuilder
 from jinja2 import Environment, FileSystemLoader, select_autoescape
-from post_builder import PostBuilder
 
 # Add scripts directory to Python path
 scripts_dir = Path(__file__).parent
 sys.path.insert(0, str(scripts_dir))
 
+from glossary_builder import GlossaryBuilder
+from post_builder import PostBuilder
 from utils import format_date_filter, markdown_filter, slugify  # type: ignore
 
 # Ensure UTF-8 encoding for stdout/stderr to handle emoji and Unicode characters
@@ -82,6 +80,9 @@ class SiteBuilder:
 
         self.glossary_builder = GlossaryBuilder(ctx)
 
+        # Import locally to avoid circular dependency
+        from builders.page_builder import PageBuilder
+
         self.page_builder = PageBuilder(
             ctx,
             post_builder=self.post_builder,
@@ -94,6 +95,9 @@ class SiteBuilder:
             self.static_manager.setup_output_dir()
             logging.info(f"{ICON_COPY} Copie des fichiers statiques...")
             self.static_manager.copy_static_files()
+
+            # Import locally to avoid circular dependency
+            from builders.gallery_builder import GalleryBuilder
 
             gallery_builder = GalleryBuilder(
                 self.src_path,

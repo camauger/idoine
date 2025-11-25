@@ -60,7 +60,7 @@ Suivez ces étapes pour mettre en place votre environnement de développement lo
 
     # Activer l'environnement
     # Sur Windows (Git Bash ou CMD)
-    venv\Scripts\activate
+    .\venv\Scripts\activate ou . venv/Scripts/activate
     # Sur macOS/Linux
     source venv/bin/activate
     ```

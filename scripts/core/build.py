@@ -5,7 +5,6 @@ from pathlib import Path
 
 from builders.gallery_builder import GalleryBuilder
 from builders.glossary_builder import GlossaryBuilder
-from builders.page_builder import PageBuilder
 from builders.post_builder import PostBuilder
 from core.config_loader import ConfigLoader
 from core.context import BuildContext
@@ -83,6 +82,9 @@ class SiteBuilder:
             jinja_env=self.jinja_env,
             projects=self.projects,
         )
+
+        # Import locally to avoid circular dependency
+        from builders.page_builder import PageBuilder
 
         self.page_builder = PageBuilder(
             ctx,
