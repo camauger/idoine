@@ -57,6 +57,13 @@ def build_page(
     """
     Generate an HTML page using a Jinja2 template.
 
+    This function delegates to specialized classes for better separation
+    of concerns:
+    - ContentProcessor: Parses frontmatter and converts Markdown
+    - MetadataProcessor: Normalizes and enriches metadata
+    - URLRouter: Generates URLs (when custom_url not provided)
+    - TemplateRenderer: Handles Jinja2 rendering
+
     Args:
         content: Raw Markdown content with frontmatter.
         template_name: Path to the Jinja2 template file.
@@ -77,17 +84,23 @@ def build_page(
     Raises:
         jinja2.TemplateNotFound: If the specified template doesn't exist.
     """
-    # Parse frontmatter and content
-    parsed = frontmatter.loads(content)
-    metadata: Dict[str, Any] = parsed.metadata
-    md_content: str = parsed.content
-    html_content: str = markdown_filter(md_content)
+    # Import here to avoid circular imports
+    from core.content_processor import ContentProcessor
+    from core.metadata_processor import MetadataProcessor
+
+    # Process content
+    processor = ContentProcessor()
+    processed = processor.parse(content)
+
+    # Process metadata
+    meta_processor = MetadataProcessor()
+    metadata = meta_processor.process(processed.metadata)
 
     # Determine the page URL based on type
     page_url: str
     if is_post:
         effective_slug = slug if slug is not None else metadata.get("slug", "post")
-        blog_path = site_config["blog_url"].strip("/")
+        blog_path = site_config.get("blog_url", "/blog/").strip("/")
         if site_config.get("unilingual"):
             page_url = f"/{blog_path}/{effective_slug}/"
         else:
@@ -97,24 +110,20 @@ def build_page(
     else:
         page_url = "/" if site_config.get("unilingual") else f"/{lang}/"
 
-    # Always include pagination, even if empty
-    if pagination is None:
-        pagination = {"posts": []}
-
     # Build page context
-    page_metadata: Dict[str, Any] = {
-        "lang": lang,
-        "url": page_url,
-        "content_translations": content_translations if content_translations is not None else {},
-        "pagination": pagination,
-        **metadata,
-    }
+    page_context = meta_processor.build_page_context(
+        metadata=metadata,
+        lang=lang,
+        url=page_url,
+        content_translations=content_translations,
+        pagination=pagination,
+    )
 
     # Render with Jinja
     template = jinja_env.get_template(template_name)
     return template.render(
-        content=html_content,
-        page=page_metadata,
+        content=processed.html,
+        page=page_context,
         t=translations,
         site=site_config,
         projects=projects,
