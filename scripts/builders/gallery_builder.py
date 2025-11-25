@@ -40,6 +40,10 @@ class GalleryBuilder:
         else:
             images_dir = find_images_dir(self.src_path)
 
+        if images_dir is None:
+            logging.warning("No gallery images directory found, skipping gallery build")
+            return
+
         copy_images(images_dir, self.dist_path)
         generate_resized_images(images_dir, self.dist_path)
 
