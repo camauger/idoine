@@ -1,22 +1,28 @@
 import logging
 import math
 from pathlib import Path
+from typing import Optional
 
-from core.context import BuildContext
-from utils import build_page, parse_frontmatter  # type: ignore
+from utils.frontmatter_parser import parse_frontmatter
+from utils.utils import build_page
 
 
 class PostBuilder:
     def __init__(
         self,
-        context: BuildContext,
+        src_path: Path,
+        dist_path: Path,
+        site_config: dict,
+        translations: dict,
+        jinja_env,
+        projects,
     ):
-        self.src_path = context.src_path
-        self.dist_path = context.dist_path
-        self.site_config = context.site_config
-        self.translations = context.translations
-        self.jinja_env = context.jinja_env
-        self.projects = context.projects
+        self.src_path = src_path
+        self.dist_path = dist_path
+        self.site_config = site_config
+        self.translations = translations
+        self.jinja_env = jinja_env
+        self.projects = projects
         self.blog_url = self.site_config.get("blog_url", "/blog/").strip("/")
         self.posts_per_page = self.site_config.get("posts_per_page", 5)
         self.post_template = self.site_config.get("post_template", "posts/post.html")
@@ -24,7 +30,7 @@ class PostBuilder:
         self.home_template = self.site_config.get("home_template", "pages/home.html")
         self.unilingual = len(self.site_config.get("languages", [])) == 1
 
-    def _get_posts_dir(self, lang: str) -> Path | None:
+    def _get_posts_dir(self, lang: str) -> Optional[Path]:
         """Retourne le dossier contenant les posts pour la langue donnée."""
         posts_dir = self.src_path / "locales" / lang / "blog"
         if not posts_dir.exists():

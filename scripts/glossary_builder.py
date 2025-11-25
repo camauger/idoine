@@ -8,20 +8,18 @@ sys.path.insert(0, str(scripts_dir))
 
 import logging
 
-from frontmatter_parser import parse_frontmatter
+from core.context import BuildContext
 from utils import build_page, slugify  # type: ignore
 
 
 class GlossaryBuilder:
-    def __init__(
-        self, src_path, dist_path, site_config, translations, jinja_env, projects
-    ):
-        self.src_path = src_path
-        self.dist_path = dist_path
-        self.site_config = site_config
-        self.translations = translations
-        self.jinja_env = jinja_env
-        self.projects = projects
+    def __init__(self, context: BuildContext):
+        self.src_path = context.src_path
+        self.dist_path = context.dist_path
+        self.site_config = context.site_config
+        self.translations = context.translations
+        self.jinja_env = context.jinja_env
+        self.projects = context.projects
         self.glossary_url = self.site_config.get("glossary_url", "/glossaire/").strip(
             "/"
         )
@@ -34,7 +32,19 @@ class GlossaryBuilder:
         )
         self.unilingual = len(self.site_config.get("languages", [])) == 1
 
-    
+    def _parse_frontmatter(self, content):
+        # Delegate to centralized parser for consistency
+        try:
+            from utils.frontmatter_parser import (
+                parse_frontmatter,  # local import to avoid cycles
+            )
+
+            return parse_frontmatter(content)
+        except Exception:
+            logging.exception(
+                "Erreur lors de l'appel au parseur de front matter centralisé"
+            )
+            return {}, content
 
     def load_terms(self, lang):
         terms = []
@@ -42,7 +52,7 @@ class GlossaryBuilder:
         if terms_dir.exists():
             for term_file in terms_dir.glob("*.md"):
                 content = term_file.read_text(encoding="utf-8")
-                metadata, _ = parse_frontmatter(content)
+                metadata, _ = self._parse_frontmatter(content)
                 slug = metadata.get("slug", term_file.stem)
                 term_data = {
                     "title": metadata.get("title", "Terme sans titre"),
@@ -96,7 +106,7 @@ class GlossaryBuilder:
 
     def _build_individual_term(self, term_file, lang):
         content = term_file.read_text(encoding="utf-8")
-        metadata, _ = parse_frontmatter(content)
+        metadata, _ = self._parse_frontmatter(content)
         slug = metadata.get("slug", term_file.stem)
         output = build_page(
             content,

@@ -7,3 +7,6 @@ Unidecode
 pytest
 black
 flake8
+Pillow
+pip-audit
+pydantic
