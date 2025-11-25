@@ -38,15 +38,12 @@ class PageBuilder:
                     content = page_file.read_text(encoding="utf-8")
                     metadata = extract_metadata(content)
                     tid = str(metadata.get("translation_id", page_file.stem))
-                    page_url = (
-                        "/"
-                        if page_file.stem == "home"
-                        else (
-                            f"/{page_file.stem}/"
-                            if is_unilingual
-                            else f"/{lang}/{page_file.stem}/"
-                        )
-                    )
+                    if page_file.stem == "home":
+                        page_url = "/" if is_unilingual else f"/{lang}/"
+                    elif is_unilingual:
+                        page_url = f"/{page_file.stem}/"
+                    else:
+                        page_url = f"/{lang}/{page_file.stem}/"
                     mapping.setdefault(tid, {})[lang] = page_url
         return mapping
 
@@ -83,6 +80,8 @@ class PageBuilder:
                 custom_url = f"/{lang}/{page_file.stem}/"
 
         # Rendu de la page
+        translations_static = self.translations.get(lang, {})
+
         if page_file.stem == "blog":
             posts = self.load_posts(lang)
             pagination = {"posts": posts}
@@ -93,9 +92,8 @@ class PageBuilder:
                 "url": custom_url,
                 "thumbnail": metadata.get("thumbnail", ""),
                 **metadata,
-                "translations": page_trans,
+                "content_translations": page_trans,
             }
-            translations_static = self.translations.get(lang, {})
             rendered = self.jinja_env.get_template(template_name).render(
                 content=content,
                 page=page_metadata,
@@ -106,6 +104,24 @@ class PageBuilder:
                 projects=self.projects,
                 pagination=pagination,
             )
+        elif page_file.stem == "home":
+            # Home page needs recent_posts for the template
+            posts = self.load_posts(lang)
+            recent_posts = posts[:3] if posts else []
+            page_metadata = {
+                "lang": lang,
+                "url": custom_url,
+                "content_translations": page_trans,
+                **metadata,
+            }
+            rendered = self.jinja_env.get_template(template_name).render(
+                content=markdown_filter(frontmatter.loads(content).content),
+                page=page_metadata,
+                t=translations_static,
+                site=self.site_config,
+                projects=self.projects,
+                recent_posts=recent_posts,
+            )
         else:
             page_metadata = {
                 "lang": lang,
@@ -113,7 +129,6 @@ class PageBuilder:
                 "content_translations": page_trans,
                 **metadata,
             }
-            translations_static = self.translations.get(lang, {})
             rendered = self.jinja_env.get_template(template_name).render(
                 content=markdown_filter(frontmatter.loads(content).content),
                 page=page_metadata,

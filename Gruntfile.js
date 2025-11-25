@@ -105,6 +105,12 @@ module.exports = function (grunt) {
         src: "**/*",
         dest: "dist/assets/images/",
       },
+      scripts: {
+        expand: true,
+        cwd: "src/scripts",
+        src: "**/*.js",
+        dest: "dist/scripts/",
+      },
     },
 
     shell: {
@@ -170,6 +176,11 @@ module.exports = function (grunt) {
           "src/data/**/*.yml",
         ],
         tasks: ["shell:build_html"],
+      },
+      // Watch JavaScript files
+      scripts: {
+        files: ["src/scripts/**/*.js"],
+        tasks: ["newer:copy:scripts"],
       },
     },
   });

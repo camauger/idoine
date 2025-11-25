@@ -6,15 +6,28 @@
 
   <ul id="lang-menu" class="lang-menu" role="menu">
     {% for lang in site.languages %}
+      {# Check if we have explicit translations for this page #}
       {% if page.content_translations and lang in page.content_translations %}
-  {% set lang_url = page.content_translations[lang] %}
-{% else %}
-  {% if page.url is defined and page.url|length > 3 %}
-    {% set lang_url = '/' ~ lang ~ page.url[3:] %}
-  {% else %}
-    {% set lang_url = '/' ~ lang ~ '/' %}
-  {% endif %}
-{% endif %}
+        {% set lang_url = page.content_translations[lang] %}
+      {% else %}
+        {# Fallback: construct URL by replacing current language with target language #}
+        {% if page.url is defined %}
+          {# For home pages like /fr/ or /en/, just switch to target lang #}
+          {% if page.url == '/' ~ page.lang ~ '/' or page.url == '/' %}
+            {% set lang_url = '/' ~ lang ~ '/' %}
+          {% else %}
+            {# For other pages like /fr/about/, replace the lang prefix #}
+            {% set url_parts = page.url.split('/') %}
+            {% if url_parts|length > 2 and url_parts[1] in site.languages %}
+              {% set lang_url = '/' ~ lang ~ '/' ~ url_parts[2:] | join('/') %}
+            {% else %}
+              {% set lang_url = '/' ~ lang ~ '/' %}
+            {% endif %}
+          {% endif %}
+        {% else %}
+          {% set lang_url = '/' ~ lang ~ '/' %}
+        {% endif %}
+      {% endif %}
 
       <li role="none">
         <a href="{{ lang_url }}"

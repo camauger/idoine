@@ -189,11 +189,25 @@ class PostBuilder:
         """Retourne les posts récents (par défaut, les 3 premiers)."""
         return posts[:count]
 
-    def _build_home_page(self, recent_posts: list, lang: str) -> None:
+    def _build_home_page(
+        self, recent_posts: list, lang: str, content_translations: dict = None
+    ) -> None:
+        """Build the home page with recent posts and language switcher support."""
+        # Determine URL for this language's home page
+        home_url = "/" if self.unilingual else f"/{lang}/"
+
+        # Build content_translations if not provided
+        if content_translations is None:
+            content_translations = {}
+            for l in self.site_config.get("languages", []):
+                content_translations[l] = "/" if self.unilingual else f"/{l}/"
+
         page_metadata = {
             "title": self.translations[lang].get("home_title", "Accueil"),
             "description": self.translations[lang].get("home_description", ""),
             "lang": lang,
+            "url": home_url,
+            "content_translations": content_translations,
             "home_cta": self.translations[lang].get("home_cta", "En savoir plus"),
             "home_image": self.translations[lang].get("home_image", ""),
         }
@@ -226,16 +240,15 @@ class PostBuilder:
         # Construire le mapping global des traductions
         translation_map = self.build_translation_map(all_posts)
 
-        # Générer les pages individuelles, paginées et la page d'accueil
+        # Générer les pages individuelles et paginées
+        # Note: La page d'accueil est générée par page_builder.build_pages()
+        # avec le bon contexte de traduction (content_translations)
         for lang, posts in posts_by_lang.items():
             posts_dir = self._get_posts_dir(lang)
             if posts_dir:
                 for post_file in posts_dir.glob("*.md"):
                     self._build_individual_post(post_file, lang, translation_map)
                 self._build_paginated_pages(posts, lang)
-                # Utiliser la méthode get_recent_posts pour obtenir les articles récents
-                recent_posts = self.get_recent_posts(posts)
-                self._build_home_page(recent_posts, lang)
 
         # Injection du mapping dans chaque post (pour usage ultérieur, log, etc.)
         for post in all_posts:
