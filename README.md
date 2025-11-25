@@ -8,12 +8,16 @@ IDOINE est un générateur de site statique et de blog puissant et modulable, co
 
 ## ✨ Fonctionnalités
 
-- **Multilingue :** Support natif pour la gestion de contenu en plusieurs langues.
+- **Multilingue :** Support natif pour la gestion de contenu en plusieurs langues avec sélecteur de langue intégré.
 - **Moteur de templates :** Utilise Jinja2 pour des templates flexibles et puissants.
-- **Contenu en Markdown :** Rédigez vos pages et articles en Markdown avec support du Front Matter.
+- **Contenu en Markdown :** Rédigez vos pages et articles en Markdown avec support du Front Matter YAML.
 - **Pipeline de build automatisé :** Tâches Grunt pour la compilation SASS, l'optimisation des assets et le rechargement à chaud.
-- **Extensible :** L'architecture basée sur des scripts Python permet d'ajouter facilement de nouvelles fonctionnalités (galeries, glossaires, etc.).
-- **Optimisation pour la production :** Minification des CSS et des images pour des performances optimales.
+- **Galerie d'images :** Génération automatique de galeries avec images responsives (WebP, multiples tailles).
+- **Glossaire :** Support intégré pour la création de glossaires avec tags.
+- **Optimisation d'images :** Génération automatique de variantes responsives avec Pillow.
+- **Validation de données :** Schémas Pydantic pour valider les configurations et métadonnées.
+- **Polices auto-hébergées :** Support pour Montserrat, Cinzel Decorative et Font Awesome.
+- **Serveur de développement Python :** Alternative au serveur Grunt avec hot reload natif.
 - **Déploiement facile :** Pré-configuré pour un déploiement simple et rapide sur Netlify.
 
 ## 📋 Table des matières
@@ -25,7 +29,8 @@ IDOINE est un générateur de site statique et de blog puissant et modulable, co
 5. [Pipeline de build](#-pipeline-de-build)
 6. [Configuration](#-configuration)
 7. [Déploiement](#-déploiement)
-8. [Contribution](#-contribution)
+8. [Tests](#-tests)
+9. [Contribution](#-contribution)
 
 ## 🔧 Prérequis
 
@@ -59,8 +64,10 @@ Suivez ces étapes pour mettre en place votre environnement de développement lo
     python -m venv venv
 
     # Activer l'environnement
-    # Sur Windows (Git Bash ou CMD)
-    .\venv\Scripts\activate ou . venv/Scripts/activate
+    # Sur Windows (Git Bash)
+    source venv/Scripts/activate
+    # Sur Windows (CMD/PowerShell)
+    .\venv\Scripts\activate
     # Sur macOS/Linux
     source venv/bin/activate
     ```
@@ -78,14 +85,35 @@ Suivez ces étapes pour mettre en place votre environnement de développement lo
 Pour démarrer le serveur de développement local avec rechargement automatique (live reload) :
 
 ```bash
+# Avec Grunt (serveur sur http://localhost:9000)
 npm run dev
+
+# Avec le serveur Python natif (serveur sur http://localhost:8000)
+npm run dev:py
 ```
 
-Cette commande va :
-- Lancer les scripts de build Python.
+La commande `npm run dev` va :
+- Lancer les scripts de build Python pour générer le HTML.
 - Compiler les fichiers SASS.
+- Appliquer PostCSS (Autoprefixer).
+- Copier les assets (images, polices, scripts).
 - Démarrer un serveur web sur `http://localhost:9000`.
-- Surveiller les modifications de vos fichiers et rafraîchir le navigateur automatiquement.
+- Surveiller les modifications et rafraîchir le navigateur automatiquement.
+
+### Serveur de développement Python
+
+Le serveur Python (`npm run dev:py`) offre une alternative légère avec :
+- Hot reload sur les fichiers Markdown, templates et configuration.
+- Injection automatique du script de live reload.
+- Pas de dépendance à Node.js pour le développement.
+
+```bash
+# Options disponibles
+python scripts/dev_server.py --help
+python scripts/dev_server.py -p 3000      # Port personnalisé
+python scripts/dev_server.py --no-reload  # Désactiver le hot reload
+python scripts/dev_server.py -v           # Mode verbose
+```
 
 ### Générer pour la production
 
@@ -96,10 +124,11 @@ npm run build
 ```
 
 Cette commande va :
-- Nettoyer le répertoire `dist`.
+- Compiler les fichiers SASS en mode production (compressé).
 - Exécuter les scripts de build Python pour générer tout le contenu HTML.
-- Compiler, préfixer et minifier les fichiers SASS en un seul fichier CSS.
-- Copier tous les assets (images, polices) dans le répertoire `dist`.
+- Appliquer PostCSS (Autoprefixer).
+- Minifier le CSS.
+- Copier tous les assets dans le répertoire `dist`.
 
 ## 📁 Structure du projet
 
@@ -107,88 +136,227 @@ Le projet est organisé de manière à séparer clairement le contenu, les templ
 
 ```
 idoine/
-├── dist/                # Fichiers du site généré, prêts pour le déploiement.
-├── node_modules/        # Dépendances Node.js.
-├── scripts/             # Scripts Python pour la logique de build.
-│   ├── build.py         # Script principal de construction.
-│   └── ...              # Autres modules (gestionnaire de pages, posts, etc.).
+├── dist/                    # Fichiers du site généré
+├── docs/                    # Documentation technique
+│   └── BUILD_ARCHITECTURE.md
+├── scripts/                 # Scripts Python de build
+│   ├── core/                # Modules principaux
+│   │   ├── build.py         # Point d'entrée principal
+│   │   ├── context.py       # BuildContext (injection de dépendances)
+│   │   ├── config_loader.py # Chargement des configurations YAML
+│   │   ├── config_schema.py # Schéma Pydantic pour site_config
+│   │   ├── static_file_manager.py
+│   │   ├── template_renderer.py
+│   │   ├── url_router.py
+│   │   └── ...
+│   ├── builders/            # Générateurs de contenu
+│   │   ├── page_builder.py  # Pages statiques
+│   │   ├── post_builder.py  # Articles de blog
+│   │   ├── glossary_builder.py
+│   │   └── gallery_builder.py
+│   ├── utils/               # Utilitaires
+│   │   ├── constants.py     # Constantes centralisées
+│   │   ├── frontmatter_parser.py
+│   │   ├── image_processor.py
+│   │   ├── file_cache.py
+│   │   ├── path_validator.py
+│   │   ├── exceptions.py
+│   │   ├── logger.py
+│   │   └── ...
+│   └── dev_server.py        # Serveur de développement Python
 ├── src/
-│   ├── assets/          # Fichiers statiques (images, polices, etc.).
-│   ├── config/          # Fichiers de configuration globaux.
-│   ├── data/            # Données structurées (ex: projets, traductions).
-│   ├── locales/         # Contenu source multilingue (Markdown).
+│   ├── assets/              # Fichiers statiques
+│   │   ├── images/
+│   │   ├── fonts/
+│   │   └── gallery_images/  # Images de la galerie
+│   ├── config/              # Configuration du site
+│   │   └── site_config.yaml
+│   ├── data/                # Données structurées
+│   │   ├── translations.yaml
+│   │   └── projects.yaml
+│   ├── locales/             # Contenu multilingue (Markdown)
 │   │   ├── en/
+│   │   │   ├── pages/
+│   │   │   └── posts/
 │   │   └── fr/
-│   ├── scripts/         # Fichiers JavaScript pour le front-end.
-│   └── styles/          # Fichiers SASS.
-├── templates/           # Templates Jinja2 pour la génération des pages.
-│   ├── base.html        # Template de base.
-│   ├── components/      # Composants réutilisables (header, footer, etc.).
-│   └── pages/           # Templates spécifiques à chaque type de page.
-├── venv/                # Environnement virtuel Python.
-├── .gitignore           # Fichiers et dossiers ignorés par Git.
-├── Gruntfile.js         # Fichier de configuration des tâches Grunt.
-├── netlify.toml         # Fichier de configuration pour le déploiement sur Netlify.
-├── package.json         # Manifeste du projet Node.js et dépendances.
-└── requirements.txt     # Dépendances Python.
+│   │       ├── pages/
+│   │       ├── posts/
+│   │       └── glossaire/
+│   ├── scripts/             # JavaScript front-end
+│   │   ├── main.js
+│   │   ├── languageSwitcher.js
+│   │   ├── themeToggle.js
+│   │   └── ...
+│   ├── styles/              # Fichiers SASS
+│   │   ├── main.scss
+│   │   ├── base/
+│   │   ├── components/
+│   │   └── layout/
+│   └── templates/           # Templates Jinja2
+│       ├── base.html
+│       ├── components/
+│       ├── macros/
+│       ├── pages/
+│       └── posts/
+├── tests/                   # Suite de tests
+│   ├── unit/
+│   ├── integration/
+│   └── fixtures/
+├── Gruntfile.js             # Configuration Grunt
+├── package.json             # Dépendances Node.js
+├── requirements.txt         # Dépendances Python
+└── netlify.toml             # Configuration Netlify
 ```
 
 ## 🔄 Pipeline de build
 
 Le processus de build est orchestré par Grunt, qui fait appel à des scripts Python pour la génération de contenu.
 
-1.  **Nettoyage :** La tâche `clean` supprime le contenu du dossier `dist` pour assurer une build propre.
-2.  **Build Python (`shell:build_html`) :** Le script `scripts/build.py` est exécuté. Il lit les fichiers Markdown, les données YAML, et utilise les templates Jinja2 pour générer toutes les pages HTML.
-3.  **Compilation SASS (`sass`) :** Les fichiers `.scss` du dossier `src/styles` sont compilés en un unique fichier CSS dans `dist/styles`.
-4.  **Post-traitement CSS (`postcss`) :** Autoprefixer est utilisé pour ajouter les préfixes vendeurs nécessaires à une meilleure compatibilité entre les navigateurs.
-5.  **Minification CSS (`cssmin`) :** En mode production, le fichier CSS est minifié pour réduire son poids.
-6.  **Copie des assets (`copy`) :** Les polices, images et autres fichiers statiques sont copiés du dossier `src/assets` vers `dist/assets`.
-7.  **Serveur et surveillance (`connect`, `watch`) :** En mode développement, un serveur local est lancé et les fichiers sources sont surveillés. Toute modification déclenche les tâches appropriées et recharge le navigateur.
+### Étapes du build
+
+1.  **Build Python (`shell:build_html`) :**
+    - Nettoie le dossier `dist`
+    - Copie les fichiers statiques
+    - Génère les pages HTML depuis les fichiers Markdown
+    - Crée les pages de blog avec pagination
+    - Génère le glossaire et les pages de tags
+    - Crée les pages de catégories et mots-clés
+    - Génère la galerie d'images avec variantes responsives
+
+2.  **Compilation SASS (`sass`) :**
+    Les fichiers `.scss` sont compilés en CSS.
+
+3.  **Post-traitement CSS (`postcss`) :**
+    Autoprefixer ajoute les préfixes vendeurs.
+
+4.  **Minification CSS (`cssmin`) :**
+    En production, le CSS est minifié.
+
+5.  **Copie des assets (`copy`) :**
+    Polices, images et scripts JavaScript sont copiés dans `dist`.
+
+6.  **Serveur et surveillance (`connect`, `watch`) :**
+    En développement, un serveur local est lancé avec live reload.
+
+### Watchers configurés
+
+- `src/styles/**/*.scss` → Recompilation SASS
+- `src/assets/**/*` → Copie des assets
+- `src/scripts/**/*.js` → Copie des scripts
+- `src/locales/**/*.md` → Rebuild Python
+- `src/templates/**/*.html` → Rebuild Python
+- `src/config/**/*.yaml` → Rebuild Python
 
 ## ⚙️ Configuration
 
-### `Gruntfile.js`
-Ce fichier est le cœur de l'automatisation. Il définit les tâches pour le développement (`dev`) et la production (`build`). Vous pouvez y personnaliser les plugins Grunt ou ajouter de nouvelles tâches.
-
-### `scripts/build.py`
-Le script principal de la logique de génération. Il orchestre la création des pages, des articles de blog, du glossaire, etc.
-
 ### `src/config/site_config.yaml`
-Fichier de configuration principal du site. Vous pouvez y définir le nom du site, les langues supportées, les menus de navigation et d'autres paramètres globaux.
+
+Fichier de configuration principal du site :
+
+```yaml
+title: 'Mon Site'
+description: 'Description du site'
+author: 'Auteur'
+base_url: 'https://example.com'
+
+languages: ['fr', 'en']
+default_lang: 'fr'
+language_names:
+  fr: 'Français'
+  en: 'English'
+
+blog_url: '/blog'
+glossary_url: '/glossaire'
+gallery_url: '/gallery'
+
+posts_per_page: 5
+terms_per_page: 10
+```
+
+### Variables d'environnement
+
+- `IDOINE_USE_ICONS` - Active/désactive les emojis dans les logs (défaut: `true`)
+
+### Front Matter des fichiers Markdown
+
+```yaml
+---
+title: Titre de la page
+description: Description pour le SEO
+date: 2025-01-01
+author: Auteur
+slug: url-slug
+translation_id: identifiant-traduction
+categories: [cat1, cat2]
+meta_keywords: [mot1, mot2]
+tags: [tag1, tag2]
+template: pages/custom.html
+thumbnail: image.jpg
+---
+```
 
 ## 🌐 Déploiement
 
-Le projet est prêt à être déployé sur Netlify. Le fichier `netlify.toml` à la racine contient la configuration de build nécessaire.
+Le projet est prêt à être déployé sur Netlify. Le fichier `netlify.toml` contient la configuration nécessaire :
 
 ```toml
 [build]
-  # Commande à exécuter pour construire le site
   command = "npm install && pip install -r requirements.txt && npm run build"
-  # Dossier à publier
   publish = "dist"
 
 [build.environment]
-  # Spécifier les versions pour l'environnement de build de Netlify
   NODE_VERSION = "18"
   PYTHON_VERSION = "3.9"
 ```
 
 Pour déployer :
-1.  Créez un nouveau site sur Netlify à partir de votre dépôt Git.
-2.  Netlify détectera automatiquement le fichier `netlify.toml` et utilisera les commandes spécifiées pour construire et déployer votre site.
+1. Créez un nouveau site sur Netlify à partir de votre dépôt Git.
+2. Netlify détectera automatiquement le fichier `netlify.toml`.
+
+## 🧪 Tests
+
+Le projet inclut une suite de tests unitaires et d'intégration.
+
+```bash
+# Activer l'environnement virtuel
+source venv/Scripts/activate  # Windows Git Bash
+source venv/bin/activate      # macOS/Linux
+
+# Exécuter tous les tests
+python -m pytest tests/
+
+# Tests avec couverture
+python -m pytest tests/ --cov=scripts
+
+# Tests spécifiques
+python -m pytest tests/unit/test_frontmatter_parser.py -v
+```
 
 ## 👥 Contribution
 
 Les contributions sont les bienvenues !
 
-1.  Fork le projet.
-2.  Créez une nouvelle branche pour votre fonctionnalité (`git checkout -b feature/AmazingFeature`).
-3.  Commitez vos changements (`git commit -m 'Add some AmazingFeature'`).
-4.  Poussez votre branche (`git push origin feature/AmazingFeature`).
-5.  Ouvrez une Pull Request.
+1. Fork le projet.
+2. Créez une nouvelle branche (`git checkout -b feature/AmazingFeature`).
+3. Commitez vos changements (`git commit -m 'Add some AmazingFeature'`).
+4. Poussez votre branche (`git push origin feature/AmazingFeature`).
+5. Ouvrez une Pull Request.
 
 ### Guide de style
 
--   Essayez de respecter le style de code existant.
--   Documentez les nouvelles fonctionnalités ou les changements importants.
--   Assurez-vous que la documentation (ce `README.md`) est à jour si vos changements l'impactent.
+- **Python :** Suivre PEP 8, utiliser Black pour le formatage.
+- **JavaScript :** Style ES6+.
+- **SCSS :** BEM pour les noms de classes.
+- **Documentation :** Docstrings Google-style pour Python.
+
+### Linting
+
+```bash
+# Python
+black scripts/
+flake8 scripts/
+
+# Audit de sécurité
+npm run audit
+pip-audit
+```
