@@ -5,13 +5,16 @@
     "main": "Gruntfile.js",
     "scripts": {
         "dev": "grunt dev",
-        "build": "grunt sass:prod && python scripts/build.py --build",
+        "build": "grunt sass:prod && python scripts/core/build.py --build",
         "audit": "npm audit --audit-level=moderate || true",
         "audit:fix": "npm audit fix || true"
     },
     "author": "Christian Amauger <christian@amauger.com>",
     "license": "MIT",
     "devDependencies": {
+        "@fontsource/cinzel-decorative": "^5.2.8",
+        "@fontsource/montserrat": "^5.2.8",
+        "@fortawesome/fontawesome-free": "^7.1.0",
         "@lodder/grunt-postcss": "^3.1.1",
         "autoprefixer": "^10.4.20",
         "gray-matter": "^4.0.3",

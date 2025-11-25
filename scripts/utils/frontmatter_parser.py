@@ -1,11 +1,10 @@
 import logging
+from typing import Dict, Any, Tuple
 
 import frontmatter
 
-from .errors import FrontmatterParsingError
 
-
-def _ensure_list(value):
+def _ensure_list(value) -> list:
     """
     Normalize scalar or list-like metadata fields to a list of strings.
     """
@@ -20,11 +19,14 @@ def _ensure_list(value):
     return [v.strip() for v in text.strip("[]").split(",") if v.strip()]
 
 
-def parse_frontmatter(content: str):
+def parse_frontmatter(content: str) -> Tuple[Dict[str, Any], str]:
     """
     Analyse le front matter d'un fichier Markdown avec python-frontmatter.
     Renvoie un tuple (metadata: dict, markdown_content: str).
     Assure la normalisation de certaines clés en listes.
+
+    On error, returns ({}, content) to gracefully skip invalid files
+    without crashing the build.
     """
     try:
         parsed = frontmatter.loads(content)
@@ -35,4 +37,4 @@ def parse_frontmatter(content: str):
         return metadata, parsed.content
     except Exception as e:
         logging.error(f"Erreur lors du parsing du front matter: {e}")
-        raise FrontmatterParsingError(str(e))
+        return {}, content

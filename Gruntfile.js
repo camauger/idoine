@@ -2,29 +2,7 @@ module.exports = function (grunt) {
   // Chargement automatique de tous les plugins grunt
   require("load-grunt-tasks")(grunt);
 
-  const fs = require("fs");
   const sass = require("sass");
-  const marked = require("marked");
-  const matter = require("gray-matter");
-
-  // Tâche personnalisée pour convertir du Markdown en HTML avec gestion d'erreur
-  grunt.registerTask(
-    "convertMarkdown",
-    "Convertit du contenu Markdown en HTML",
-    function () {
-      const filePath = "src/locales/fr/pages/home.md";
-      try {
-        const fileContent = fs.readFileSync(filePath, "utf8");
-        const parsed = matter(fileContent);
-        const markdownContent = parsed.content;
-        const htmlContent = marked.parse(markdownContent);
-        grunt.log.writeln("Contenu HTML converti :\n" + htmlContent);
-      } catch (error) {
-        grunt.log.error("Erreur lors de la conversion Markdown : " + error);
-        return false;
-      }
-    }
-  );
 
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
@@ -118,7 +96,7 @@ module.exports = function (grunt) {
 
     shell: {
       build_html: {
-        command: "python scripts/build.py --build",
+        command: "python scripts/core/build.py --build",
       },
     },
 
@@ -157,7 +135,6 @@ module.exports = function (grunt) {
   grunt.registerTask("default", ["dev"]);
   grunt.registerTask("dev", [
     "shell:build_html",
-    "convertMarkdown",
     "sass:dev",
     "postcss:dev",
     "copy",
