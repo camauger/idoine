@@ -71,13 +71,22 @@ module.exports = function (grunt) {
     },
     // PostCSS avec Autoprefixer
     postcss: {
-      options: {
-        processors: [require("autoprefixer")()],
-      },
       dev: {
+        options: {
+          map: true,
+          processors: [
+            require("autoprefixer")(),
+          ],
+        },
         src: "dist/styles/main.css",
       },
       prod: {
+        options: {
+          map: false,
+          processors: [
+            require("autoprefixer")(),
+          ],
+        },
         src: "dist/styles/main.css",
       },
     },

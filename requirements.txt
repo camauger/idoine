@@ -4,46 +4,98 @@
 #
 #    pip-compile requirements.in
 #
+annotated-types==0.7.0
+    # via pydantic
 babel==2.17.0
     # via -r requirements.in
 black==25.1.0
     # via -r requirements.in
+boolean-py==5.0
+    # via license-expression
+cachecontrol[filecache]==0.14.4
+    # via
+    #   cachecontrol
+    #   pip-audit
+certifi==2025.11.12
+    # via requests
+charset-normalizer==3.4.4
+    # via requests
 click==8.2.1
     # via black
 colorama==0.4.6
     # via
     #   click
     #   pytest
+cyclonedx-python-lib==9.1.0
+    # via pip-audit
+defusedxml==0.7.1
+    # via py-serializable
+filelock==3.20.0
+    # via cachecontrol
 flake8==7.3.0
     # via -r requirements.in
+idna==3.11
+    # via requests
 iniconfig==2.1.0
     # via pytest
 jinja2==3.1.6
     # via -r requirements.in
+license-expression==30.4.4
+    # via cyclonedx-python-lib
 markdown==3.8.2
     # via -r requirements.in
+markdown-it-py==4.0.0
+    # via rich
 markupsafe==3.0.2
     # via jinja2
 mccabe==0.7.0
     # via flake8
+mdurl==0.1.2
+    # via markdown-it-py
+msgpack==1.1.2
+    # via cachecontrol
 mypy-extensions==1.1.0
     # via black
+packageurl-python==0.17.6
+    # via cyclonedx-python-lib
 packaging==25.0
     # via
     #   black
+    #   pip-audit
+    #   pip-requirements-parser
     #   pytest
 pathspec==0.12.1
     # via black
+pillow==12.0.0
+    # via -r requirements.in
+pip-api==0.0.34
+    # via pip-audit
+pip-audit==2.9.0
+    # via -r requirements.in
+pip-requirements-parser==32.0.1
+    # via pip-audit
 platformdirs==4.3.8
-    # via black
+    # via
+    #   black
+    #   pip-audit
 pluggy==1.6.0
     # via pytest
+py-serializable==2.1.0
+    # via cyclonedx-python-lib
 pycodestyle==2.14.0
     # via flake8
+pydantic==2.12.4
+    # via -r requirements.in
+pydantic-core==2.41.5
+    # via pydantic
 pyflakes==3.4.0
     # via flake8
 pygments==2.19.2
-    # via pytest
+    # via
+    #   pytest
+    #   rich
+pyparsing==3.2.5
+    # via pip-requirements-parser
 pytest==8.4.1
     # via -r requirements.in
 python-frontmatter==1.1.0
@@ -52,5 +104,27 @@ pyyaml==6.0.2
     # via
     #   -r requirements.in
     #   python-frontmatter
+requests==2.32.5
+    # via
+    #   cachecontrol
+    #   pip-audit
+rich==14.2.0
+    # via pip-audit
+sortedcontainers==2.4.0
+    # via cyclonedx-python-lib
+toml==0.10.2
+    # via pip-audit
+typing-extensions==4.15.0
+    # via
+    #   pydantic
+    #   pydantic-core
+    #   typing-inspection
+typing-inspection==0.4.2
+    # via pydantic
 unidecode==1.4.0
     # via -r requirements.in
+urllib3==2.5.0
+    # via requests
+
+# The following packages are considered to be unsafe in a requirements file:
+# pip
