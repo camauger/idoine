@@ -1,16 +1,36 @@
 {% from 'macros/images.html' import render_image %}
 
+{% set hero_image = page.hero_image or page.banner or page.thumbnail %}
+{% set hero_title = page.hero_title or page.title %}
+{% set hero_description = page.hero_description or page.excerpt or page.summary or page.description %}
+{% set hero_cta_label = page.hero_cta or t.hero_cta %}
+{% set hero_cta_url = page.hero_cta_url %}
 
 <header role="banner" aria-label="{{t.post_header}}">
   {% if page.draft %}
   <span role="status" aria-live="polite">{{t.draft}}</span>
   {% endif %}
 
+  {% if hero_image %}
+  <section class="hero post-hero" style="background-image: url('{{ hero_image }}');">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <h1 itemprop="headline">{{ hero_title }}</h1>
+      {% if hero_description %}
+      <p class="hero-description">{{ hero_description }}</p>
+      {% endif %}
+      {% if hero_cta_url %}
+      <a href="{{ hero_cta_url }}" class="btn btn-primary">{{ hero_cta_label }}</a>
+      {% endif %}
+    </div>
+  </section>
+  {% else %}
   <h1 itemprop="headline">{{ page.title }}</h1>
-
-  {% if page.excerpt or page.summary or page.description %}
-  <p class="post-excerpt">{{ page.excerpt or page.summary or page.description }}</p>
+  {% if hero_description %}
+  <p class="post-excerpt">{{ hero_description }}</p>
   {% endif %}
+  {% endif %}
+
   <hr>
   {% include "components/post-meta.html" %}
 
@@ -21,13 +41,8 @@
   {% if other_language_post %}
   <a href="{{ other_language_post.url }}">Voir en {{ other_language_post.lang }}</a>
   {% endif %}
-  {% if page.thumbnail %}
 
-
+  {% if not hero_image and page.thumbnail %}
   {{render_image(page.thumbnail, page.title, page.thumbnailCaption)}}
-
   {% endif %}
-
-
-
 </header>

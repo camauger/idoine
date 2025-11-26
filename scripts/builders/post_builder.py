@@ -1,7 +1,7 @@
 import logging
 import math
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from core.context import BuildContext
 from utils.frontmatter_parser import parse_frontmatter
@@ -26,7 +26,9 @@ class PostBuilder:
         self.projects = context.projects
         self.blog_url = self.site_config.get("blog_url", "blog").strip("/")
         self.post_base_path = (
-            self.site_config.get("post_base_url", self.blog_url).strip("/") if self.site_config.get("post_base_url") is not None else self.blog_url
+            self.site_config.get("post_base_url", self.blog_url).strip("/")
+            if self.site_config.get("post_base_url") is not None
+            else self.blog_url
         )
         self.posts_per_page = self.site_config.get("posts_per_page", 5)
         self.post_template = self.site_config.get("post_template", "posts/post.html")
@@ -84,7 +86,9 @@ class PostBuilder:
             page_posts = posts[i * self.posts_per_page : (i + 1) * self.posts_per_page]
             current_page = i + 1
             current_url = (
-                base_url if current_page == 1 else self._build_url(*(list_segments + ["page", str(current_page)]))
+                base_url
+                if current_page == 1
+                else self._build_url(*(list_segments + ["page", str(current_page)]))
             )
             prev_url = (
                 None
@@ -92,7 +96,9 @@ class PostBuilder:
                 else (
                     base_url
                     if current_page - 1 == 1
-                    else self._build_url(*(list_segments + ["page", str(current_page - 1)]))
+                    else self._build_url(
+                        *(list_segments + ["page", str(current_page - 1)])
+                    )
                 )
             )
             next_url = (
@@ -112,7 +118,9 @@ class PostBuilder:
                             "url": (
                                 base_url
                                 if j + 1 == 1
-                                else self._build_url(*(list_segments + ["page", str(j + 1)]))
+                                else self._build_url(
+                                    *(list_segments + ["page", str(j + 1)])
+                                )
                             ),
                         }
                         for j in range(total_pages)
@@ -166,7 +174,9 @@ class PostBuilder:
             list_segments.append(self.blog_url)
         for page in paginated:
             page_metadata = {
-                "title": self.translations[lang].get("blog_title", self.translations[lang].get("blog", "Articles")),
+                "title": self.translations[lang].get(
+                    "blog_title", self.translations[lang].get("blog", "Articles")
+                ),
                 "description": self.translations[lang].get("blog_description", ""),
                 "lang": lang,
                 "url": page["base_url"],
@@ -196,7 +206,10 @@ class PostBuilder:
         return posts[:count]
 
     def _build_home_page(
-        self, recent_posts: list, lang: str, content_translations: dict = None
+        self,
+        recent_posts: list,
+        lang: str,
+        content_translations: Optional[Dict[str, str]] = None,
     ) -> None:
         """Build the home page with recent posts and language switcher support."""
         # Determine URL for this language's home page

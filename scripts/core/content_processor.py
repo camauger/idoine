@@ -6,7 +6,7 @@ conversion to HTML.
 """
 
 from dataclasses import dataclass
-from typing import Any, Dict, Tuple
+from typing import Any, Dict, List, Optional
 
 import frontmatter
 import markdown
@@ -28,7 +28,7 @@ class ContentProcessor:
     Separates content parsing from template rendering and URL generation.
     """
 
-    def __init__(self, markdown_extensions: list = None):
+    def __init__(self, markdown_extensions: Optional[List[str]] = None) -> None:
         """
         Initialize the ContentProcessor.
 
