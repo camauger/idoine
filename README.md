@@ -1,365 +1,173 @@
-# IDOINE - Générateur de Site Statique & Constructeur de Thèmes
+# Ludomancien – Générateur de site statique
 
-IDOINE est un générateur de site statique et un **constructeur de thèmes** puissant et modulable, conçu pour offrir une flexibilité maximale grâce à son architecture basée sur Python et Grunt. Il intègre un support multilingue natif, une gestion de contenu via Markdown, un système de thèmes personnalisables et un pipeline de build moderne pour optimiser les performances.
+Ce dépôt contient la version personnalisée d’IDOINE utilisée pour bâtir [ludomancien.com](https://ludomancien.com), un site unilingue consacré aux jeux de rôle.
+Le générateur assemble Markdown, templates Jinja2, assets optimisés et feuilles de style SCSS pour produire un site statique prêt à être déployé sur Netlify.
 
-[![Node Version](https://img.shields.io/badge/node-18%2B-brightgreen.svg)]()
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-green.svg)]()
+---
 
-## ✨ Fonctionnalités
+## Sommaire
 
-- **Constructeur de thèmes :** Système de thèmes flexible basé sur les variables CSS avec support du mode sombre.
-- **Multilingue :** Support natif pour la gestion de contenu en plusieurs langues avec sélecteur de langue intégré.
-- **Moteur de templates :** Utilise Jinja2 pour des templates flexibles et puissants.
-- **Contenu en Markdown :** Rédigez vos pages et articles en Markdown avec support du Front Matter YAML.
-- **Pipeline de build automatisé :** Tâches Grunt pour la compilation SASS, l'optimisation des assets et le rechargement à chaud.
-- **Galerie d'images :** Génération automatique de galeries avec images responsives (WebP, multiples tailles).
-- **Glossaire :** Support intégré pour la création de glossaires avec tags.
-- **Optimisation d'images :** Génération automatique de variantes responsives avec Pillow.
-- **Validation de données :** Schémas Pydantic pour valider les configurations et métadonnées.
-- **Polices auto-hébergées :** Support pour Montserrat, Cinzel Decorative et Font Awesome.
-- **Serveur de développement Python :** Alternative au serveur Grunt avec hot reload natif.
-- **Déploiement facile :** Pré-configuré pour un déploiement simple et rapide sur Netlify.
+1. [Fonctionnalités](#fonctionnalités)
+2. [Prérequis](#prérequis)
+3. [Installation rapide](#installation-rapide)
+4. [Commandes principales](#commandes-principales)
+5. [Organisation du contenu](#organisation-du-contenu)
+6. [Front matter & mise en page](#front-matter--mise-en-page)
+7. [Personnalisation visuelle](#personnalisation-visuelle)
+8. [Tests](#tests)
+9. [Déploiement](#déploiement)
 
-## 📋 Table des matières
+---
 
-1. [Prérequis](#-prérequis)
-2. [Installation](#-installation)
-3. [Utilisation](#-utilisation)
-4. [Structure du projet](#-structure-du-projet)
-5. [Pipeline de build](#-pipeline-de-build)
-6. [Configuration](#-configuration)
-7. [Thèmes](#-thèmes)
-8. [Déploiement](#-déploiement)
-9. [Tests](#-tests)
-10. [Contribution](#-contribution)
+## Fonctionnalités
 
-## 🔧 Prérequis
+- **Markdown + Front matter** : pages, articles et glossaire stockés dans `src/locales/fr`, avec prise en charge des slugs personnalisés, des héros illustrés et des champs SEO.
+- **Gabarits Jinja2** : composants `<header>`, héros, navigation et footer pensés pour Ludomancien, avec surcharge possible.
+- **Gestion d’images** : tous les visuels placés dans `src/assets/images` sont copiés vers `/assets/images` _et_ `/images` pour conserver les anciens liens.
+- **Générateurs dédiés** : builders Python pour les articles, le glossaire, les pages statiques, les tags et la pagination.
+- **Pipeline front-end** : SCSS modulaires, variables de thème et mode sombre natif.
+- **Serveur de développement** : Grunt (`npm run dev`) ou serveur Python (`npm run dev:py`) avec injection auto du script de live reload.
+- **Déploiement Netlify** : configuration prête à l’emploi (`netlify.toml`).
 
-Avant de commencer, assurez-vous d'avoir les outils suivants installés sur votre système :
+---
 
-- **Node.js :** Version 18 ou supérieure.
-- **npm :** Généralement inclus avec Node.js.
-- **Python :** Version 3.9 ou supérieure.
-- **Grunt CLI :** L'interface de ligne de commande de Grunt. Installez-la globalement avec `npm install -g grunt-cli`.
+## Prérequis
 
-## 💻 Installation
-
-Suivez ces étapes pour mettre en place votre environnement de développement local.
-
-1.  **Cloner le dépôt :**
-    ```bash
-    git clone [URL_DU_REPO]
-    cd idoine
-    ```
-
-2.  **Installer les dépendances Node.js :**
-    Ces dépendances sont nécessaires pour exécuter les tâches Grunt (compilation SASS, serveur de développement, etc.).
-    ```bash
-    npm install
-    ```
-
-3.  **Créer et activer un environnement virtuel Python :**
-    Il est recommandé d'utiliser un environnement virtuel pour isoler les dépendances Python du projet.
-    ```bash
-    # Créer l'environnement
-    python -m venv venv
-
-    # Activer l'environnement
-    # Sur Windows (Git Bash)
-    source venv/Scripts/activate
-    # Sur Windows (CMD/PowerShell)
-    .\venv\Scripts\activate
-    # Sur macOS/Linux
-    source venv/bin/activate
-    ```
-
-4.  **Installer les dépendances Python :**
-    Ces dépendances sont utilisées par les scripts de build pour générer les pages HTML à partir des fichiers Markdown.
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-## 🚀 Utilisation
-
-### Environnement de développement
-
-Pour démarrer le serveur de développement local avec rechargement automatique (live reload) :
+- **Node.js** ≥ 18
+- **npm**
+- **Python** ≥ 3.9
+- **Grunt CLI** (optionnel si vous utilisez uniquement le serveur Python) :
 
 ```bash
-# Avec Grunt (serveur sur http://localhost:9000)
-npm run dev
-
-# Avec le serveur Python natif (serveur sur http://localhost:8000)
-npm run dev:py
+npm install -g grunt-cli
 ```
 
-La commande `npm run dev` va :
-- Lancer les scripts de build Python pour générer le HTML.
-- Compiler les fichiers SASS.
-- Appliquer PostCSS (Autoprefixer).
-- Copier les assets (images, polices, scripts).
-- Démarrer un serveur web sur `http://localhost:9000`.
-- Surveiller les modifications et rafraîchir le navigateur automatiquement.
+---
 
-### Serveur de développement Python
-
-Le serveur Python (`npm run dev:py`) offre une alternative légère avec :
-- Hot reload sur les fichiers Markdown, templates et configuration.
-- Injection automatique du script de live reload.
-- Pas de dépendance à Node.js pour le développement.
+## Installation rapide
 
 ```bash
-# Options disponibles
-python scripts/dev_server.py --help
-python scripts/dev_server.py -p 3000      # Port personnalisé
-python scripts/dev_server.py --no-reload  # Désactiver le hot reload
-python scripts/dev_server.py -v           # Mode verbose
+git clone <URL_DU_DEPOT>
+cd ludomancien-idoine
+
+# Dépendances Node (Grunt, PostCSS, etc.)
+npm install
+
+# Environnement virtuel Python (optionnel mais recommandé)
+python -m venv venv
+source venv/bin/activate      # macOS/Linux
+# ou
+source venv/Scripts/activate  # Windows Git Bash
+
+# Dépendances Python
+pip install -r requirements.txt
 ```
 
-### Générer pour la production
+---
 
-Pour créer une version optimisée du site, prête à être déployée :
+## Commandes principales
 
-```bash
-npm run build
-```
+| Commande               | Description                                                                 |
+| ---------------------- | --------------------------------------------------------------------------- |
+| `npm run dev`          | Build + watchers + serveur Grunt sur `http://localhost:9000`.              |
+| `npm run dev:py`       | Serveur Python léger (`http://localhost:8000`), sans dépendre de Grunt.     |
+| `npm run build`        | Build complet optimisé (SCSS minifié, HTML généré, assets copiés).          |
+| `python scripts/dev_server.py -p 3000` | Lance le serveur Python sur un port personnalisé.          |
 
-Cette commande va :
-- Compiler les fichiers SASS en mode production (compressé).
-- Exécuter les scripts de build Python pour générer tout le contenu HTML.
-- Appliquer PostCSS (Autoprefixer).
-- Minifier le CSS.
-- Copier tous les assets dans le répertoire `dist`.
+Les scripts Python peuvent également être exécutés directement (voir `scripts/core` et `scripts/build.py`).
 
-## 📁 Structure du projet
+---
 
-Le projet est organisé de manière à séparer clairement le contenu, les templates, les styles et les scripts.
+## Organisation du contenu
 
 ```
-idoine/
-├── dist/                    # Fichiers du site généré
-├── docs/                    # Documentation technique
-│   └── BUILD_ARCHITECTURE.md
-├── scripts/                 # Scripts Python de build
-│   ├── core/                # Modules principaux
-│   │   ├── build.py         # Point d'entrée principal
-│   │   ├── context.py       # BuildContext (injection de dépendances)
-│   │   ├── config_loader.py # Chargement des configurations YAML
-│   │   ├── config_schema.py # Schéma Pydantic pour site_config
-│   │   ├── static_file_manager.py
-│   │   ├── template_renderer.py
-│   │   ├── url_router.py
-│   │   └── ...
-│   ├── builders/            # Générateurs de contenu
-│   │   ├── page_builder.py  # Pages statiques
-│   │   ├── post_builder.py  # Articles de blog
-│   │   ├── glossary_builder.py
-│   │   └── gallery_builder.py
-│   ├── utils/               # Utilitaires
-│   │   ├── constants.py     # Constantes centralisées
-│   │   ├── frontmatter_parser.py
-│   │   ├── image_processor.py
-│   │   ├── file_cache.py
-│   │   ├── path_validator.py
-│   │   ├── exceptions.py
-│   │   ├── logger.py
-│   │   └── ...
-│   └── dev_server.py        # Serveur de développement Python
-├── src/
-│   ├── assets/              # Fichiers statiques
-│   │   ├── images/
-│   │   ├── fonts/
-│   │   └── gallery_images/  # Images de la galerie
-│   ├── config/              # Configuration du site
-│   │   └── site_config.yaml
-│   ├── data/                # Données structurées
-│   │   ├── translations.yaml
-│   │   └── projects.yaml
-│   ├── locales/             # Contenu multilingue (Markdown)
-│   │   ├── en/
-│   │   │   ├── pages/
-│   │   │   └── posts/
-│   │   └── fr/
-│   │       ├── pages/
-│   │       ├── posts/
-│   │       └── glossaire/
-│   ├── scripts/             # JavaScript front-end
-│   │   ├── main.js
-│   │   ├── languageSwitcher.js
-│   │   ├── themeToggle.js
-│   │   └── ...
-│   ├── styles/              # Fichiers SASS
-│   │   ├── main.scss
-│   │   ├── base/
-│   │   ├── components/
-│   │   └── layout/
-│   └── templates/           # Templates Jinja2
-│       ├── base.html
-│       ├── components/
-│       ├── macros/
-│       ├── pages/
-│       └── posts/
-├── tests/                   # Suite de tests
-│   ├── unit/
-│   ├── integration/
-│   └── fixtures/
-├── Gruntfile.js             # Configuration Grunt
-├── package.json             # Dépendances Node.js
-├── requirements.txt         # Dépendances Python
-└── netlify.toml             # Configuration Netlify
+src/
+├── assets/
+│   ├── images/              # Images du site (héros, vignettes, etc.)
+│   ├── fonts/
+│   └── gallery_images/      # Images générées pour la galerie responsive
+├── config/
+│   └── site_config.yaml     # Métadonnées globales (titre, URLs, footer…)
+├── data/
+│   ├── translations.yaml    # Libellés d’interface (FR uniquement par défaut)
+│   └── projects.yaml        # Contenu structuré additionnel
+├── locales/
+│   └── fr/
+│       ├── pages/           # Pages statiques (home, à propos, etc.)
+│       ├── posts/           # Articles du blog (Markdown)
+│       └── glossaire/       # Entrées du glossaire
+├── styles/                  # SCSS (base, layout, composants…)
+└── templates/
+    ├── base.html
+    ├── components/          # Header, hero, post-meta, etc.
+    ├── pages/               # Templates de pages (home, blog, catégorie…)
+    └── posts/               # Template générique d’article
 ```
 
-## 🔄 Pipeline de build
+Les nouveaux articles se placent dans `src/locales/fr/posts`. Les images peuvent être référencées via `/images/<fichier>` ou `/assets/images/<fichier>`.
 
-Le processus de build est orchestré par Grunt, qui fait appel à des scripts Python pour la génération de contenu.
+---
 
-### Étapes du build
+## Front matter & mise en page
 
-1.  **Build Python (`shell:build_html`) :**
-    - Nettoie le dossier `dist`
-    - Copie les fichiers statiques
-    - Génère les pages HTML depuis les fichiers Markdown
-    - Crée les pages de blog avec pagination
-    - Génère le glossaire et les pages de tags
-    - Crée les pages de catégories et mots-clés
-    - Génère la galerie d'images avec variantes responsives
-
-2.  **Compilation SASS (`sass`) :**
-    Les fichiers `.scss` sont compilés en CSS.
-
-3.  **Post-traitement CSS (`postcss`) :**
-    Autoprefixer ajoute les préfixes vendeurs.
-
-4.  **Minification CSS (`cssmin`) :**
-    En production, le CSS est minifié.
-
-5.  **Copie des assets (`copy`) :**
-    Polices, images et scripts JavaScript sont copiés dans `dist`.
-
-6.  **Serveur et surveillance (`connect`, `watch`) :**
-    En développement, un serveur local est lancé avec live reload.
-
-### Watchers configurés
-
-- `src/styles/**/*.scss` → Recompilation SASS
-- `src/assets/**/*` → Copie des assets
-- `src/scripts/**/*.js` → Copie des scripts
-- `src/locales/**/*.md` → Rebuild Python
-- `src/templates/**/*.html` → Rebuild Python
-- `src/config/**/*.yaml` → Rebuild Python
-
-## ⚙️ Configuration
-
-### `src/config/site_config.yaml`
-
-Fichier de configuration principal du site :
-
-```yaml
-title: 'Mon Site'
-description: 'Description du site'
-author: 'Auteur'
-base_url: 'https://example.com'
-
-languages: ['fr', 'en']
-default_lang: 'fr'
-language_names:
-  fr: 'Français'
-  en: 'English'
-
-blog_url: '/blog'
-glossary_url: '/glossaire'
-gallery_url: '/gallery'
-
-posts_per_page: 5
-terms_per_page: 10
-```
-
-### Variables d'environnement
-
-- `IDOINE_USE_ICONS` - Active/désactive les emojis dans les logs (défaut: `true`)
-
-### Front Matter des fichiers Markdown
+Chaque fichier Markdown commence par un bloc YAML. Voici un exemple complet pour un article :
 
 ```yaml
 ---
-title: Titre de la page
-description: Description pour le SEO
-date: 2025-01-01
-author: Auteur
-slug: url-slug
-translation_id: identifiant-traduction
-categories: [cat1, cat2]
-meta_keywords: [mot1, mot2]
-tags: [tag1, tag2]
-template: pages/custom.html
-thumbnail: image.jpg
+title: "Oui-Et ('Yes and') dans les jeux de rôle"
+description: "Guide pratique pour la narration collaborative."
+slug: oui-et
+date: 2024-03-23
+author: Christian Amauger
+categories: ["Jeux de rôle", "Création"]
+meta_keywords: ["oui-et", "improvisation"]
+tags: ["jeux de rôle", "création"]
+banner: /images/oui-et.png          # Image utilisée pour le hero des articles
+hero_image: /images/oui-et.png      # Optionnel : surcharge de l’image principale
+hero_description: "Découvrir la philosophie du Oui-Et."
+hero_cta: "Explorer d'autres articles"
+hero_cta_url: /articles
+thumbnail: /images/oui-et.png       # Vignette utilisée dans les listes
 ---
+Contenu en **Markdown**…
 ```
 
-## 🎨 Thèmes
+Champs notables :
 
-IDOINE est conçu comme un **constructeur de thèmes** avec un système de personnalisation flexible basé sur les variables CSS.
+- `banner` / `hero_image` : déclenchent l’affichage du hero visuel dans les articles (sinon fallback textuel).
+- `hero_description`, `hero_cta`, `hero_cta_url` : pour personnaliser le texte et le bouton.
+- `summary` (optionnel) : texte affiché dans les cartes d’aperçu. À défaut, `description` est utilisée.
 
-### Système de variables CSS
+La page d’accueil (`pages/home.md`) supporte les mêmes champs pour la section hero.
 
-Toutes les valeurs du thème sont définies dans `src/styles/base/_variables.scss` :
+---
 
-```scss
-:root {
-  /* Couleurs */
-  --color-primary: #2a9d8f;
-  --color-secondary: #e76f51;
-  --color-text: #333333;
-  --color-background: #fafafa;
+## Personnalisation visuelle
 
-  /* Typographie */
-  --font-primary: "Montserrat", sans-serif;
-  --font-display: "Cinzel Decorative", serif;
+- **Variables globales** : `src/styles/base/_variables.scss`.
+- **Hero** : `src/styles/pages/_hero.scss` gère le hero principal ainsi que la déclinaison `.post-hero`.
+- **Méta d’article** : `src/styles/posts/_post.scss` contrôle l’entête des posts (flex, responsive).
+- **Navigation & footer** : `src/templates/components/main-nav.html` et `footer.html` reposent sur `site_config.yaml` (liste des jeux, liens de ressources, contact).
 
-  /* Espacement */
-  --spacing-4: 1.6rem;
-  --spacing-8: 3.2rem;
+Pour changer la palette ou la typographie, ajustez les variables CSS puis recompilez (`npm run dev` ou `npm run build`).
 
-  /* Ombres et bordures */
-  --border-radius: 0.4rem;
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-}
+---
+
+## Tests
+
+```bash
+source venv/bin/activate  # ou .\venv\Scripts\activate
+python -m pytest tests
+python -m pytest tests --cov=scripts   # couverture
 ```
 
-### Mode sombre
+Des tests unitaires et d’intégration valident le pipeline de build (`tests/integration/test_build_pipeline.py`).
 
-Le mode sombre est intégré via le sélecteur `[data-theme="dark"]` :
+---
 
-```scss
-[data-theme="dark"] {
-  --color-text: #e0e0e0;
-  --color-background: #121212;
-  --color-background-alt: #1e1e1e;
-}
-```
+## Déploiement
 
-### Créer un thème personnalisé
-
-1. Créez un fichier `src/styles/themes/_mon-theme.scss`
-2. Définissez vos variables dans un sélecteur `[data-theme="mon-theme"]`
-3. Importez le thème dans `main.scss`
-
-```scss
-[data-theme="mon-theme"] {
-  --color-primary: #6366f1;
-  --color-secondary: #f59e0b;
-  --font-primary: "Inter", sans-serif;
-}
-```
-
-### Documentation complète
-
-Pour un guide détaillé sur la création de thèmes, consultez **[docs/THEMING.md](docs/THEMING.md)**.
-
-## 🌐 Déploiement
-
-Le projet est prêt à être déployé sur Netlify. Le fichier `netlify.toml` contient la configuration nécessaire :
+Le projet est configuré pour Netlify :
 
 ```toml
 [build]
@@ -371,54 +179,18 @@ Le projet est prêt à être déployé sur Netlify. Le fichier `netlify.toml` co
   PYTHON_VERSION = "3.9"
 ```
 
-Pour déployer :
-1. Créez un nouveau site sur Netlify à partir de votre dépôt Git.
-2. Netlify détectera automatiquement le fichier `netlify.toml`.
+1. Connectez le dépôt à Netlify.
+2. Laissez la commande de build par défaut (ci-dessus).
+3. Publiez. Netlify servira le contenu du dossier `dist/`.
 
-## 🧪 Tests
+Pour un hébergement alternatif (S3, GitHub Pages…), exécutez simplement `npm run build` et uploadez le répertoire `dist/`.
 
-Le projet inclut une suite de tests unitaires et d'intégration.
+---
 
-```bash
-# Activer l'environnement virtuel
-source venv/Scripts/activate  # Windows Git Bash
-source venv/bin/activate      # macOS/Linux
+### Besoin d’aller plus loin ?
 
-# Exécuter tous les tests
-python -m pytest tests/
+- Ajustez `src/config/site_config.yaml` pour mettre à jour les métadonnées (titre, base_url, footer).
+- Ajoutez de nouveaux templates ou composants dans `src/templates/`.
+- Étendez la logique des builders dans `scripts/builders/` si vous avez des types de contenu supplémentaires.
 
-# Tests avec couverture
-python -m pytest tests/ --cov=scripts
-
-# Tests spécifiques
-python -m pytest tests/unit/test_frontmatter_parser.py -v
-```
-
-## 👥 Contribution
-
-Les contributions sont les bienvenues !
-
-1. Fork le projet.
-2. Créez une nouvelle branche (`git checkout -b feature/AmazingFeature`).
-3. Commitez vos changements (`git commit -m 'Add some AmazingFeature'`).
-4. Poussez votre branche (`git push origin feature/AmazingFeature`).
-5. Ouvrez une Pull Request.
-
-### Guide de style
-
-- **Python :** Suivre PEP 8, utiliser Black pour le formatage.
-- **JavaScript :** Style ES6+.
-- **SCSS :** BEM pour les noms de classes.
-- **Documentation :** Docstrings Google-style pour Python.
-
-### Linting
-
-```bash
-# Python
-black scripts/
-flake8 scripts/
-
-# Audit de sécurité
-npm run audit
-pip-audit
-```
+Bon build et… bons jeux ! 🎲
