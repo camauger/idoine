@@ -44,3 +44,6 @@ yarn-error.log*
 
 # Dossier de coverage (tests)
 coverage/
+
+#Py cache
+scripts/builders/__pycache__/

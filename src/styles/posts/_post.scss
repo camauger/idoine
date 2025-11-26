@@ -69,7 +69,7 @@
     margin-inline: var(--spacing-2);
     margin-bottom: var(--spacing-6);
     font-size: var(--text-base);
-    line-height: 1.65;
+    line-height: var(--leading-relaxed);
 
     h2,
     h3 {

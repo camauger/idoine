@@ -1,21 +1,112 @@
-.container {
-  max-width: var(--container-width);
-  margin: 0 auto;
-  padding: 0 var(--spacing-unit);
+// =============================================================================
+// Layout System
+// =============================================================================
+// Provides container, grid, and flex utilities with consistent spacing
+// based on an 8px grid system.
+
+// =============================================================================
+// Body Layout
+// =============================================================================
+
+body {
+  // Account for fixed header height
+  padding-top: clamp(4rem, 10vh, 6rem);
 }
+
+// =============================================================================
+// Container
+// =============================================================================
+
+.container {
+  --container-padding: clamp(var(--spacing-2), 5vw, var(--spacing-4));
+
+  width: 100%;
+  max-width: var(--container-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.container-wide {
+  --container-padding: clamp(var(--spacing-2), 4vw, var(--spacing-6));
+
+  width: 100%;
+  max-width: var(--container-wide);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+.container-narrow {
+  --container-padding: clamp(var(--spacing-2), 5vw, var(--spacing-4));
+
+  width: 100%;
+  max-width: var(--post-width);
+  margin-inline: auto;
+  padding-inline: var(--container-padding);
+}
+
+// =============================================================================
+// Grid System
+// =============================================================================
 
 .grid {
   display: grid;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-4);
+}
 
-  @media (min-width: var(--bp-medium)) {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+// Auto-fit responsive grid
+.grid-auto {
+  display: grid;
+  gap: var(--spacing-4);
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
+}
+
+// Explicit column grids
+.grid-2 {
+  display: grid;
+  gap: var(--spacing-4);
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
+.grid-3 {
+  display: grid;
+  gap: var(--spacing-4);
+
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.grid-4 {
+  display: grid;
+  gap: var(--spacing-4);
+
+  @media (min-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 768px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// =============================================================================
+// Flexbox Utilities
+// =============================================================================
+
 .flex {
   display: flex;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-3);
 }
 
 .flex-center {
@@ -30,18 +121,93 @@
   align-items: center;
 }
 
+.flex-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.flex-end {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
 .flex-column {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-3);
 }
 
 .flex-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-3);
 }
 
-body {
-  padding-top: 150px; // This is the height of the fixed header
+// =============================================================================
+// Gap Utilities
+// =============================================================================
+
+.gap-1 { gap: var(--spacing-1); }
+.gap-2 { gap: var(--spacing-2); }
+.gap-3 { gap: var(--spacing-3); }
+.gap-4 { gap: var(--spacing-4); }
+.gap-6 { gap: var(--spacing-6); }
+.gap-8 { gap: var(--spacing-8); }
+
+// =============================================================================
+// Spacing Utilities
+// =============================================================================
+
+// Margin utilities
+.mt-auto { margin-top: auto; }
+.mb-auto { margin-bottom: auto; }
+.ml-auto { margin-left: auto; }
+.mr-auto { margin-right: auto; }
+.mx-auto { margin-inline: auto; }
+.my-auto { margin-block: auto; }
+
+// Section spacing
+.section {
+  padding-block: var(--spacing-8);
+
+  @media (min-width: 768px) {
+    padding-block: var(--spacing-12);
+  }
 }
+
+.section-sm {
+  padding-block: var(--spacing-4);
+
+  @media (min-width: 768px) {
+    padding-block: var(--spacing-6);
+  }
+}
+
+// =============================================================================
+// Width Utilities
+// =============================================================================
+
+.w-full { width: 100%; }
+.max-w-prose { max-width: var(--measure); }
+.max-w-narrow { max-width: var(--measure-narrow); }
+.max-w-wide { max-width: var(--measure-wide); }
+
+// =============================================================================
+// Alignment Utilities
+// =============================================================================
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+.items-start { align-items: flex-start; }
+.items-center { align-items: center; }
+.items-end { align-items: flex-end; }
+.items-stretch { align-items: stretch; }
+
+.justify-start { justify-content: flex-start; }
+.justify-center { justify-content: center; }
+.justify-end { justify-content: flex-end; }
+.justify-between { justify-content: space-between; }

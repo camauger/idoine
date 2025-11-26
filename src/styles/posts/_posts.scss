@@ -1,93 +1,124 @@
+// =============================================================================
+// Posts Grid
+// =============================================================================
+// Displays a responsive grid of post preview cards.
+
+@use "../base/utils" as *;
+
 .posts {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 1.5rem;
-  padding: 1rem;
+  gap: var(--spacing-3);
+  padding: var(--spacing-2);
 
   .post-preview {
     background-color: var(--color-background);
-    border: 1px solid #e2e2e2;
-    border-radius: 5px;
+    border: 1px solid var(--color-border);
+    border-radius: var(--border-radius);
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition:
+      transform var(--transition-normal) var(--ease-out),
+      box-shadow var(--transition-normal) var(--ease-out);
 
     &:hover,
     &:focus-within {
-      transform: translateY(-5px);
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
     }
 
     header {
-      padding: 1rem;
-      border-bottom: 1px solid #e2e2e2;
-      background-color: #f9f9f9;
+      padding: var(--spacing-3);
+      border-bottom: 1px solid var(--color-border);
+      background-color: var(--color-background-alt);
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      gap: var(--spacing-2);
 
       h2 {
-        font-size: 1.25rem;
-        margin: 0 0 0.5rem;
+        font-size: var(--text-lg);
+        line-height: var(--leading-snug);
+        margin: 0 0 var(--spacing-1);
       }
 
       a {
         text-decoration: none;
-        color: #333;
-        transition: color 0.3s ease;
+        color: var(--color-text);
+        transition: color var(--transition-fast) var(--ease-out);
 
         &:hover,
         &:focus {
-          text-decoration: none;
-          color: #000;
-          outline: none;
+          color: var(--color-primary);
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--color-primary);
+          outline-offset: 2px;
+          border-radius: var(--border-radius-sm);
         }
       }
 
       .post-meta {
-        font-size: 0.875rem;
-        color: #666;
+        font-size: var(--text-sm);
+        color: var(--color-text-light);
         margin: 0;
       }
     }
 
     .post-summary {
-      padding: 1rem;
+      padding: var(--spacing-3);
       flex-grow: 1;
 
       p {
-        font-size: 1rem;
-        line-height: 1.5;
+        font-size: var(--text-base);
+        line-height: var(--leading-relaxed);
         margin: 0;
+        color: var(--color-text-light);
       }
     }
 
     footer {
-      padding: 1rem;
-      border-top: 1px solid #e2e2e2;
-      background-color: #f9f9f9;
+      padding: var(--spacing-3);
+      border-top: 1px solid var(--color-border);
+      background-color: var(--color-background-alt);
 
       .read-more {
-        display: inline-block;
-        font-weight: bold;
-        color: #007bff;
+        display: inline-flex;
+        align-items: center;
+        gap: var(--spacing-1);
+        font-weight: 600;
+        color: var(--color-primary);
         text-decoration: none;
-        transition: color 0.3s ease;
+        transition: color var(--transition-fast) var(--ease-out);
+
+        &::after {
+          content: "→";
+          transition: transform var(--transition-fast) var(--ease-out);
+        }
 
         &:hover,
         &:focus {
-          color: #0056b3;
-          text-decoration: underline;
-          outline: none;
+          color: var(--color-primary-dark);
+
+          &::after {
+            transform: translateX(4px);
+          }
+        }
+
+        &:focus-visible {
+          outline: 2px solid var(--color-primary);
+          outline-offset: 2px;
+          border-radius: var(--border-radius-sm);
         }
       }
     }
   }
 
-  // Adaptation de la grille en fonction de la largeur de l'écran
+  // Responsive grid
   @media (min-width: 600px) {
     grid-template-columns: repeat(2, 1fr);
+    gap: var(--spacing-4);
   }
 
   @media (min-width: 900px) {
@@ -95,8 +126,29 @@
   }
 
   @media (min-width: 1200px) {
-    max-width: 1200px;
-    margin: 0 auto;
-    gap: 2rem;
+    max-width: var(--container-width);
+    margin-inline: auto;
+    gap: var(--spacing-6);
+  }
+}
+
+// =============================================================================
+// Posts Page Header
+// =============================================================================
+
+.posts-header {
+  text-align: center;
+  margin-bottom: var(--spacing-6);
+
+  h1 {
+    font-size: var(--text-3xl);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .posts-description {
+    font-size: var(--text-lg);
+    color: var(--color-text-light);
+    max-width: var(--measure);
+    margin-inline: auto;
   }
 }

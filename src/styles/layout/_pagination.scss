@@ -1,42 +1,58 @@
+// =============================================================================
+// Pagination
+// =============================================================================
+
 .pagination {
-  margin: 2rem auto;
+  margin: var(--spacing-6) auto;
   text-align: center;
 
   ul {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+    gap: var(--spacing-1);
     list-style: none;
     padding: 0;
     margin: 0;
   }
 
   li {
-    margin: 0 0.25rem;
-
     a,
     span {
-      display: inline-block;
-      padding: 0.5rem 0.75rem;
-      font-size: 1rem;
-      line-height: 1.25;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 2.5rem;
+      height: 2.5rem;
+      padding: var(--spacing-1) var(--spacing-2);
+      font-size: var(--text-base);
+      line-height: 1;
       border: 1px solid var(--color-border);
-      border-radius: 4px;
+      border-radius: var(--border-radius);
       color: var(--color-text);
       text-decoration: none;
-      transition: background-color 0.3s ease, border-color 0.3s ease,
-        color 0.3s ease;
+      transition:
+        background-color var(--transition-fast) var(--ease-out),
+        border-color var(--transition-fast) var(--ease-out),
+        color var(--transition-fast) var(--ease-out),
+        transform var(--transition-fast) var(--ease-out);
     }
 
-    a:hover,
-    a:focus {
+    a:hover {
       background-color: var(--color-background-alt);
-      border-color: var(--color-border);
+      border-color: var(--color-primary);
+      color: var(--color-primary);
+      transform: translateY(-1px);
     }
 
-    a:focus {
-      outline: 2px dashed var(--color-primary);
+    a:focus-visible {
+      outline: 2px solid var(--color-primary);
       outline-offset: 2px;
+    }
+
+    a:active {
+      transform: translateY(0);
     }
 
     &.active span {
@@ -44,12 +60,57 @@
       border-color: var(--color-primary);
       color: var(--color-white);
       cursor: default;
+      font-weight: 600;
     }
 
     &.disabled span {
       color: var(--color-text-light);
       cursor: not-allowed;
-      opacity: 0.6;
+      opacity: 0.5;
+      pointer-events: none;
     }
   }
+}
+
+// Pagination with prev/next text
+.pagination-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin: var(--spacing-6) auto;
+  max-width: var(--post-width);
+  padding: 0 var(--spacing-2);
+}
+
+.pagination-prev,
+.pagination-next {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-1);
+  padding: var(--spacing-2) var(--spacing-3);
+  color: var(--color-primary);
+  text-decoration: none;
+  border-radius: var(--border-radius);
+  transition:
+    background-color var(--transition-fast) var(--ease-out),
+    color var(--transition-fast) var(--ease-out);
+
+  &:hover {
+    background-color: var(--color-background-alt);
+    color: var(--color-primary-dark);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+}
+
+.pagination-prev::before {
+  content: "←";
+}
+
+.pagination-next::after {
+  content: "→";
 }

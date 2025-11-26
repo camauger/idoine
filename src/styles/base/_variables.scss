@@ -1,101 +1,157 @@
 :root {
-  /* Couleurs principales */
+  /* ==========================================================================
+     Breakpoints
+     ========================================================================== */
+  --bp-small: 480px;
+  --bp-medium: 768px;
+  --bp-large: 1024px;
+  --bp-xlarge: 1440px;
+  --desktop: 1024px;
+  --tablet: 768px;
+
+  /* ==========================================================================
+     Colors
+     ========================================================================== */
+  /* Primary palette */
   --color-primary: #2a9d8f;
   --color-primary-light: #4cc9b0;
   --color-primary-dark: #237a68;
   --color-secondary: #e76f51;
   --color-secondary-dark: #d65a3e;
 
-  /* Couleurs de texte et fond */
+  /* Text and background */
   --color-text: #333333;
-  --color-text-light: #666666; /* Amélioré pour WCAG AA (5.74:1) */
+  --color-text-light: #666666; /* WCAG AA (5.74:1) */
   --color-background: #fafafa;
   --color-background-alt: #f5f5f5;
   --color-border: #e0e0e0;
   --color-white: #ffffff;
 
-  /* Polices de caractères */
+  /* ==========================================================================
+     Typography
+     ========================================================================== */
+  /* Font families */
   --font-sans: "Montserrat", sans-serif;
   --font-primary: var(--font-sans);
   --font-decorative: "Cinzel Decorative", serif;
   --font-secondary: var(--font-decorative);
 
-  /* Typography */
-  --text-sm: 1rem;
-  --text-base: 1.2rem;
-  --text-lg: 1.6rem;
-  --text-xl: 2rem;
-  --text-2xl: 2.4rem;
-  --text-3xl: 3rem;
-  --text-4xl: 4rem;
+  /* Fluid type scale (1.25 ratio - Major Third) */
+  --text-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+  --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --text-lg: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --text-xl: clamp(1.5rem, 1.35rem + 0.75vw, 1.875rem);
+  --text-2xl: clamp(1.875rem, 1.65rem + 1.1vw, 2.5rem);
+  --text-3xl: clamp(2.25rem, 1.9rem + 1.75vw, 3.125rem);
+  --text-4xl: clamp(2.75rem, 2.25rem + 2.5vw, 4rem);
 
-  /* Espacement */
-  --spacing-1: 0.4rem;
-  --spacing-2: 0.8rem;
-  --spacing-3: 1.2rem;
-  --spacing-4: 1.6rem;
-  --spacing-6: 2.4rem;
-  --spacing-8: 3.2rem;
-  --spacing-12: 4.8rem;
+  /* Line heights */
+  --leading-tight: 1.15;
+  --leading-snug: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.6;
+  --leading-loose: 1.75;
 
-  /* Layout */
-  --container-width: 120rem;
-  --post-width: 60rem;
-  /* Bordures et rayons */
-  --border-radius: 0.4rem;
-  --border-radius-lg: 0.8rem;
+  /* Measure (optimal line length for readability) */
+  --measure: 65ch;
+  --measure-narrow: 45ch;
+  --measure-wide: 75ch;
 
-  /* Ombres */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+  /* ==========================================================================
+     Spacing (8px base unit grid)
+     ========================================================================== */
+  --spacing-1: 0.5rem;   /* 8px */
+  --spacing-2: 1rem;     /* 16px */
+  --spacing-3: 1.5rem;   /* 24px */
+  --spacing-4: 2rem;     /* 32px */
+  --spacing-5: 2.5rem;   /* 40px */
+  --spacing-6: 3rem;     /* 48px */
+  --spacing-8: 4rem;     /* 64px */
+  --spacing-10: 5rem;    /* 80px */
+  --spacing-12: 6rem;    /* 96px */
 
-  /* Transitions */
-  --transition-fast: 0.3s;
-  --transition-normal: 0.5s;
+  /* Baseline unit for vertical rhythm */
+  --spacing-unit: 1.5rem; /* 24px baseline */
 
-  /* Z-index */
+  /* ==========================================================================
+     Layout
+     ========================================================================== */
+  --container-width: 75rem;   /* 1200px */
+  --container-wide: 90rem;    /* 1440px */
+  --post-width: 42rem;        /* ~672px, optimal for reading */
+
+  /* ==========================================================================
+     Borders & Radii
+     ========================================================================== */
+  --border-radius-sm: 0.25rem;
+  --border-radius: 0.5rem;
+  --border-radius-lg: 1rem;
+  --border-radius-xl: 1.5rem;
+  --border-radius-full: 9999px;
+
+  /* ==========================================================================
+     Shadows
+     ========================================================================== */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+               0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+               0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+               0 10px 10px -5px rgba(0, 0, 0, 0.04);
+
+  /* ==========================================================================
+     Transitions & Easing
+     ========================================================================== */
+  /* Durations */
+  --transition-fast: 150ms;
+  --transition-normal: 250ms;
+  --transition-slow: 400ms;
+
+  /* Easing curves */
+  --ease-out: cubic-bezier(0.0, 0.0, 0.2, 1);
+  --ease-in: cubic-bezier(0.4, 0.0, 1, 1);
+  --ease-in-out: cubic-bezier(0.4, 0.0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+  /* ==========================================================================
+     Z-index Scale
+     ========================================================================== */
+  --z-dropdown: 50;
+  --z-sticky: 60;
+  --z-overlay: 80;
   --z-nav: 90;
   --z-modal: 100;
-  --z-overlay: 80;
+  --z-toast: 110;
 
-  /* Utilitaires pour les dégradés */
+  /* ==========================================================================
+     Gradients
+     ========================================================================== */
   --gradient-primary: linear-gradient(
-    to right,
+    135deg,
     var(--color-primary),
     var(--color-primary-light)
   );
   --gradient-dark: linear-gradient(180deg, rgba(0, 0, 0, 0.2), transparent);
 }
 
-/* Dark mode */
+/* ==========================================================================
+   Dark Mode
+   ========================================================================== */
 [data-theme="dark"] {
+  /* Colors */
   --color-text: #e0e0e0;
-  --color-text-light: #b8b8b8; /* Amélioré pour WCAG AA (9.5:1) */
+  --color-text-light: #b8b8b8; /* WCAG AA (9.5:1) */
   --color-background: #121212;
   --color-background-alt: #1e1e1e;
   --color-border: #2d3748;
 
-  /* Ajustement des ombres pour le mode sombre */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
-
-  /* Aspects */
-  --primary-bg-color: var(--color-background-alt);
-  --secondary-bg-color: var(--color-border);
-  --white-color: var(--color-white);
-  --primary-text-color: var(--color-text);
-  --secondary-text-color: var(--color-text-light);
-  --box-shadow-color: var(--shadow-md);
-  --hover-box-shadow-color: var(--shadow-lg);
-  --gap: var(--spacing-8);
-  --padding-large: var(--spacing-12) var(--spacing-8);
-  --padding-medium: var(--spacing-6) var(--spacing-8);
-  --border-radius: var(--border-radius-lg);
-  --scale-normal: 0.9;
-  --scale-hover: 1.05;
-  --font-size-large: var(--text-2xl);
-  --font-size-medium: var(--text-base);
-  --line-height: 1.6;
+  /* Adjusted shadows for dark mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+               0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.35),
+               0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
+               0 10px 10px -5px rgba(0, 0, 0, 0.25);
 }
