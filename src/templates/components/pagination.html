@@ -5,12 +5,7 @@
 {% endmacro %}
 
 {% if pagination %}
-  {# Définir le chemin de base en fonction de la langue #}
-  {% if page.lang %}
-    {% set base_path = '/' ~ page.lang ~ '/blog/' %}
-  {% else %}
-    {% set base_path = '/blog/' %}
-  {% endif %}
+  {% set base_path = pagination.base_url or '/' %}
 
   <nav class="pagination" aria-label="Pagination">
     <ul>

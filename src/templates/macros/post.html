@@ -15,9 +15,11 @@
     {{ post_meta(post) }}
   </header>
 
+  {% if post.summary or post.excerpt %}
   <div class="post-summary" itemprop="description">
-    <p>{{ post.summary }}</p>
+    <p>{{ post.summary or post.excerpt }}</p>
   </div>
+  {% endif %}
 
   <footer>
     <a href="{{ post.url }}" class="btn btn-outline small">{{ read_more }}</a>

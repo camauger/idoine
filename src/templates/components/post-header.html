@@ -8,8 +8,8 @@
 
   <h1 itemprop="headline">{{ page.title }}</h1>
 
-  {% if page.excerpt %}
-  <p class="post-excerpt">{{ page.excerpt }}</p>
+  {% if page.excerpt or page.summary or page.description %}
+  <p class="post-excerpt">{{ page.excerpt or page.summary or page.description }}</p>
   {% endif %}
   <hr>
   {% include "components/post-meta.html" %}

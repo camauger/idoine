@@ -1,9 +1,8 @@
 ---
 title: À propos
-description: Christian Amauger - Développeur Frontend Senior & Créateur de Jeux
-hero_cta: Contactez-moi
+slug: a-propos
+description: Christian Amauger, auteur et créateur derrière Ludomancien.
 template: pages/about.html
-about_image: /assets/images/strategy.jpg
 translation_id: about
 ---
 

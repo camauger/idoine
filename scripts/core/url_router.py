@@ -45,6 +45,12 @@ class URLRouter:
             site_config.get("unilingual", False)
             or len(site_config.get("languages", [])) <= 1
         )
+        blog_path = site_config.get("blog_url", "blog")
+        post_base = site_config.get("post_base_url")
+        self.blog_path = str(blog_path).strip("/")
+        if post_base is None:
+            post_base = self.blog_path
+        self.post_base_path = str(post_base).strip("/")
 
     def route_post(
         self,
@@ -61,15 +67,14 @@ class URLRouter:
         Returns:
             RouteInfo with URL and output path.
         """
-        blog_path = self.site_config.get("blog_url", "/blog/").strip("/")
-
-        if self.is_unilingual:
-            url = f"/{blog_path}/{slug}/"
-            output_path = self.dist_path / blog_path / slug / "index.html"
-        else:
-            url = f"/{lang}/{blog_path}/{slug}/"
-            output_path = self.dist_path / lang / blog_path / slug / "index.html"
-
+        segments = []
+        if not self.is_unilingual:
+            segments.append(lang)
+        if self.post_base_path:
+            segments.append(self.post_base_path)
+        segments.append(slug)
+        url = "/" + "/".join(segments)
+        output_path = self.dist_path.joinpath(*segments, "index.html")
         return RouteInfo(url=url, output_path=output_path)
 
     def route_page(
@@ -94,9 +99,9 @@ class URLRouter:
         if custom_url is not None:
             url = custom_url
         elif self.is_unilingual:
-            url = "/" if is_home else f"/{page_name}/"
+            url = "/" if is_home else f"/{page_name}"
         else:
-            url = f"/{lang}/" if is_home else f"/{lang}/{page_name}/"
+            url = f"/{lang}" if is_home else f"/{lang}/{page_name}"
 
         if self.is_unilingual:
             if is_home:
@@ -127,13 +132,13 @@ class URLRouter:
         Returns:
             RouteInfo with URL and output path.
         """
-        glossary_path = self.site_config.get("glossary_url", "/glossaire/").strip("/")
+        glossary_path = self.site_config.get("glossary_url", "/glossaire").strip("/")
 
         if self.is_unilingual:
-            url = f"/{glossary_path}/{slug}/"
+            url = f"/{glossary_path}/{slug}"
             output_path = self.dist_path / glossary_path / slug / "index.html"
         else:
-            url = f"/{lang}/{glossary_path}/{slug}/"
+            url = f"/{lang}/{glossary_path}/{slug}"
             output_path = self.dist_path / lang / glossary_path / slug / "index.html"
 
         return RouteInfo(url=url, output_path=output_path)
@@ -155,7 +160,7 @@ class URLRouter:
         Returns:
             RouteInfo with URL and output path.
         """
-        blog_path = self.site_config.get("blog_url", "/blog/").strip("/")
+        blog_path = self.site_config.get("blog_url", "blog").strip("/")
         categories_path = "categories"
 
         if self.is_unilingual:
@@ -164,10 +169,10 @@ class URLRouter:
             base = f"/{lang}/{blog_path}/{categories_path}/{category_slug}"
 
         if page_num == 1:
-            url = f"{base}/"
-            output_path = self._path_from_url(base + "/index.html")
+            url = base
+            output_path = self._path_from_url(f"{base}/index.html")
         else:
-            url = f"{base}/page/{page_num}/"
+            url = f"{base}/page/{page_num}"
             output_path = self._path_from_url(f"{base}/page/{page_num}/index.html")
 
         return RouteInfo(url=url, output_path=output_path)
@@ -190,10 +195,10 @@ class URLRouter:
             RouteInfo with URL and output path.
         """
         if self.is_unilingual:
-            url = f"/{base_path}/tags/{tag_slug}/"
+            url = f"/{base_path}/tags/{tag_slug}"
             output_path = self.dist_path / base_path / "tags" / tag_slug / "index.html"
         else:
-            url = f"/{lang}/{base_path}/tags/{tag_slug}/"
+            url = f"/{lang}/{base_path}/tags/{tag_slug}"
             output_path = (
                 self.dist_path / lang / base_path / "tags" / tag_slug / "index.html"
             )

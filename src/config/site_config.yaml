@@ -1,25 +1,55 @@
-title: 'Christian Amauger'
-tagline: 'Développeur Frontend Senior & Créateur de Jeux'
-base_url: 'https://christianamauger.com'
-blog_url: '/blog'
+title: 'Ludomancien'
+tagline: 'Jeux de rôle, créations et ressources'
+base_url: 'https://ludomancien.com'
+blog_url: 'articles'
+post_base_url: '/'
 glossary_url: '/glossaire'
 author: 'Christian Amauger'
+author_url: 'https://christianamauger.com'
+unilingual: true
 
-languages: [ 'en', 'fr']
+languages: ['fr']
 default_lang: 'fr'
 language_names:
   fr: 'Français'
-  en: 'English'
 year: 2025
 
 social_media:
   github:
-    url: 'https://github.com/camauger'
-    name: 'GitHub'
-  bsky:
-    url: 'https://bsky.app/profile/christianamauger.itch.io'
-    name: 'Bluesky'
+    url: 'https://github.com/camauger/ludovuejs'
+    name: 'Répertoire GitHub'
+  itch:
+    url: 'https://christianamauger.itch.io/'
+    name: 'Jeux sur Itch.io'
 
-default_description: 'Développeur Frontend Senior & Créateur de Jeux'
-author: 'Christian Amauger'
-keywords: 'développeur, frontend, jeux, rôle, création, web, digital, stratégie, numérique'
+default_description: "Jeux de rôle, ressources et créations par Christian Amauger."
+keywords: 'jeu de rôle, création, ressources, ludomancien, narration collaborative'
+
+footer:
+  games:
+    - title: 'Helvegen, jeu de rôle sur la mythologie nordique'
+      url: '/helvegen'
+    - title: 'Fossé, jeu de rôle à distance'
+      url: '/fosse'
+    - title: 'Malice, jeu de princesses et de labyrinthe'
+      url: '/malice'
+    - title: 'La Marque du Chat'
+      url: '/defi-trois-fois-forge-PTGPTB'
+    - title: 'Aristie'
+      url: '/aristie'
+    - title: 'Vous êtes dans une auberge'
+      url: '/vous-etes-dans-une-auberge-jeu-de-role'
+    - title: 'Locquemare'
+      url: 'https://locquemare.com/'
+    - title: "Verglas, jeu de rôle sur la fin d'un monde"
+      url: '/verglas/verglas'
+  resources:
+    - title: 'Glossaire des jeux de rôle'
+      url: '/glossaire'
+    - title: 'Sites web francophones sur le jeu de rôle'
+      url: '/liens'
+  contact:
+    - title: 'christian@amauger.com'
+      url: 'mailto:christian@amauger.com'
+    - title: 'Jeux sur Itch.io'
+      url: 'https://christianamauger.itch.io/'
