@@ -22,12 +22,12 @@ export function initThemeToggle() {
 
 /**
  * Initialise le thème au chargement
+ * Dark mode is the default for this scholarly reading experience
  */
 function initializeTheme() {
-  // Récupérer le thème sauvegardé ou la préférence système
+  // Récupérer le thème sauvegardé, sinon utiliser dark par défaut
   const savedTheme = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+  const initialTheme = savedTheme || "dark";
 
   // Appliquer le thème initial
   applyTheme(initialTheme);

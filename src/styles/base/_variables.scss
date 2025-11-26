@@ -10,33 +10,58 @@
   --tablet: 768px;
 
   /* ==========================================================================
-     Colors
+     Colors - Dark Theme (Default)
      ========================================================================== */
-  /* Primary palette */
-  --color-primary: #2a9d8f;
-  --color-primary-light: #4cc9b0;
-  --color-primary-dark: #237a68;
-  --color-secondary: #e76f51;
-  --color-secondary-dark: #d65a3e;
+  /* Scholarly dark palette with warm undertones */
+  --color-background: #1a1814;        /* Warm charcoal (parchment shadow) */
+  --color-background-alt: #242019;    /* Slightly lighter warmth */
+  --color-surface: #2a2520;           /* Cards, elevated elements */
 
-  /* Text and background */
-  --color-text: #333333;
-  --color-text-light: #666666; /* WCAG AA (5.74:1) */
-  --color-background: #fafafa;
-  --color-background-alt: #f5f5f5;
-  --color-border: #e0e0e0;
+  /* Text colors */
+  --color-text: #e8e4dc;              /* Warm off-white */
+  --color-text-light: #a8a49c;        /* Muted for secondary text - WCAG AA */
+  --color-text-muted: #6b6660;        /* Very muted, decorative only */
+
+  /* Accent colors - Antiqued gold palette */
+  --color-accent: #c9a227;            /* Primary gold accent */
+  --color-accent-light: #e4c04d;      /* Lighter gold for hover */
+  --color-accent-dark: #9a7b1c;       /* Darker gold */
+  --color-accent-subtle: #8b7355;     /* Muted bronze for secondary */
+
+  /* Legacy compatibility */
+  --color-primary: var(--color-accent);
+  --color-primary-light: var(--color-accent-light);
+  --color-primary-dark: var(--color-accent-dark);
+  --color-secondary: #b85c38;         /* Warm terracotta */
+  --color-secondary-dark: #8f4528;
+
+  /* Borders and dividers */
+  --color-border: #3d3730;
+  --color-border-light: #4a433b;
+
+  /* Utility */
   --color-white: #ffffff;
+  --color-black: #0d0c0a;
 
   /* ==========================================================================
      Typography
      ========================================================================== */
   /* Font families */
-  --font-sans: "Montserrat", sans-serif;
-  --font-primary: var(--font-sans);
+  --font-serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-sans: "Montserrat", system-ui, -apple-system, sans-serif;
   --font-decorative: "Cinzel Decorative", serif;
+
+  /* Semantic font assignments */
+  --font-body: var(--font-serif);     /* Articles use serif */
+  --font-ui: var(--font-sans);        /* UI elements use sans */
+  --font-heading: var(--font-decorative);
+
+  /* Legacy compatibility */
+  --font-primary: var(--font-sans);
   --font-secondary: var(--font-decorative);
 
   /* Fluid type scale (1.25 ratio - Major Third) */
+  --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);
   --text-sm: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
   --text-base: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
   --text-lg: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
@@ -49,8 +74,8 @@
   --leading-tight: 1.15;
   --leading-snug: 1.25;
   --leading-normal: 1.5;
-  --leading-relaxed: 1.6;
-  --leading-loose: 1.75;
+  --leading-relaxed: 1.65;
+  --leading-loose: 1.8;
 
   /* Measure (optimal line length for readability) */
   --measure: 65ch;
@@ -79,6 +104,7 @@
   --container-width: 75rem;   /* 1200px */
   --container-wide: 90rem;    /* 1440px */
   --post-width: 42rem;        /* ~672px, optimal for reading */
+  --sidenote-width: 14rem;    /* Width for sidenotes */
 
   /* ==========================================================================
      Borders & Radii
@@ -90,15 +116,18 @@
   --border-radius-full: 9999px;
 
   /* ==========================================================================
-     Shadows
+     Shadows (adjusted for dark theme)
      ========================================================================== */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
-               0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
-               0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
-               0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+               0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.45),
+               0 4px 6px -2px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
+               0 10px 10px -5px rgba(0, 0, 0, 0.35);
+
+  /* Glow effect for accents */
+  --shadow-glow: 0 0 20px rgba(201, 162, 39, 0.15);
 
   /* ==========================================================================
      Transitions & Easing
@@ -123,35 +152,55 @@
   --z-nav: 90;
   --z-modal: 100;
   --z-toast: 110;
+  --z-progress: 120;
 
   /* ==========================================================================
      Gradients
      ========================================================================== */
   --gradient-primary: linear-gradient(
     135deg,
-    var(--color-primary),
-    var(--color-primary-light)
+    var(--color-accent),
+    var(--color-accent-light)
   );
-  --gradient-dark: linear-gradient(180deg, rgba(0, 0, 0, 0.2), transparent);
+  --gradient-dark: linear-gradient(180deg, rgba(0, 0, 0, 0.4), transparent);
+  --gradient-surface: linear-gradient(
+    180deg,
+    var(--color-surface),
+    var(--color-background-alt)
+  );
 }
 
 /* ==========================================================================
-   Dark Mode
+   Light Theme
    ========================================================================== */
-[data-theme="dark"] {
-  /* Colors */
-  --color-text: #e0e0e0;
-  --color-text-light: #b8b8b8; /* WCAG AA (9.5:1) */
-  --color-background: #121212;
-  --color-background-alt: #1e1e1e;
-  --color-border: #2d3748;
+[data-theme="light"] {
+  /* Warm parchment/cream palette */
+  --color-background: #f8f5f0;        /* Warm cream */
+  --color-background-alt: #f0ebe3;    /* Slightly darker cream */
+  --color-surface: #ffffff;           /* Pure white for cards */
 
-  /* Adjusted shadows for dark mode */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
-               0 2px 4px -1px rgba(0, 0, 0, 0.2);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.35),
-               0 4px 6px -2px rgba(0, 0, 0, 0.2);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4),
-               0 10px 10px -5px rgba(0, 0, 0, 0.25);
+  /* Text colors */
+  --color-text: #2c2825;              /* Warm near-black */
+  --color-text-light: #5c5650;        /* Muted brown - WCAG AA */
+  --color-text-muted: #8a847c;        /* Very muted */
+
+  /* Accent colors stay similar but slightly adjusted */
+  --color-accent: #a8861f;            /* Slightly darker gold for contrast */
+  --color-accent-light: #c9a227;
+  --color-accent-dark: #7a6316;
+  --color-accent-subtle: #6b5a42;
+
+  /* Borders */
+  --color-border: #ddd7cc;
+  --color-border-light: #e8e3d9;
+
+  /* Lighter shadows for light mode */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.08),
+               0 2px 4px -1px rgba(0, 0, 0, 0.04);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+               0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.12),
+               0 10px 10px -5px rgba(0, 0, 0, 0.06);
+  --shadow-glow: 0 0 20px rgba(168, 134, 31, 0.1);
 }

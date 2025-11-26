@@ -47,7 +47,7 @@
   }
 
   &:focus-visible {
-    outline: 3px solid var(--color-primary);
+    outline: 3px solid var(--color-accent);
     outline-offset: 2px;
   }
 
@@ -100,18 +100,18 @@
 // =============================================================================
 
 .btn-primary {
-  background-color: var(--color-primary);
-  border-color: var(--color-primary);
-  color: var(--color-white);
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-background);
 
   &:hover {
-    background-color: var(--color-primary-dark);
-    border-color: var(--color-primary-dark);
-    color: var(--color-white);
+    background-color: var(--color-accent-light);
+    border-color: var(--color-accent-light);
+    color: var(--color-background);
   }
 
   &:active {
-    background-color: var(--color-primary-dark);
+    background-color: var(--color-accent-dark);
   }
 }
 
@@ -133,18 +133,18 @@
 
 .btn-outline {
   background-color: transparent;
-  border-color: var(--color-primary);
-  color: var(--color-primary);
+  border-color: var(--color-accent);
+  color: var(--color-accent);
 
   &:hover {
-    background-color: var(--color-primary);
-    border-color: var(--color-primary);
-    color: var(--color-white);
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-background);
   }
 
   &:active {
-    background-color: var(--color-primary-dark);
-    border-color: var(--color-primary-dark);
+    background-color: var(--color-accent-dark);
+    border-color: var(--color-accent-dark);
   }
 }
 
@@ -172,7 +172,7 @@
 
   &:hover {
     background-color: var(--color-background-alt);
-    color: var(--color-primary);
+    color: var(--color-accent);
   }
 
   &:active {
@@ -183,11 +183,11 @@
 .btn-link {
   background-color: transparent;
   border-color: transparent;
-  color: var(--color-primary);
+  color: var(--color-accent);
   padding-inline: 0;
 
   &:hover {
-    color: var(--color-primary-dark);
+    color: var(--color-accent-light);
     text-decoration: underline;
     transform: none;
     box-shadow: none;

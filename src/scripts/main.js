@@ -2,6 +2,7 @@ import { initMobileMenu } from "./navigation.js";
 import { initLanguageSwitcher } from "./languageSwitcher.js";
 import { initThemeToggle } from "./themeToggle.js";
 import { initGallery } from "./gallery.js";
+import { initReadingProgress, initSidenotes } from "./readingProgress.js";
 
 // Initialisation au chargement de la page
 document.addEventListener("DOMContentLoaded", () => {
@@ -9,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
   initLanguageSwitcher();
   initThemeToggle();
   initGallery();
+  initReadingProgress();
+  initSidenotes();
 });
 
 // Gestion des transitions CSS

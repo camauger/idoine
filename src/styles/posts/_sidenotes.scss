@@ -1,0 +1,244 @@
+// =============================================================================
+// Sidenotes - Tufte-style Marginal Notes
+// =============================================================================
+// Displays notes in the margin on wide screens, collapses to inline
+// expandable footnotes on mobile.
+
+// -----------------------------------------------------------------------------
+// Sidenote Container
+// -----------------------------------------------------------------------------
+.sidenote-container {
+  position: relative;
+}
+
+// -----------------------------------------------------------------------------
+// Sidenote Toggle (for mobile)
+// -----------------------------------------------------------------------------
+.sidenote-toggle {
+  display: inline;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  padding: 0 0.2em;
+  vertical-align: super;
+  line-height: 0;
+
+  &:hover {
+    color: var(--color-accent-light);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  // Hide on wide screens where sidenotes are visible
+  @media (min-width: 1200px) {
+    display: none;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Sidenote Content
+// -----------------------------------------------------------------------------
+.sidenote {
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text-light);
+
+  // Mobile: Inline expandable
+  @media (max-width: 1199px) {
+    display: none;
+    background: var(--color-background-alt);
+    border-left: 2px solid var(--color-accent-subtle);
+    padding: var(--spacing-2) var(--spacing-3);
+    margin: var(--spacing-2) 0;
+    border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    max-width: var(--post-width);
+    margin-inline: auto;
+
+    &.visible {
+      display: block;
+      animation: sidenote-fade-in var(--transition-normal) var(--ease-out);
+    }
+  }
+
+  // Desktop: Margin placement
+  @media (min-width: 1200px) {
+    position: absolute;
+    right: 0;
+    width: var(--sidenote-width);
+    margin-right: calc(-1 * var(--sidenote-width) - var(--spacing-6));
+    padding-left: var(--spacing-3);
+    border-left: 1px solid var(--color-border);
+
+    // Fade in animation on scroll into view
+    opacity: 0;
+    transform: translateX(10px);
+    animation: sidenote-slide-in var(--transition-slow) var(--ease-out) forwards;
+    animation-play-state: paused;
+
+    &.in-view {
+      animation-play-state: running;
+    }
+  }
+
+  // Sidenote number
+  &::before {
+    content: attr(data-sidenote-number);
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-right: 0.5em;
+  }
+
+  p {
+    font-size: inherit;
+    line-height: inherit;
+    margin-bottom: var(--spacing-1);
+    max-width: none;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+
+  a {
+    font-size: inherit;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Sidenote Reference (in-text marker)
+// -----------------------------------------------------------------------------
+.sidenote-ref {
+  font-family: var(--font-ui);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--color-accent);
+  vertical-align: super;
+  line-height: 0;
+  cursor: help;
+  text-decoration: none;
+
+  &:hover {
+    color: var(--color-accent-light);
+  }
+
+  // On wide screens, clicking scrolls to sidenote
+  @media (min-width: 1200px) {
+    cursor: pointer;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Animations
+// -----------------------------------------------------------------------------
+@keyframes sidenote-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes sidenote-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Footnotes Section (alternative to sidenotes)
+// -----------------------------------------------------------------------------
+.footnotes {
+  max-width: var(--post-width);
+  margin: var(--spacing-8) auto 0;
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-border);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+
+  h2 {
+    font-family: var(--font-ui);
+    font-size: var(--text-base);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-text-muted);
+    margin-bottom: var(--spacing-3);
+    text-align: left;
+
+    &::after {
+      display: none;
+    }
+  }
+
+  ol {
+    padding-left: var(--spacing-4);
+    max-width: none;
+  }
+
+  li {
+    margin-bottom: var(--spacing-2);
+    line-height: var(--leading-relaxed);
+
+    &::marker {
+      color: var(--color-accent-subtle);
+      font-weight: 600;
+    }
+
+    p {
+      margin-bottom: var(--spacing-1);
+      font-size: inherit;
+      max-width: none;
+    }
+  }
+
+  // Back to reference link
+  .footnote-backref {
+    font-size: var(--text-xs);
+    color: var(--color-accent);
+    text-decoration: none;
+    margin-left: var(--spacing-1);
+
+    &:hover {
+      color: var(--color-accent-light);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Print Styles
+// -----------------------------------------------------------------------------
+@media print {
+  .sidenote-toggle {
+    display: none;
+  }
+
+  .sidenote {
+    display: block;
+    position: static;
+    width: auto;
+    margin: var(--spacing-2) 0;
+    padding: var(--spacing-2);
+    border: 1px solid #ccc;
+    font-size: 0.9em;
+    page-break-inside: avoid;
+  }
+}
+

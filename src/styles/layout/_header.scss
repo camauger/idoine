@@ -137,7 +137,7 @@ body > header {
 
       &:hover,
       &[aria-current="page"] {
-        color: var(--color-primary);
+        color: var(--color-accent);
 
         &::after {
           transform: scaleX(1);
@@ -254,7 +254,7 @@ body > header {
       &:hover,
       &[aria-current="true"] {
         background-color: var(--color-background-alt);
-        color: var(--color-primary);
+        color: var(--color-accent);
       }
     }
   }
@@ -272,25 +272,33 @@ body > header {
   justify-content: center;
 
   &:hover {
-    color: var(--color-primary);
+    color: var(--color-accent);
   }
 
-  svg {
+  svg,
+  i {
     width: 20px;
     height: 20px;
+    font-size: 20px;
     fill: currentColor;
 
     @media (min-width: var(--tablet)) {
       width: 24px;
       height: 24px;
+      font-size: 24px;
     }
   }
 
+  // Dark mode (default): Show sun icon (click to go light)
   .moon-icon {
     display: none;
   }
+  .sun-icon {
+    display: block;
+  }
 
-  [data-theme="dark"] & {
+  // Light mode: Show moon icon (click to go dark)
+  [data-theme="light"] & {
     .sun-icon {
       display: none;
     }

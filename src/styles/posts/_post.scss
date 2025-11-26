@@ -1,28 +1,46 @@
+// =============================================================================
+// Article / Post Styles
+// =============================================================================
+// Long-form reading experience with scholarly typographic features
+
 .post {
   max-width: 100%;
   margin: 0 auto;
   padding: var(--spacing-4);
 
+  // =========================================================================
+  // Article Header
+  // =========================================================================
   header {
     max-width: 100%;
     margin-inline: var(--spacing-2);
-    margin-bottom: var(--spacing-3);
+    margin-bottom: var(--spacing-6);
+
     figure {
       max-width: var(--post-width);
       margin-inline: auto;
-      margin-bottom: var(--spacing-3);
+      margin-bottom: var(--spacing-4);
     }
+
     img {
       width: 100%;
       height: auto;
       margin-bottom: var(--spacing-3);
+      border-radius: var(--border-radius);
     }
 
     h1 {
       text-align: center;
       font-size: var(--text-3xl);
-      font-family: var(--font-decorative);
-      margin-bottom: var(--spacing-1);
+      font-family: var(--font-heading);
+      margin-bottom: var(--spacing-3);
+      max-width: var(--measure-wide);
+      margin-inline: auto;
+
+      // Remove default h2 underline for post titles
+      &::after {
+        display: none;
+      }
     }
 
     p[data-info="reading-time"],
@@ -36,16 +54,25 @@
     .post-meta {
       max-width: var(--post-width);
       margin-inline: auto;
-      padding: var(--spacing-2) 0;
+      padding: var(--spacing-3) 0;
       display: flex;
       flex-wrap: wrap;
-      gap: var(--spacing-2);
+      gap: var(--spacing-3);
       align-items: center;
+      justify-content: center;
+      font-family: var(--font-ui);
+      font-size: var(--text-sm);
+      color: var(--color-text-light);
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
 
       dt {
         margin: 0;
-        font-weight: 600;
-        color: var(--color-text-accent, var(--color-text));
+        font-weight: 500;
+        color: var(--color-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: var(--text-xs);
       }
 
       dd {
@@ -64,17 +91,67 @@
     }
   }
 
+  // =========================================================================
+  // Article Content
+  // =========================================================================
   &-content {
     max-width: 100%;
     margin-inline: var(--spacing-2);
     margin-bottom: var(--spacing-6);
-    font-size: var(--text-base);
-    line-height: var(--leading-relaxed);
 
-    h2,
-    h3 {
+    // Serif font for article body
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    line-height: var(--leading-loose);
+
+    // -----------------------------------------------------------------------
+    // Drop Cap (Lettrine)
+    // -----------------------------------------------------------------------
+    > p:first-of-type {
+      &::first-letter {
+        font-family: var(--font-heading);
+        float: left;
+        font-size: 4.5rem;
+        line-height: 0.75;
+        font-weight: 400;
+        padding-right: 0.6rem;
+        padding-top: 0.15rem;
+        color: var(--color-accent);
+
+        // Subtle text shadow for depth
+        text-shadow: 2px 2px 0 var(--color-background-alt);
+      }
+    }
+
+    // -----------------------------------------------------------------------
+    // Headings in article
+    // -----------------------------------------------------------------------
+    h2 {
       text-align: center;
       margin-inline: auto;
+      max-width: var(--post-width);
+
+      // Center the decorative line
+      &::after {
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+
+    h3,
+    h4 {
+      max-width: var(--post-width);
+      margin-inline: auto;
+      text-align: left;
+    }
+
+    // -----------------------------------------------------------------------
+    // Content elements
+    // -----------------------------------------------------------------------
+    p {
+      max-width: var(--post-width);
+      margin-inline: auto;
+      margin-bottom: var(--spacing-4);
     }
 
     blockquote,
@@ -84,90 +161,144 @@
       margin-inline: auto;
     }
 
-    p {
+    // Pull quote styling override for article context
+    .pull-quote,
+    blockquote.pull-quote {
+      max-width: var(--measure);
+    }
+
+    // Images within content
+    img {
+      max-width: 100%;
+      height: auto;
+      margin: var(--spacing-4) auto;
+      display: block;
+      border-radius: var(--border-radius);
+    }
+
+    figure {
       max-width: var(--post-width);
-      margin-inline: auto;
-      margin-bottom: var(--spacing-3);
+      margin: var(--spacing-6) auto;
+
+      img {
+        margin: 0 auto var(--spacing-2);
+      }
+
+      figcaption {
+        font-family: var(--font-ui);
+        font-size: var(--text-sm);
+        color: var(--color-text-muted);
+        text-align: center;
+        font-style: italic;
+      }
+    }
+
+    // Section separators
+    hr {
+      max-width: var(--post-width);
     }
   }
 
+  // =========================================================================
+  // Article Footer
+  // =========================================================================
   footer {
     max-width: var(--post-width);
     margin-inline: auto;
     border-top: 1px solid var(--color-border);
-    padding-top: var(--spacing-3);
+    padding-top: var(--spacing-4);
+    font-family: var(--font-ui);
     font-size: var(--text-sm);
 
     .share-buttons {
       list-style: none;
       padding: 0;
       display: flex;
-      gap: var(--spacing-2);
+      gap: var(--spacing-3);
 
-      li {
-        a {
-          color: var(--color-primary-dark);
-          text-decoration: none;
-          transition: color var(--transition-fast);
+      li a {
+        color: var(--color-accent-subtle);
+        text-decoration: none;
+        transition: color var(--transition-fast);
 
-          &:hover {
-            color: var(--color-primary);
-          }
+        &:hover {
+          color: var(--color-accent);
         }
       }
     }
   }
 
-  /* Éléments additionnels */
+  // =========================================================================
+  // Additional Elements
+  // =========================================================================
   div[role="status"] {
     background-color: var(--color-secondary);
     color: var(--color-white);
     padding: var(--spacing-1) var(--spacing-2);
     border-radius: var(--border-radius);
-    font-weight: bold;
+    font-family: var(--font-ui);
+    font-weight: 600;
     text-align: center;
     margin-bottom: var(--spacing-2);
   }
 
   .featured-label {
     background: var(--gradient-primary);
-    color: var(--color-white);
+    color: var(--color-background);
     padding: var(--spacing-1) var(--spacing-2);
     border-radius: var(--border-radius-lg);
-    font-size: var(--text-sm);
+    font-family: var(--font-ui);
+    font-size: var(--text-xs);
     text-transform: uppercase;
-    letter-spacing: 0.05rem;
+    letter-spacing: 0.08em;
+    font-weight: 600;
     display: inline-block;
     margin-top: var(--spacing-2);
   }
 
   p[data-info="reading-time"] {
+    font-family: var(--font-ui);
     font-size: var(--text-sm);
-    color: var(--color-text-light);
+    color: var(--color-text-muted);
     margin-bottom: var(--spacing-2);
+    text-align: center;
   }
 }
 
-/* Styles pour écrans plus larges */
+// =============================================================================
+// Responsive - Desktop
+// =============================================================================
 @media (min-width: 768px) {
   .post {
     max-width: var(--container-width);
-    padding: var(--spacing-6);
+    padding: var(--spacing-8);
 
-    &-header {
+    header {
       margin-inline: auto;
 
       h1 {
         font-size: var(--text-4xl);
       }
+
       .post-meta {
-        font-size: var(--text-base);
+        font-size: var(--text-sm);
       }
     }
 
     &-content {
       margin-inline: auto;
       font-size: var(--text-lg);
+      line-height: var(--leading-loose);
+
+      // Larger drop cap on desktop
+      > p:first-of-type::first-letter {
+        font-size: 5.5rem;
+        padding-right: 0.75rem;
+      }
+
+      p {
+        margin-bottom: var(--spacing-4);
+      }
     }
 
     footer {
@@ -175,8 +306,58 @@
       font-size: var(--text-base);
 
       .share-buttons {
-        gap: var(--spacing-3);
+        gap: var(--spacing-4);
       }
     }
   }
+}
+
+// =============================================================================
+// Extra Wide - Sidenotes Visible
+// =============================================================================
+@media (min-width: 1200px) {
+  .post {
+    &-content {
+      // Allow sidenotes to extend beyond post width
+      position: relative;
+    }
+  }
+}
+
+// =============================================================================
+// Reading Progress Indicator
+// =============================================================================
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: transparent;
+  z-index: var(--z-progress);
+  opacity: 0;
+  transition: opacity var(--transition-normal) var(--ease-out);
+  pointer-events: none;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  &__fill {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(
+      90deg,
+      var(--color-accent-dark),
+      var(--color-accent),
+      var(--color-accent-light)
+    );
+    transition: width 50ms linear;
+    box-shadow: 0 0 10px var(--color-accent);
+  }
+}
+
+// Adjust header position when progress bar is visible
+body:has(.reading-progress.visible) > header {
+  top: 3px;
 }

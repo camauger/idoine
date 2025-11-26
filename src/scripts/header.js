@@ -20,7 +20,7 @@ class HeaderController {
     // État
     this.lastScroll = 0;
     this.scrollThreshold = 50; // Nombre de pixels à scroller avant de cacher le header
-    this.isScrollingUp = false;
+    this.isScrollingUp = true; // Start as true so first scroll down is detected as direction change
 
     // Initialisation
     this.init();
@@ -84,37 +84,14 @@ class HeaderController {
 
   /**
    * Gestion du thème sombre/clair
-   * - Toggle du thème
-   * - Sauvegarde de la préférence
-   * - Animation des icônes
+   * Note: Theme initialization is handled by themeToggle.js (imported in main.js)
+   * and the inline script in head.html. This method is kept for backwards
+   * compatibility but does nothing if themeToggle.js is loaded.
    */
   initThemeToggle() {
-    if (!this.themeToggle) return;
-
-    // Récupérer le thème sauvegardé ou utiliser la préférence système
-    const savedTheme = localStorage.getItem("theme");
-    const prefersDark = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    const currentTheme = savedTheme || (prefersDark ? "dark" : "light");
-
-    // Appliquer le thème initial
-    document.documentElement.setAttribute("data-theme", currentTheme);
-
-    this.themeToggle.addEventListener("click", () => {
-      const currentTheme = document.documentElement.getAttribute("data-theme");
-      const newTheme = currentTheme === "dark" ? "light" : "dark";
-
-      // Animer le changement de thème
-      document.documentElement.classList.add("theme-transition");
-      document.documentElement.setAttribute("data-theme", newTheme);
-      localStorage.setItem("theme", newTheme);
-
-      // Retirer la classe d'animation après la transition
-      setTimeout(() => {
-        document.documentElement.classList.remove("theme-transition");
-      }, 300);
-    });
+    // Theme initialization and toggle handling is now managed by themeToggle.js
+    // This prevents duplicate event listeners and conflicting initialization logic.
+    // The inline script in head.html sets the initial theme to prevent FOUC.
   }
 
   /**
@@ -145,19 +122,22 @@ class HeaderController {
    */
   handleScroll() {
     const currentScroll = window.pageYOffset;
+    const scrollingDown = currentScroll > this.lastScroll;
+    const scrollingUp = currentScroll < this.lastScroll;
 
-    // Détecter la direction du scroll
-    if (currentScroll > this.lastScroll && !this.isScrollingUp) {
-      // Scroll vers le bas
+    // Only act on direction changes to avoid unnecessary DOM operations
+    if (scrollingDown && this.isScrollingUp) {
+      // Direction changed: now scrolling down
+      this.isScrollingUp = false;
       if (currentScroll > this.scrollThreshold) {
         this.header.classList.add("header-hidden");
+        this.header.classList.remove("header-visible");
       }
+    } else if (scrollingUp && !this.isScrollingUp) {
+      // Direction changed: now scrolling up
       this.isScrollingUp = true;
-    } else if (currentScroll < this.lastScroll && this.isScrollingUp) {
-      // Scroll vers le haut
       this.header.classList.remove("header-hidden");
       this.header.classList.add("header-visible");
-      this.isScrollingUp = false;
     }
 
     this.lastScroll = currentScroll;
