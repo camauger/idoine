@@ -1,9 +1,8 @@
 ---
-title: Bienvenue sur mon blog
-description: Un espace où je partage mes pensées, découvertes et expériences
+title: Tous les articles
+slug: articles
+description: Explorations, jeux de rôle et réflexions publiés sur Ludomancien.
 template: pages/blog.html
-blog_title: "Le Blog"
-blog_description: "Découvrez mes derniers articles"
 translation_id: blog
 ---
 

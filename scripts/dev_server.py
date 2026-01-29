@@ -36,7 +36,11 @@ class LiveReloadHandler(http.server.SimpleHTTPRequestHandler):
     """HTTP handler that serves files and injects live reload script."""
 
     def __init__(
-        self, *args, directory: str = None, inject_reload: bool = True, **kwargs
+        self,
+        *args,
+        directory: Optional[str] = None,
+        inject_reload: bool = True,
+        **kwargs,
     ):
         self.inject_reload = inject_reload
         super().__init__(*args, directory=directory, **kwargs)

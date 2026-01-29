@@ -1,7 +1,7 @@
 import logging
 import math
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional
 
 from core.context import BuildContext
 from utils.frontmatter_parser import parse_frontmatter
@@ -24,7 +24,12 @@ class PostBuilder:
         self.translations = context.translations
         self.jinja_env = context.jinja_env
         self.projects = context.projects
-        self.blog_url = self.site_config.get("blog_url", "/blog/").strip("/")
+        self.blog_url = self.site_config.get("blog_url", "blog").strip("/")
+        self.post_base_path = (
+            self.site_config.get("post_base_url", self.blog_url).strip("/")
+            if self.site_config.get("post_base_url") is not None
+            else self.blog_url
+        )
         self.posts_per_page = self.site_config.get("posts_per_page", 5)
         self.post_template = self.site_config.get("post_template", "posts/post.html")
         self.blog_template = self.site_config.get("blog_template", "pages/blog.html")
@@ -45,23 +50,22 @@ class PostBuilder:
             for post_file in posts_dir.glob("*.md"):
                 content = post_file.read_text(encoding="utf-8")
                 metadata, _ = parse_frontmatter(content)
-                tid = str(
-                    metadata.get("translation_id", metadata.get("slug", post_file.stem))
-                )
+                slug = metadata.get("slug", post_file.stem)
+                tid = str(metadata.get("translation_id", slug))
+                summary = metadata.get("summary") or metadata.get("description", "")
+                excerpt = metadata.get("excerpt") or summary
                 post_data = {
                     "title": metadata.get("title", "Article sans titre"),
                     "date": metadata.get("date", ""),
                     "author": metadata.get("author", ""),
-                    "url": (
-                        f"/{self.blog_url}/{metadata.get('slug', post_file.stem)}/"
-                        if self.unilingual
-                        else f"/{lang}/{self.blog_url}/{metadata.get('slug', post_file.stem)}/"
-                    ),
-                    "slug": metadata.get("slug", post_file.stem),
+                    "url": self._build_post_url(slug, lang),
+                    "slug": slug,
                     "translation_id": tid,
-                    "summary": metadata.get("summary", ""),
+                    "summary": summary,
+                    "excerpt": excerpt,
                     "categories": metadata.get("categories", []),
                     "meta_keywords": metadata.get("meta_keywords", []),
+                    "tags": metadata.get("tags", []),
                     "thumbnail": metadata.get("thumbnail", ""),
                     "lang": lang,
                 }
@@ -70,30 +74,58 @@ class PostBuilder:
         return posts
 
     def paginate_posts(self, posts: list, lang: str) -> list:
-        total_pages = math.ceil(len(posts) / self.posts_per_page)
+        total_pages = math.ceil(len(posts) / self.posts_per_page) if posts else 1
         paginated = []
-        prefix = "" if self.unilingual else f"/{lang}"
+        list_segments = []
+        if not self.unilingual:
+            list_segments.append(lang)
+        if self.blog_url:
+            list_segments.append(self.blog_url)
+        base_url = self._build_url(*list_segments)
         for i in range(total_pages):
             page_posts = posts[i * self.posts_per_page : (i + 1) * self.posts_per_page]
+            current_page = i + 1
+            current_url = (
+                base_url
+                if current_page == 1
+                else self._build_url(*(list_segments + ["page", str(current_page)]))
+            )
+            prev_url = (
+                None
+                if current_page == 1
+                else (
+                    base_url
+                    if current_page - 1 == 1
+                    else self._build_url(
+                        *(list_segments + ["page", str(current_page - 1)])
+                    )
+                )
+            )
+            next_url = (
+                None
+                if current_page == total_pages
+                else self._build_url(*(list_segments + ["page", str(current_page + 1)]))
+            )
             paginated.append(
                 {
                     "posts": page_posts,
-                    "current_page": i + 1,
-                    "prev_page": (
-                        None if i == 0 else f"{prefix}/{self.blog_url}/page/{i + 1}"
-                    ),
-                    "next_page": (
-                        None
-                        if i == total_pages - 1
-                        else f"{prefix}/{self.blog_url}/page/{i + 2}"
-                    ),
+                    "current_page": current_page,
+                    "prev_page": prev_url,
+                    "next_page": next_url,
                     "pages": [
                         {
                             "number": j + 1,
-                            "url": f"{prefix}/{self.blog_url}/page/{j + 1}",
+                            "url": (
+                                base_url
+                                if j + 1 == 1
+                                else self._build_url(
+                                    *(list_segments + ["page", str(j + 1)])
+                                )
+                            ),
                         }
                         for j in range(total_pages)
                     ],
+                    "base_url": base_url,
                 }
             )
         logging.info(
@@ -129,26 +161,25 @@ class PostBuilder:
             jinja_env=self.jinja_env,
             content_translations=content_translations,
         )
-        output_path = (
-            self.dist_path / self.blog_url / slug / "index.html"
-            if self.unilingual
-            else self.dist_path / lang / self.blog_url / slug / "index.html"
-        )
+        output_path = self._build_post_output_path(slug, lang)
         output_path.parent.mkdir(parents=True, exist_ok=True)
         output_path.write_text(output, encoding="utf-8")
 
     def _build_paginated_pages(self, posts: list, lang: str) -> None:
         paginated = self.paginate_posts(posts, lang)
+        list_segments = []
+        if not self.unilingual:
+            list_segments.append(lang)
+        if self.blog_url:
+            list_segments.append(self.blog_url)
         for page in paginated:
             page_metadata = {
-                "title": self.translations[lang].get("blog_title", "Blog"),
+                "title": self.translations[lang].get(
+                    "blog_title", self.translations[lang].get("blog", "Articles")
+                ),
                 "description": self.translations[lang].get("blog_description", ""),
                 "lang": lang,
-                "url": (
-                    f"/{self.blog_url}/"
-                    if self.unilingual
-                    else f"/{lang}/{self.blog_url}/"
-                ),
+                "url": page["base_url"],
                 "pagination": page,
             }
             logging.info(
@@ -162,25 +193,10 @@ class PostBuilder:
                 projects=self.projects,
             )
             if page["current_page"] == 1:
-                output_path = (
-                    self.dist_path / "blog" / "index.html"
-                    if self.unilingual
-                    else self.dist_path / lang / "blog" / "index.html"
-                )
+                output_path = self._build_output_path(*list_segments)
             else:
-                output_path = (
-                    self.dist_path
-                    / "blog"
-                    / "page"
-                    / str(page["current_page"])
-                    / "index.html"
-                    if self.unilingual
-                    else self.dist_path
-                    / lang
-                    / "blog"
-                    / "page"
-                    / str(page["current_page"])
-                    / "index.html"
+                output_path = self._build_output_path(
+                    *(list_segments + ["page", str(page["current_page"])])
                 )
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(output, encoding="utf-8")
@@ -190,7 +206,10 @@ class PostBuilder:
         return posts[:count]
 
     def _build_home_page(
-        self, recent_posts: list, lang: str, content_translations: dict = None
+        self,
+        recent_posts: list,
+        lang: str,
+        content_translations: Optional[Dict[str, str]] = None,
     ) -> None:
         """Build the home page with recent posts and language switcher support."""
         # Determine URL for this language's home page
@@ -255,3 +274,39 @@ class PostBuilder:
             post["translations"] = translation_map.get(post["translation_id"], {})
             logging.info(f"Post {post['slug']} translations: {post['translations']}")
         return all_posts
+
+    def _clean_segment(self, segment: Optional[str]) -> Optional[str]:
+        if segment is None:
+            return None
+        text = str(segment).strip()
+        if not text:
+            return None
+        return text.strip("/")
+
+    def _build_url(self, *segments: Optional[str]) -> str:
+        cleaned = [seg for seg in (self._clean_segment(s) for s in segments) if seg]
+        if not cleaned:
+            return "/"
+        return "/" + "/".join(cleaned)
+
+    def _build_output_path(self, *segments: Optional[str]) -> Path:
+        cleaned = [seg for seg in (self._clean_segment(s) for s in segments) if seg]
+        return self.dist_path.joinpath(*cleaned, "index.html")
+
+    def _build_post_url(self, slug: str, lang: str) -> str:
+        segments = []
+        if not self.unilingual:
+            segments.append(lang)
+        if self.post_base_path:
+            segments.append(self.post_base_path)
+        segments.append(slug)
+        return self._build_url(*segments)
+
+    def _build_post_output_path(self, slug: str, lang: str) -> Path:
+        segments = []
+        if not self.unilingual:
+            segments.append(lang)
+        if self.post_base_path:
+            segments.append(self.post_base_path)
+        segments.append(slug)
+        return self._build_output_path(*segments)

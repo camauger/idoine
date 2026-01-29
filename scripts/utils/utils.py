@@ -98,17 +98,25 @@ def build_page(
 
     # Determine the page URL based on type
     page_url: str
+    languages = site_config.get("languages", [])
+    is_unilingual = site_config.get("unilingual") or len(languages) <= 1
     if is_post:
         effective_slug = slug if slug is not None else metadata.get("slug", "post")
-        blog_path = site_config.get("blog_url", "/blog/").strip("/")
-        if site_config.get("unilingual"):
-            page_url = f"/{blog_path}/{effective_slug}/"
-        else:
-            page_url = f"/{lang}/{blog_path}/{effective_slug}/"
+        post_base = site_config.get("post_base_url")
+        if post_base is None:
+            post_base = site_config.get("blog_url", "blog")
+        post_base = str(post_base).strip("/")
+        segments = []
+        if not is_unilingual:
+            segments.append(lang)
+        if post_base:
+            segments.append(post_base)
+        segments.append(effective_slug)
+        page_url = "/" + "/".join(segments) if segments else "/"
     elif custom_url is not None:
         page_url = custom_url
     else:
-        page_url = "/" if site_config.get("unilingual") else f"/{lang}/"
+        page_url = "/" if is_unilingual else f"/{lang}/"
 
     # Build page context
     page_context = meta_processor.build_page_context(

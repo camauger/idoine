@@ -1,6 +1,40 @@
 <aside class="post-taxonomy" aria-label="{{ t.article_classifications }}">
-  {% if page.meta_keywords or page.categories %}
+  {% if page.meta_keywords or page.categories or page.tags %}
   <div class="post-taxonomy__groups">
+    {% if page.tags %}
+    <section
+      class="taxonomy-group"
+      aria-labelledby="tags-heading"
+      itemscope
+      itemprop="keywords"
+      itemtype="https://schema.org/keywords"
+    >
+      <h2 id="tags-heading" class="taxonomy-heading">
+        <span class="taxonomy-icon" aria-hidden="true">
+          <i class="fa-solid fa-tags"></i>
+        </span>
+        <span class="taxonomy-label">{{ t.tags }}</span>
+      </h2>
+      <ul class="taxonomy-list" role="list">
+        {% for tag in page.tags %}
+        <li class="taxonomy-item" role="listitem">
+          <a
+            href="/tags/{{ tag | urlencode }}"
+            class="taxonomy-link"
+            rel="tag"
+            aria-label="{{ t.keyword_link_label | replace('%s', tag) }}"
+            hreflang="{{ page.lang }}"
+            lang="{{ page.lang }}"
+          >
+            <span class="taxonomy-prefix" aria-hidden="true">#</span>
+            <span class="visually-hidden">{{ t.keyword_prefix }}</span>
+            <span itemprop="name">{{ tag }}</span>
+          </a>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
     {% if page.meta_keywords %}
     <section
       class="taxonomy-group"
@@ -19,7 +53,7 @@
         {% for keyword in page.meta_keywords %}
         <li class="taxonomy-item" role="listitem" itemprop="keyword">
           <a
-            href="{{ site.baseurl }}{% if site.multilingual %}/{{ page.lang }}{% endif %}/keywords/{{ keyword | slugify | urlencode }}"
+            href="/keywords/{{ keyword | urlencode }}"
             class="taxonomy-link"
             rel="tag"
             aria-label="{{ t.keyword_link_label | replace('%s', keyword) }}"
@@ -34,7 +68,8 @@
         {% endfor %}
       </ul>
     </section>
-    {% endif %} {% if page.categories %}
+    {% endif %}
+    {% if page.categories %}
     <section
       class="taxonomy-group"
       aria-labelledby="categories-heading"
@@ -52,7 +87,7 @@
         {% for category in page.categories %}
         <li class="taxonomy-item" role="listitem" itemprop="category">
           <a
-            href="{{ site.baseurl }}{% if site.multilingual %}/{{ page.lang }}{% endif %}/categories/{{ category | slugify | urlencode }}"
+            href="/categories/{{ category | urlencode }}"
             class="taxonomy-link"
             rel="tag"
             aria-label="{{ t.category_link_label | replace('%s', category) }}"

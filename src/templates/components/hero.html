@@ -1,12 +1,16 @@
-{% set hero_image = page.hero_image | default('/assets/images/default.jpg') %}
-{% set hero_title = page.hero_title | default('') %}
-{% set hero_description = page.hero_description | default('') %}
+{% set hero_image = page.hero_image | default('/assets/images/banner.jpg') %}
+{% set hero_title = page.hero_title | default(page.title) %}
+{% set hero_description = page.hero_description | default(page.description) %}
+{% set hero_cta_label = page.hero_cta | default(t.hero_cta) %}
+{% set hero_cta_url = page.hero_cta_url | default('/articles') %}
 
 <section class="hero" style="background-image: url('{{ hero_image }}');">
   <div class="hero-overlay"></div>
   <div class="hero-content">
-    <h1>{{ page.title }}</h1>
-    <p class="hero-description">{{ page.home_description }}</p>
-    <a href="https://github.com/camauger/idoine" class="btn btn-primary">{{ t.hero_cta }}</a>
+    <h1>{{ hero_title }}</h1>
+    {% if hero_description %}
+    <p class="hero-description">{{ hero_description }}</p>
+    {% endif %}
+    <a href="{{ hero_cta_url }}" class="btn btn-primary">{{ hero_cta_label }}</a>
   </div>
 </section>

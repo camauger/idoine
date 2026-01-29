@@ -1,37 +1,62 @@
-<footer role="contentinfo">
-  <div class="footer-content">
-    <p class="footer-text">
-      &copy; {{ site.year }} {{ site.title }}. {{ t.all_rights_reserved }}
-    </p>
-    {% if site.social_media.github or site.social_media.twitter %}
-    <nav aria-label="{{ t.social_links }}" class="footer-nav">
-      <ul class="social-links">
-        <!-- GitHub Link -->
-        {% if site.social_media.github %}
+<footer role="contentinfo" class="site-footer">
+  <div class="footer-columns">
+    {% if site.footer.games %}
+    <section aria-labelledby="footer-games">
+      <h2 id="footer-games">{{ t.games_section_title }}</h2>
+      <ul>
+        {% for game in site.footer.games %}
         <li>
-          <a
-            href="{{ site.social_media.github.url }}"
-            aria-label="{{ site.social_media.github.name }}"
-            class="social-link"
-          >
-            {{ site.social_media.github.name }}
-          </a>
+          <a href="{{ game.url }}">{{ game.title }}</a>
         </li>
-        {% endif %}
-        <!-- Twitter Link -->
-        {% if site.social_media.twitter %}
-        <li>
-          <a
-            href="{{ site.social_media.twitter.url }}"
-            aria-label="{{ site.social_media.twitter.name }}"
-            class="social-link"
-          >
-            {{ site.social_media.twitter.name }}
-          </a>
-        </li>
-        {% endif %}
+        {% endfor %}
       </ul>
-    </nav>
+    </section>
+    {% endif %}
+
+    {% if site.footer.resources %}
+    <section aria-labelledby="footer-resources">
+      <h2 id="footer-resources">{{ t.resources_section_title }}</h2>
+      <ul>
+        {% for resource in site.footer.resources %}
+        <li>
+          <a href="{{ resource.url }}">{{ resource.title }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+
+    {% if site.footer.contact %}
+    <section aria-labelledby="footer-contact">
+      <h2 id="footer-contact">{{ t.contact_section_title }}</h2>
+      <ul>
+        {% for item in site.footer.contact %}
+        <li>
+          <a href="{{ item.url }}">{{ item.title }}</a>
+        </li>
+        {% endfor %}
+      </ul>
+    </section>
+    {% endif %}
+  </div>
+
+  <div class="footer-bottom">
+    <p class="footer-text">
+      &copy; {{ site.year }}
+      {% if site.author_url %}
+      <a href="{{ site.author_url }}">{{ site.title }}</a>
+      {% else %}
+      {{ site.title }}
+      {% endif %}
+    </p>
+    {% if site.social_media.github %}
+    <a
+      class="footer-github"
+      href="{{ site.social_media.github.url }}"
+      aria-label="{{ site.social_media.github.name }}"
+    >
+      {{ site.social_media.github.name }}
+    </a>
     {% endif %}
   </div>
 </footer>

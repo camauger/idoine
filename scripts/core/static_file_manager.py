@@ -106,3 +106,19 @@ class StaticFileManager:
 
                     if self._needs_copy(src_file, dst_file):
                         shutil.copy2(src_file, dst_file)
+
+        self._create_legacy_images_alias()
+
+    def _create_legacy_images_alias(self) -> None:
+        """
+        Mirror images under /assets/images to /images for backward compatibility.
+        """
+        src_images = self.src_path / "assets" / "images"
+        if not src_images.exists():
+            return
+
+        dst_images = self.dist_path / "images"
+        if dst_images.exists():
+            shutil.rmtree(dst_images, onerror=self.handle_remove_readonly)
+
+        shutil.copytree(src_images, dst_images)

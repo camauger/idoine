@@ -1,7 +1,7 @@
 {
-    "name": "idoine",
+    "name": "ludomancien",
     "version": "1.0.0",
-    "description": "Gabarit de site/blog modulable avec support multilingue",
+    "description": "Site web de Christian Amauger",
     "main": "Gruntfile.js",
     "scripts": {
         "dev": "grunt dev",
@@ -19,10 +19,9 @@
         "@lodder/grunt-postcss": "^3.1.1",
         "autoprefixer": "^10.4.20",
         "gray-matter": "^4.0.3",
-        "grunt": "^1.6.1",
         "grunt-cli": "^1.5.0",
         "grunt-contrib-clean": "^2.0.0",
-        "grunt-contrib-connect": "^3.0.0",
+        "grunt-contrib-connect": "^5.0.1",
         "grunt-contrib-copy": "^1.0.0",
         "grunt-contrib-cssmin": "^4.0.0",
         "grunt-contrib-watch": "^1.1.0",

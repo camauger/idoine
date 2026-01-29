@@ -109,16 +109,21 @@ class SiteBuilder:
             )
             categories = {}
             keywords = {}
+            tags = {}
             for post in posts:
                 for category in post.get("categories", []):
                     categories.setdefault(category, []).append(post)
                 for keyword in post.get("meta_keywords", []):
                     keywords.setdefault(keyword, []).append(post)
+                for tag in post.get("tags", []):
+                    tags.setdefault(tag, []).append(post)
 
             logging.info(f"{ICON_CATEGORY} Génération des pages pour les catégories...")
             self.page_builder.build_category_pages(categories)
             logging.info(f"{ICON_CATEGORY} Génération des pages pour les mots-clés...")
             self.page_builder.build_keyword_pages(keywords)
+            logging.info(f"{ICON_CATEGORY} Génération des pages pour les tags...")
+            self.page_builder.build_tag_pages(tags)
             logging.info(f"{ICON_REDIRECT} Création de la redirection racine...")
             if self.is_multilingual:
                 self.page_builder.build_root_redirect()

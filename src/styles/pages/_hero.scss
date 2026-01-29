@@ -4,9 +4,12 @@
   align-items: center;
   justify-content: center;
   min-height: 80vh; /* Prend 80% de la hauteur de la fenêtre */
+  padding: var(--spacing-8) var(--spacing-4);
   text-align: center;
   background: url("path/to/hero-image.jpg") center/cover no-repeat;
   color: var(--color-white);
+  background-size: cover;
+  background-position: center;
 }
 
 .hero-overlay {
@@ -28,6 +31,7 @@
   position: relative;
   z-index: 2;
   padding: var(--spacing-6);
+  width: min(90%, 60rem);
 }
 
 .hero h1 {
@@ -39,4 +43,54 @@
 .hero-description {
   font-size: var(--text-xl);
   margin-bottom: var(--spacing-6);
+}
+
+.post-hero {
+  min-height: 60vh;
+  text-align: left;
+
+  .hero-content {
+    text-align: left;
+    margin-inline: auto;
+    padding: var(--spacing-5) var(--spacing-4);
+  }
+}
+
+@media (max-width: 1024px) {
+  .hero {
+    min-height: 70vh;
+  }
+
+  .post-hero {
+    min-height: 50vh;
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    min-height: 60vh;
+    padding: var(--spacing-6) var(--spacing-3);
+  }
+
+  .hero-content {
+    padding: var(--spacing-4) var(--spacing-3);
+  }
+
+  .hero h1 {
+    font-size: var(--text-2xl);
+  }
+
+  .hero-description {
+    font-size: var(--text-base);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .post-hero {
+    min-height: auto;
+    background-position: center top;
+
+    .hero-content {
+      padding: var(--spacing-4) var(--spacing-3);
+    }
+  }
 }

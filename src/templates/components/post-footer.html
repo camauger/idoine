@@ -3,7 +3,7 @@
       <div class="featured-label" role="complementary" aria-label="{{t.post_featured}}">{{t.post_featured}}</div>
     {% endif %}
 
-    {% if page.meta_keywords or page.categories %}
+    {% if page.meta_keywords or page.categories or page.tags %}
       {% include "components/post-tags.html" %}
     {% endif %}
 

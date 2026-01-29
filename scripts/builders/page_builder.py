@@ -8,7 +8,7 @@ sys.path.insert(0, str(scripts_dir))
 
 import frontmatter
 from core.context import BuildContext
-from utils import markdown_filter, slugify  # type: ignore
+from utils import markdown_filter  # type: ignore
 from utils.metadata import extract_metadata
 
 
@@ -25,6 +25,7 @@ class PageBuilder:
         self.jinja_env = context.jinja_env
         self.projects = context.projects
         self.post_builder = post_builder
+        self.blog_slug = self.site_config.get("blog_url", "blog").strip("/")
 
     def _build_page_translation_map(self) -> dict:
         """Construit le mapping global des pages pour chaque langue."""
@@ -38,12 +39,18 @@ class PageBuilder:
                     content = page_file.read_text(encoding="utf-8")
                     metadata = extract_metadata(content)
                     tid = str(metadata.get("translation_id", page_file.stem))
+                    slug_override = metadata.get("slug")
+                    slug_value = (
+                        slug_override.strip("/")
+                        if isinstance(slug_override, str) and slug_override.strip("/")
+                        else page_file.stem
+                    )
                     if page_file.stem == "home":
-                        page_url = "/" if is_unilingual else f"/{lang}/"
+                        page_url = "/" if is_unilingual else f"/{lang}"
                     elif is_unilingual:
-                        page_url = f"/{page_file.stem}/"
+                        page_url = f"/{slug_value}"
                     else:
-                        page_url = f"/{lang}/{page_file.stem}/"
+                        page_url = f"/{lang}/{slug_value}"
                     mapping.setdefault(tid, {})[lang] = page_url
         return mapping
 
@@ -63,30 +70,39 @@ class PageBuilder:
         page_trans = page_translations.get(tid, {})
 
         # Déterminer le chemin de sortie et l'URL custom
+        slug_override = metadata.get("slug")
+        slug_value = (
+            slug_override.strip("/")
+            if isinstance(slug_override, str) and slug_override.strip("/")
+            else page_file.stem
+        )
+
         if is_unilingual:
             if page_file.stem == "home":
                 output_path = self.dist_path / "index.html"
                 custom_url = "/"
             else:
-                output_path = self.dist_path / page_file.stem / "index.html"
-                custom_url = f"/{page_file.stem}/"
+                output_path = self.dist_path / slug_value / "index.html"
+                custom_url = f"/{slug_value}"
         else:
             lang_dir = self.dist_path / lang
             if page_file.stem == "home":
                 output_path = lang_dir / "index.html"
-                custom_url = f"/{lang}/"
+                custom_url = f"/{lang}"
             else:
-                output_path = lang_dir / page_file.stem / "index.html"
-                custom_url = f"/{lang}/{page_file.stem}/"
+                output_path = lang_dir / slug_value / "index.html"
+                custom_url = f"/{lang}/{slug_value}"
 
         # Rendu de la page
         translations_static = self.translations.get(lang, {})
 
-        if page_file.stem == "blog":
+        if slug_value == self.blog_slug:
             posts = self.load_posts(lang)
             pagination = {"posts": posts}
             page_metadata = {
-                "title": metadata.get("title", "Blog"),
+                "title": metadata.get(
+                    "title", self.translations[lang].get("blog", "Articles")
+                ),
                 "description": metadata.get("description", ""),
                 "lang": lang,
                 "url": custom_url,
@@ -187,21 +203,21 @@ class PageBuilder:
                 posts_by_lang.setdefault(lang, []).append(post)
 
             for lang, posts_in_lang in posts_by_lang.items():
-                slug = slugify(taxonomy_name)
+                slug = str(taxonomy_name).strip()
                 taxonomy_url_slug = self.site_config.get(
                     f"{taxonomy_type}_url", taxonomy_type
-                )
+                ).strip("/")
 
-                if is_unilingual:
-                    tax_url = f"/{taxonomy_url_slug}/{slug}/"
-                    output_path = (
-                        self.dist_path / taxonomy_url_slug / slug / "index.html"
-                    )
-                else:
-                    tax_url = f"/{lang}/{taxonomy_url_slug}/{slug}/"
-                    output_path = (
-                        self.dist_path / lang / taxonomy_url_slug / slug / "index.html"
-                    )
+                segments = []
+                if not is_unilingual:
+                    segments.append(lang)
+                if taxonomy_url_slug:
+                    segments.append(taxonomy_url_slug)
+                if slug:
+                    segments.append(slug)
+
+                tax_url = "/" + "/".join(segments) if segments else "/"
+                output_path = self.dist_path.joinpath(*segments, "index.html")
 
                 page_metadata = {
                     "title": f"{taxonomy_type.capitalize()}: {taxonomy_name}",
@@ -229,6 +245,10 @@ class PageBuilder:
     def build_keyword_pages(self, keywords: dict) -> None:
         """Construit les pages de mots-clés."""
         self.build_taxonomy_pages("keywords", keywords, "pages/keyword.html")
+
+    def build_tag_pages(self, tags: dict) -> None:
+        """Construit les pages de tags."""
+        self.build_taxonomy_pages("tags", tags, "pages/tag.html")
 
     def load_posts(self, lang: str) -> list:
         """Charge les posts via le post_builder s'il est défini."""

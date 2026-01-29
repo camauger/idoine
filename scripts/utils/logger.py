@@ -5,6 +5,7 @@ Provides a logger that can toggle emoji icons based on
 environment variables or configuration.
 """
 
+import io
 import logging
 import os
 import sys
@@ -238,7 +239,9 @@ def setup_logging(
         use_icons: Whether to use icons. None = check environment.
     """
     # Ensure UTF-8 encoding for stdout/stderr
-    if hasattr(sys.stdout, "reconfigure"):
+    if isinstance(sys.stdout, io.TextIOWrapper) and isinstance(
+        sys.stderr, io.TextIOWrapper
+    ):
         try:
             sys.stdout.reconfigure(encoding="utf-8")
             sys.stderr.reconfigure(encoding="utf-8")
@@ -264,4 +267,3 @@ def setup_logging(
     handler.setFormatter(formatter)
 
     root_logger.addHandler(handler)
-

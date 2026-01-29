@@ -6,10 +6,9 @@
     <span class="hamburger" aria-hidden="true"></span>
   </button>
   <ul id="main-menu" class="nav-menu" role="menu">
-    {{ nav_link('', t.home, page, is_unilingual) }}
-    {{ nav_link('blog', t.blog, page, is_unilingual) }}
-    {{ nav_link('about', t.about, page, is_unilingual) }}
-    {{ nav_link('glossaire', t.glossary_title, page, is_unilingual) }}
-    {{ nav_link('gallery', t.gallery_title, page, is_unilingual) }}
+    {{ nav_link(t.home, '/', page) }}
+    {{ nav_link('Jeux de rôle', '/tags/jeux de rôle', page) }}
+    {{ nav_link(t.blog, '/articles', page) }}
+    {{ nav_link(t.about, '/a-propos', page) }}
   </ul>
 </nav>

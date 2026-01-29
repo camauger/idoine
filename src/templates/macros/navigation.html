@@ -1,13 +1,10 @@
-{% macro nav_link(slug, label, page, is_unilingual) %}
-  {# Si slug est vide, c'est la page d'accueil #}
-  {% if is_unilingual %}
-    {% set url = '/' if not slug else '/' ~ slug ~ '/' %}
-  {% else %}
-    {% set url = '/' ~ page.lang ~ '/' if not slug else '/' ~ page.lang ~ '/' ~ slug ~ '/' %}
-  {% endif %}
+{% macro nav_link(label, href, page) %}
+  {% set page_url = page.url if page.url is defined else '/' %}
+  {% set normalized_page = '/' if page_url == '/' else page_url.rstrip('/') %}
+  {% set normalized_href = '/' if href == '/' else href.rstrip('/') %}
   <li role="none">
-    <a href="{{ url }}"
-       {% if page.url == url %}aria-current="page"{% endif %}
+    <a href="{{ href }}"
+       {% if normalized_page == normalized_href %}aria-current="page"{% endif %}
        role="menuitem">
       {{ label }}
     </a>
