@@ -6,6 +6,37 @@ IDOINE est un générateur de site statique et un **constructeur de thèmes** pu
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)]()
 [![License](https://img.shields.io/badge/license-MIT-green.svg)]()
 
+## 🚀 Démarrage rapide
+
+Créez votre site en quelques minutes :
+
+```bash
+# 1. Cloner le projet
+git clone https://github.com/votre-username/idoine.git mon-site
+cd mon-site
+
+# 2. Lancer l'installation (choisissez --minimal ou --demo)
+./init.sh --minimal
+
+# 3. Démarrer le serveur de développement
+npm run dev
+
+# 4. Ouvrir http://localhost:9000
+```
+
+**Options d'installation :**
+- `--minimal` : Contenu vide pour créer votre propre site (recommandé)
+- `--demo` : Garde le contenu exemple pour explorer le thème
+
+**Prochaines étapes :**
+1. Modifiez `src/config/site_config.yaml` pour configurer votre site
+2. Ajoutez vos pages dans `src/locales/fr/pages/`
+3. Personnalisez les couleurs dans `src/styles/base/_variables.scss`
+
+Pour un guide complet, consultez **[docs/GETTING_STARTED.md](docs/GETTING_STARTED.md)**.
+
+---
+
 ## ✨ Fonctionnalités
 
 - **Constructeur de thèmes :** Système de thèmes flexible basé sur les variables CSS avec support du mode sombre.
@@ -23,16 +54,22 @@ IDOINE est un générateur de site statique et un **constructeur de thèmes** pu
 
 ## 📋 Table des matières
 
-1. [Prérequis](#-prérequis)
-2. [Installation](#-installation)
-3. [Utilisation](#-utilisation)
-4. [Structure du projet](#-structure-du-projet)
-5. [Pipeline de build](#-pipeline-de-build)
-6. [Configuration](#-configuration)
-7. [Thèmes](#-thèmes)
-8. [Déploiement](#-déploiement)
-9. [Tests](#-tests)
-10. [Contribution](#-contribution)
+1. [Démarrage rapide](#-démarrage-rapide)
+2. [Prérequis](#-prérequis)
+3. [Installation](#-installation)
+4. [Utilisation](#-utilisation)
+5. [Structure du projet](#-structure-du-projet)
+6. [Pipeline de build](#-pipeline-de-build)
+7. [Configuration](#-configuration)
+8. [Thèmes](#-thèmes)
+9. [Déploiement](#-déploiement)
+10. [Tests](#-tests)
+11. [Contribution](#-contribution)
+
+**Guides complémentaires :**
+- [Guide de démarrage](docs/GETTING_STARTED.md) - Pour créer votre premier site
+- [Personnalisation du thème](docs/THEMING.md) - Pour personnaliser l'apparence
+- [Architecture du build](docs/BUILD_ARCHITECTURE.md) - Pour comprendre le fonctionnement interne
 
 ## 🔧 Prérequis
 
