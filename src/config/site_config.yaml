@@ -1,55 +1,51 @@
-title: 'Ludomancien'
-tagline: 'Jeux de rôle, créations et ressources'
-base_url: 'https://ludomancien.com'
-blog_url: 'articles'
-post_base_url: '/'
-glossary_url: '/glossaire'
+# ============================================================
+# CONFIGURATION DU SITE IDOINE
+# ============================================================
+# Générateur de site statique Python + Jinja2 + SCSS
+# ============================================================
+
+# ------------------------------------------------------------
+# INFORMATIONS DE BASE
+# ------------------------------------------------------------
+
+title: 'Idoine'
+tagline: 'Générateur de site statique Python'
+base_url: 'https://idoine.dev'
 author: 'Christian Amauger'
 author_url: 'https://christianamauger.com'
-unilingual: true
 
-languages: ['fr']
+year: 2025
+
+# ------------------------------------------------------------
+# CONFIGURATION DES URLS
+# ------------------------------------------------------------
+
+blog_url: '/blog'
+glossary_url: '/glossaire'
+
+# ------------------------------------------------------------
+# LANGUES
+# ------------------------------------------------------------
+
+languages: ['fr', 'en']
 default_lang: 'fr'
+
 language_names:
   fr: 'Français'
-year: 2025
+  en: 'English'
+
+# ------------------------------------------------------------
+# RÉSEAUX SOCIAUX
+# ------------------------------------------------------------
 
 social_media:
   github:
-    url: 'https://github.com/camauger/ludovuejs'
-    name: 'Répertoire GitHub'
-  itch:
-    url: 'https://christianamauger.itch.io/'
-    name: 'Jeux sur Itch.io'
+    url: 'https://github.com/camauger/idoine'
+    name: 'GitHub'
 
-default_description: "Jeux de rôle, ressources et créations par Christian Amauger."
-keywords: 'jeu de rôle, création, ressources, ludomancien, narration collaborative'
+# ------------------------------------------------------------
+# SEO - RÉFÉRENCEMENT
+# ------------------------------------------------------------
 
-footer:
-  games:
-    - title: 'Helvegen, jeu de rôle sur la mythologie nordique'
-      url: '/helvegen'
-    - title: 'Fossé, jeu de rôle à distance'
-      url: '/fosse'
-    - title: 'Malice, jeu de princesses et de labyrinthe'
-      url: '/malice'
-    - title: 'La Marque du Chat'
-      url: '/defi-trois-fois-forge-PTGPTB'
-    - title: 'Aristie'
-      url: '/aristie'
-    - title: 'Vous êtes dans une auberge'
-      url: '/vous-etes-dans-une-auberge-jeu-de-role'
-    - title: 'Locquemare'
-      url: 'https://locquemare.com/'
-    - title: "Verglas, jeu de rôle sur la fin d'un monde"
-      url: '/verglas/verglas'
-  resources:
-    - title: 'Glossaire des jeux de rôle'
-      url: '/glossaire'
-    - title: 'Sites web francophones sur le jeu de rôle'
-      url: '/liens'
-  contact:
-    - title: 'christian@amauger.com'
-      url: 'mailto:christian@amauger.com'
-    - title: 'Jeux sur Itch.io'
-      url: 'https://christianamauger.itch.io/'
+default_description: 'Idoine - Générateur de site statique avec Python, Jinja2 et SCSS'
+keywords: 'générateur, site statique, python, jinja2, scss, markdown, blog'
