@@ -1,15 +1,21 @@
 {% from 'macros/navigation.html' import nav_link %}
 
+{# Set language-specific base path #}
+{% set lang_prefix = '/' ~ page.lang if page.lang is defined else '/fr' %}
+
 <nav id="site-navigation" class="main-navigation" aria-label="{{ t.main_nav }}">
   <button aria-expanded="false" aria-controls="main-menu" class="menu-toggle">
     {{ t.menu }}
     <span class="hamburger" aria-hidden="true"></span>
   </button>
   <ul id="main-menu" class="nav-menu" role="menu">
-    {{ nav_link(t.home, '/', page) }}
-    {{ nav_link('Céramique', '/tags/céramique', page) }}
-    {{ nav_link('Vitrail', '/tags/vitrail', page) }}
-    {{ nav_link(t.blog, '/articles', page) }}
-    {{ nav_link(t.about, '/a-propos', page) }}
+    {{ nav_link(t.home, lang_prefix, page) }}
+    {% if page.lang == 'en' %}
+      {{ nav_link(t.courses, lang_prefix ~ '/courses', page) }}
+    {% else %}
+      {{ nav_link(t.courses, lang_prefix ~ '/cours', page) }}
+    {% endif %}
+    {{ nav_link(t.blog, lang_prefix ~ '/blog', page) }}
+    {{ nav_link(t.about, lang_prefix ~ '/about', page) }}
   </ul>
 </nav>

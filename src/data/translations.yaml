@@ -1,6 +1,7 @@
 fr:
   about: À propos
   about_title: À propos
+  courses: Cours
   article_classifications: "Classements de l'article"
   all_rights_reserved: Tous droits réservés
   article_information: "Informations sur l'article"
@@ -82,6 +83,7 @@ fr:
 en:
   about: About
   about_title: About
+  courses: Courses
   article_classifications: "Article classifications"
   all_rights_reserved: All rights reserved
   article_information: "Article information"

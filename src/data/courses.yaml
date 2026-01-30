@@ -1,0 +1,337 @@
+# =============================================================================
+# Courses Data - Atelier St-Elme
+# =============================================================================
+# Session: Hiver 2026
+# Début des cours: 19 janvier 2026
+# =============================================================================
+
+session:
+  title: "Session Hiver 2026"
+  start_date: "19 janvier"
+  registration_open: "30 novembre à midi"
+  duration: "8 semaines"
+  email: "atelierstelme@gmail.com"
+
+# -----------------------------------------------------------------------------
+# CÉRAMIQUE
+# -----------------------------------------------------------------------------
+ceramique:
+  # Sessions régulières (8 semaines)
+  reguliers:
+    - id: tournage-soir
+      title: "Tournage soir"
+      schedule: "18h à 21h"
+      days:
+        - "Lundi"
+        - "Mardi"
+        - "Mercredi"
+        - "Jeudi"
+      start_date: "19 janvier"
+      price: 240
+      taxes: true
+      duration: "8 semaines"
+      audience: "18 ans et +"
+      availability: available
+      group_size: 7
+      instructor: "Denis Pradet"
+      description: >
+        Permet de développer sa coordination gestuelle et sa dextérité au tour à poterie,
+        d'apprendre les techniques de base pour fabriquer les bols, assiettes, tasses
+        (ex. centrer, tournasser) et les décorer (anses, estampes, appliquer engobe et émail, etc.).
+        Argile et cuissons en sus pour les adultes. Carte de membre obligatoire. Groupes de 7 personnes.
+      notes:
+        - "Carte de membre obligatoire (30$ + taxes)"
+        - "Argile en sus (30$ + taxes pour 22lbs)"
+
+    - id: tournage-matin
+      title: "Tournage matin"
+      schedule: "9h à 12h"
+      days:
+        - "Mercredi"
+      start_date: "21 janvier"
+      price: 240
+      taxes: true
+      duration: "8 semaines"
+      audience: "18 ans et +"
+      availability: available
+      group_size: 7
+      instructor: "Denis Pradet"
+      description: >
+        Permet de développer sa coordination gestuelle et sa dextérité au tour à poterie,
+        d'apprendre les techniques de base pour fabriquer les bols, assiettes, tasses
+        (ex. centrer, tournasser) et les décorer (anses, estampes, appliquer engobe et émail, etc.).
+        Argile et cuissons en sus pour les adultes. Carte de membre obligatoire. Groupes de 7 personnes.
+      notes:
+        - "Carte de membre obligatoire (30$ + taxes)"
+        - "Argile en sus (30$ + taxes pour 22lbs)"
+
+    - id: tournage-ados
+      title: "Tournage ados"
+      schedule: "9h à 12h"
+      days:
+        - "Samedi"
+      start_date: "24 janvier"
+      price: 231
+      taxes: false
+      duration: "6 semaines"
+      audience: "12-15 ans"
+      availability: available
+      group_size: 6
+      description: >
+        Permet de développer sa coordination gestuelle et sa dextérité au tour à poterie,
+        d'apprendre les techniques de base pour fabriquer bols, assiettes, tasses
+        (ex. centrage, finition) et les décorer (glaçures colorées). Groupes de 6 personnes.
+        Argile incluse, mais cuissons en sus.
+
+    - id: faconnage
+      title: "Façonnage"
+      schedule: "18h à 21h"
+      days:
+        - "Mardi"
+      start_date: "20 janvier"
+      price: 267
+      taxes: true
+      duration: "8 semaines"
+      audience: "18 ans et +"
+      availability: available
+      group_size: 6
+      instructor: "Nathalie Gagné"
+      description: >
+        Création de pièces d'argile avec outils et supports divers. Un mélange intéressant
+        entre modèles proposés (bol, vase, coffre, animaux...), votre inspiration et un
+        enseignement des techniques de base du façonnage de l'argile à la main et le décor
+        des surfaces (estampes, engobes, glaçures colorées). Les frais pour l'argile et la
+        cuisson sont en sus. Carte de membre obligatoire. Groupes de 6 personnes.
+      notes:
+        - "Possibilité d'un groupe le mercredi pm si assez d'inscriptions"
+        - "Carte de membre obligatoire (30$ + taxes)"
+        - "Argile en sus (30$ + taxes pour 22lbs)"
+
+    - id: vannerie-cours
+      title: "Cours de vannerie"
+      schedule: "13h30 à 16h30"
+      days:
+        - "Dimanche"
+      start_date: "1er au 22 février"
+      price: 198
+      taxes: true
+      duration: "4 semaines"
+      audience: "18 ans et +"
+      availability: available
+      group_size: 6
+      instructor: "Danielle Fortin"
+      new: true
+      description: >
+        Un après-midi fascinant pour apprendre à tresser le rotin. Initiation à la vannerie-céramique,
+        rencontre de 2 métiers traditionnels.
+
+    - id: mosaique
+      title: "Mosaïque"
+      schedule: "13h30 à 16h30"
+      days:
+        - "Samedi"
+      start_date: "24 janvier"
+      price: 174
+      taxes: true
+      duration: "8 semaines"
+      audience: "18 ans et +"
+      availability: available
+      group_size: 6
+      description: >
+        Fabrication d'une mosaïque décorative avec tessons de céramique colorés ronds, carrés,
+        triangulaires, cassés, etc. Méthode directe pour débutant. En 8 semaines, il y a 3 cours
+        techniques de 3 heures chacun puis 12 à 15 heures de montage en atelier libre pendant
+        4 à 5 semaines, et enfin un dernier cours pour la finition avec mortier.
+        Carte de membre obligatoire. Tout le matériel inclus (support=bois).
+      notes:
+        - "Prérequis: exige des mains fortes pour manipuler la pince de coupe à carreaux"
+
+  # Cours intensifs (1 journée ou weekend)
+  intensifs:
+    - id: potier-un-jour
+      title: "Potier d'un jour"
+      schedule: "10h à 16h"
+      days:
+        - "Dimanche"
+      date: "15 février"
+      price: 85
+      taxes: true
+      duration: "6 heures"
+      audience: "16 ans et +"
+      availability: available
+      group_size: 6
+      description: >
+        Une belle journée pour expérimenter les techniques de base du tournage (centrage, montée
+        et décor de deux pièces) et vérifier votre intérêt pour un cours de longue durée.
+        Groupe de 6 personnes, matériel inclus, pause dîner d'une heure: apportez votre lunch!
+        (Délai de 2 à 3 semaines pour récupération après un temps de séchage et de monocuisson).
+      notes:
+        - "Apportez votre lunch"
+        - "Parfait pour groupes privés: amis, famille, collègues, team-building (dates au choix)"
+
+    - id: folie-tournage
+      title: "Folie du tournage"
+      schedule: "13h à 15h30"
+      days:
+        - "Dimanche"
+      dates:
+        - "1 février"
+        - "8 février"
+      price: 46
+      taxes: true
+      duration: "2h30"
+      audience: "10 ans et +"
+      availability: available
+      group_size: 6
+      description: >
+        Une matinée amusante pour découvrir les techniques de base du tournage: centrage,
+        montée et décor d'une pièce. Tout inclus. Groupe de 6 personnes.
+        (Délai de 2 à 3 semaines pour récupération après un temps de séchage et de monocuisson).
+      notes:
+        - "Idéal pour groupes privés: anniversaires, famille, groupe d'amis ou d'affaires (date au choix)"
+
+    - id: magie-argile-rouge
+      title: "La magie de l'argile rouge"
+      schedule: "13h à 16h"
+      days:
+        - "Dimanche"
+      date: "21 février"
+      price: 40
+      taxes: true
+      duration: "3 heures"
+      audience: "16 ans et +"
+      availability: available
+      group_size: 6
+      description: >
+        Un samedi après-midi amusant pour expérimenter le travail de l'argile à la main et
+        fabriquer un bol déco. Assemblages variés et personnalisés à partir d'un support de plâtre.
+        Pièces cuites dans nos fours en monocuisson (sans glaçure) et à cirer ensuite pour un
+        fini satiné. Tout inclus. Groupes de 6 personnes.
+      notes:
+        - "Possibilité d'un groupe privé, date au choix"
+
+    - id: pots-pinces
+      title: "Pots pincés"
+      schedule: "13h à 16h"
+      days:
+        - "Samedi"
+      date: "14 février"
+      price: 70
+      taxes: true
+      duration: "3 heures"
+      audience: "16 ans et +"
+      availability: available
+      group_size: 6
+      new: true
+      description: >
+        Expérimentez le travail de l'argile à la main pour fabriquer trois bols décorés à l'engobe
+        ou aux sous-glaçures. Le pot pincé est l'une des formes les plus anciennes et intuitives
+        de la céramique. Façonné à partir d'une simple boule d'argile, il naît du geste direct
+        de la main. C'est une pièce unique, porteuse du geste et du rythme de celui qui l'a façonnée,
+        parfaite pour découvrir la liberté créative qu'offre le modelage.
+      notes:
+        - "Tout inclus"
+        - "Possibilité d'un groupe privé de 6 personnes, date au choix"
+
+    - id: vannerie-intensif
+      title: "Intensif vannerie"
+      schedule: "13h30 à 16h30"
+      days:
+        - "Dimanche"
+      date: "8 mars"
+      price: 43
+      taxes: true
+      duration: "3 heures"
+      audience: "18 ans et +"
+      availability: available
+      group_size: 6
+      description: >
+        Un après-midi fascinant pour apprendre à tresser le rotin. Initiation à la vannerie-céramique,
+        rencontre de 2 métiers traditionnels; il s'agit d'ajouter un tressage simple de rotin à une
+        pièce céramique cuite et préparée pour recevoir le tressage.
+      notes:
+        - "Apportez un sécateur ou une petite pince coupante"
+        - "Possibilité d'acheter une pièce déjà cuite et émaillée pour 25$"
+
+  # Cours enfants
+  enfants:
+    - id: modelage-enfants
+      title: "Modelage enfants"
+      schedule: "9h à 11h"
+      days:
+        - "Samedi"
+      start_date: "24 janvier"
+      price: 203
+      taxes: false
+      duration: "8 semaines"
+      audience: "8 à 14 ans"
+      availability: available
+      group_size: 8
+      description: >
+        Développer la créativité, les habiletés manuelles, le sens de la forme et la décoration
+        des pièces (relief, couleurs...) tout en s'amusant. Travail à la plaque, colombin,
+        volume évidé et façonnage de formes. Tout inclus.
+
+# -----------------------------------------------------------------------------
+# VITRAIL
+# -----------------------------------------------------------------------------
+vitrail:
+  # Sessions régulières (8 semaines)
+  reguliers:
+    - id: vitrail-debutant
+      title: "Vitrail débutant/intermédiaire"
+      subtitle: "(niveaux mixtes)"
+      schedule: "18h à 20h30"
+      days:
+        - "Mardi"
+        - "Vendredi"
+      start_dates:
+        - day: "Mardi"
+          date: "20 janvier"
+        - day: "Vendredi"
+          date: "23 janvier"
+      price: 226
+      taxes: true
+      duration: "8 semaines"
+      audience: "18 ans et +"
+      availability: available
+      group_size: 6
+      instructor: "Sylvie Simard"
+      material_cost: 55
+      description: >
+        Cours d'initiation à la technique Tiffany au ruban de cuivre pour débutants et intermédiaires.
+        Le matériel n'est pas inclus pour le niveau avancé. Matériel pour les débutants 55$ + taxes.
+        Offre un contexte idéal pour un enseignement personnalisé (groupes de 6 maximum).
+        Systèmes d'aspiration à la source pour un loisir sécuritaire.
+      notes:
+        - "Prérequis: avoir un minimum de dextérité manuelle"
+        - "Matériel débutants: 55$ + taxes"
+        - "Carte de membre obligatoire (30$ + taxes)"
+
+  # Cours intensifs
+  intensifs:
+    - id: vitrail-couleurs-techniques
+      title: "Vitrail: couleurs et techniques"
+      schedule: "13h30 à 17h"
+      days:
+        - "Samedi"
+      date: "À venir"
+      price: null
+      taxes: true
+      duration: "3h30"
+      audience: "18 ans et +"
+      availability: coming_soon
+      group_size: 6
+      description: >
+        Création d'un vitrail individuel afin de se familiariser avec différentes étapes de la
+        technique au ruban de cuivre. S'adresse aux personnes intéressées par cette discipline
+        sans s'engager dans un cours régulier: Choix du modèle et des couleurs, utilisation du
+        coupe-verre et de la meule, enrubannage et soudure. Groupes de 5-6 personnes.
+
+# -----------------------------------------------------------------------------
+# Notes générales
+# -----------------------------------------------------------------------------
+notes:
+  membre: "Carte de membre obligatoire (30$ + taxes) pour les cours réguliers (8 semaines) pour adultes."
+  argile: "Cours céramique réguliers: frais en sus pour l'argile et les cuissons. Argile en vente à l'atelier au coût de 30$ + taxes pour un sac de 22lbs."
+  contact: "Demande d'infos par courriel à: atelierstelme@gmail.com"

@@ -1,0 +1,290 @@
+// =============================================================================
+// Courses Page Styles - Atelier St-Elme
+// =============================================================================
+
+// -----------------------------------------------------------------------------
+// Page Hero
+// -----------------------------------------------------------------------------
+.cours-hero {
+  background-color: var(--color-clay-cream);
+  padding: var(--spacing-16) 0 var(--spacing-12);
+  text-align: center;
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: var(--text-4xl);
+    font-weight: 700;
+    color: var(--color-kiln-charcoal);
+    margin-bottom: var(--spacing-4);
+
+    @media (min-width: 768px) {
+      font-size: var(--text-5xl);
+    }
+  }
+
+  .page-intro {
+    max-width: 42rem;
+    margin: 0 auto;
+    color: var(--color-text-light);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Session Announcement Banner
+// -----------------------------------------------------------------------------
+.session-banner {
+  background: linear-gradient(135deg, var(--color-amber) 0%, #c99b42 100%);
+  color: var(--color-kiln-charcoal);
+  padding: var(--spacing-6) 0;
+}
+
+.session-banner-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6);
+  text-align: center;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.session-info {
+  .session-label {
+    display: inline-block;
+    background-color: rgba(255, 255, 255, 0.25);
+    padding: var(--spacing-1) var(--spacing-3);
+    border-radius: var(--border-radius-full);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .session-details,
+  .session-registration {
+    margin: var(--spacing-1) 0;
+    font-size: var(--text-base);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Filter Bar
+// -----------------------------------------------------------------------------
+.filter-bar {
+  background-color: var(--color-warm-white);
+  border-bottom: 1px solid var(--color-border);
+  padding: var(--spacing-4) 0;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  justify-content: center;
+
+  @media (min-width: 768px) {
+    gap: var(--spacing-3);
+  }
+}
+
+.filter-btn {
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-full);
+  padding: var(--spacing-2) var(--spacing-4);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-text-light);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    border-color: var(--color-terracotta);
+    color: var(--color-terracotta);
+  }
+
+  &.active {
+    background-color: var(--color-terracotta);
+    border-color: var(--color-terracotta);
+    color: white;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Course Sections
+// -----------------------------------------------------------------------------
+.courses-section {
+  padding: var(--spacing-12) 0;
+
+  &.courses-section-alt {
+    background-color: var(--color-clay-cream);
+  }
+
+  &.courses-section-vitrail {
+    background: linear-gradient(
+      180deg,
+      var(--color-warm-white) 0%,
+      rgba(74, 124, 140, 0.05) 100%
+    );
+  }
+}
+
+.section-header {
+  text-align: center;
+  margin-bottom: var(--spacing-10);
+
+  .section-title {
+    font-family: var(--font-display);
+    font-size: var(--text-3xl);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .section-subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-text-light);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Course Badge - New
+// -----------------------------------------------------------------------------
+.badge-new {
+  background-color: rgba(212, 168, 83, 0.2);
+  color: #9A7B2C;
+}
+
+// -----------------------------------------------------------------------------
+// Availability states
+// -----------------------------------------------------------------------------
+.course-availability {
+  &.coming-soon {
+    &::before {
+      background-color: var(--color-stone);
+    }
+    color: var(--color-text-light);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Notes Section
+// -----------------------------------------------------------------------------
+.section-notes {
+  padding: var(--spacing-8) 0;
+}
+
+.notes-card {
+  background-color: var(--color-clay-cream);
+  border-left: 4px solid var(--color-terracotta);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-bottom: var(--spacing-4);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  li {
+    position: relative;
+    padding-left: var(--spacing-5);
+    margin-bottom: var(--spacing-3);
+    font-size: var(--text-sm);
+    color: var(--color-text-light);
+    line-height: var(--leading-relaxed);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.5em;
+      width: 6px;
+      height: 6px;
+      background-color: var(--color-terracotta);
+      border-radius: 50%;
+    }
+
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    strong {
+      color: var(--color-kiln-charcoal);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CTA Section
+// -----------------------------------------------------------------------------
+.section-cta-registration {
+  padding: var(--spacing-12) 0;
+  background-color: var(--color-deep-brown);
+}
+
+.cta-banner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--spacing-6);
+  text-align: center;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+}
+
+.cta-content {
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--color-warm-white);
+    margin-bottom: var(--spacing-2);
+  }
+
+  p {
+    color: var(--color-stone);
+    font-size: var(--text-lg);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Course filtering (JavaScript enhancement)
+// -----------------------------------------------------------------------------
+[data-category] {
+  &.hidden {
+    display: none;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Reduced motion
+// -----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .filter-btn {
+    transition: none;
+  }
+}

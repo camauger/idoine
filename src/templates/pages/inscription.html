@@ -1,0 +1,266 @@
+{% extends "page.html" %}
+
+{% block content %}
+  {# Page Header #}
+  <section class="section section-page-hero inscription-hero">
+    <div class="container">
+      <h1 class="page-title">{{ page.title }}</h1>
+      <p class="page-intro lead">{{ content | safe }}</p>
+    </div>
+  </section>
+
+  {# Registration Form Section #}
+  <section class="section inscription-section">
+    <div class="container">
+      <div class="inscription-layout">
+        {# Main Form #}
+        <div class="inscription-form-wrapper">
+          <div class="form-card">
+            <header class="form-card-header">
+              <h2>Demande d'inscription</h2>
+              <p>Session Hiver 2026 - Début des cours le 19 janvier</p>
+            </header>
+
+            <form class="form" id="inscription-form" action="mailto:atelierstelme@gmail.com" method="get" enctype="text/plain">
+              {# Personal Information #}
+              <fieldset class="form-fieldset">
+                <legend>Vos coordonnées</legend>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="nom" class="form-label">
+                      Nom complet <span class="required">*</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="nom"
+                      name="nom"
+                      class="form-input"
+                      placeholder="Prénom et nom"
+                      required
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="courriel" class="form-label">
+                      Courriel <span class="required">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="courriel"
+                      name="courriel"
+                      class="form-input"
+                      placeholder="votre@courriel.com"
+                      required
+                    >
+                  </div>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="telephone" class="form-label">
+                      Téléphone <span class="required">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="telephone"
+                      name="telephone"
+                      class="form-input"
+                      placeholder="(418) 123-4567"
+                      pattern="[0-9()\-\s\+]+"
+                      required
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="enfant" class="form-label">
+                      Si inscription pour un enfant
+                      <span class="form-label-optional">(optionnel)</span>
+                    </label>
+                    <input
+                      type="text"
+                      id="enfant"
+                      name="enfant"
+                      class="form-input"
+                      placeholder="Âge et prénom de l'enfant"
+                    >
+                  </div>
+                </div>
+              </fieldset>
+
+              {# Course Selection #}
+              <fieldset class="form-fieldset">
+                <legend>Choix du cours</legend>
+
+                <div class="form-group">
+                  <label for="cours" class="form-label">
+                    Titre du cours <span class="required">*</span>
+                  </label>
+                  <select id="cours" name="cours" class="form-select" required>
+                    <option value="">Choisissez un cours...</option>
+                    <optgroup label="Céramique - Sessions régulières">
+                      <option value="Tournage soir">Tournage soir (Lun/Mar/Mer/Jeu 18h-21h)</option>
+                      <option value="Tournage matin">Tournage matin (Mer 9h-12h)</option>
+                      <option value="Façonnage">Façonnage (Mar 18h-21h)</option>
+                      <option value="Tournage ados">Tournage ados (Sam 9h-12h)</option>
+                      <option value="Cours de vannerie">Cours de vannerie (Dim 13h30-16h30)</option>
+                      <option value="Mosaïque">Mosaïque (Sam 13h30-16h30)</option>
+                    </optgroup>
+                    <optgroup label="Céramique - Intensifs">
+                      <option value="Potier d'un jour">Potier d'un jour - 15 fév.</option>
+                      <option value="Folie du tournage">Folie du tournage - 1 ou 8 fév.</option>
+                      <option value="Magie de l'argile rouge">Magie de l'argile rouge - 21 fév.</option>
+                      <option value="Pots pincés">Pots pincés - 14 fév.</option>
+                      <option value="Intensif vannerie">Intensif vannerie - 8 mars</option>
+                    </optgroup>
+                    <optgroup label="Céramique - Enfants">
+                      <option value="Modelage enfants">Modelage enfants 8-14 ans (Sam 9h-11h)</option>
+                    </optgroup>
+                    <optgroup label="Vitrail">
+                      <option value="Vitrail débutant/intermédiaire - Mardi">Vitrail débutant/intermédiaire (Mar 18h-20h30)</option>
+                      <option value="Vitrail débutant/intermédiaire - Vendredi">Vitrail débutant/intermédiaire (Ven 18h-20h30)</option>
+                    </optgroup>
+                  </select>
+                </div>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="jour" class="form-label">
+                      Jour préféré <span class="required">*</span>
+                    </label>
+                    <select id="jour" name="jour" class="form-select" required>
+                      <option value="">Choisissez un jour...</option>
+                      <option value="Lundi">Lundi</option>
+                      <option value="Mardi">Mardi</option>
+                      <option value="Mercredi">Mercredi</option>
+                      <option value="Jeudi">Jeudi</option>
+                      <option value="Vendredi">Vendredi</option>
+                      <option value="Samedi">Samedi</option>
+                      <option value="Dimanche">Dimanche</option>
+                    </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label class="form-label">Plage horaire</label>
+                    <div class="form-check-group">
+                      <label class="form-check form-check-inline">
+                        <input type="checkbox" name="horaire" value="AM" class="form-check-input">
+                        <span class="form-check-label">AM</span>
+                      </label>
+                      <label class="form-check form-check-inline">
+                        <input type="checkbox" name="horaire" value="PM" class="form-check-input">
+                        <span class="form-check-label">PM</span>
+                      </label>
+                      <label class="form-check form-check-inline">
+                        <input type="checkbox" name="horaire" value="Soir" class="form-check-input">
+                        <span class="form-check-label">Soir</span>
+                      </label>
+                      <label class="form-check form-check-inline">
+                        <input type="checkbox" name="horaire" value="Intensif" class="form-check-input">
+                        <span class="form-check-label">Intensif</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+
+              {# Additional Information #}
+              <fieldset class="form-fieldset">
+                <legend>Informations complémentaires</legend>
+
+                <div class="form-group">
+                  <label for="message" class="form-label">
+                    Message
+                    <span class="form-label-optional">(optionnel)</span>
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    class="form-textarea"
+                    placeholder="Avez-vous des questions? C'est ici l'endroit pour les poser..."
+                    rows="4"
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-check">
+                    <input type="checkbox" name="newsletter" value="oui" class="form-check-input">
+                    <span class="form-check-label">
+                      Oui, j'accepte de recevoir des infolettres occasionnelles sur les activités de l'atelier
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              {# Submit #}
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  Envoyer ma demande d'inscription
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {# Sidebar Information #}
+        <aside class="inscription-sidebar">
+          <div class="info-card">
+            <h3>Comment ça fonctionne?</h3>
+            <ol class="steps-list">
+              <li>
+                <span class="step-number">1</span>
+                <span class="step-text">Remplissez ce formulaire avec vos informations</span>
+              </li>
+              <li>
+                <span class="step-number">2</span>
+                <span class="step-text">Nous vous contactons par courriel pour confirmer votre place</span>
+              </li>
+              <li>
+                <span class="step-number">3</span>
+                <span class="step-text">Vous effectuez le paiement pour finaliser votre inscription</span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="info-card">
+            <h3>Besoin d'aide?</h3>
+            <p>Contactez-nous directement par courriel ou téléphone :</p>
+            <ul class="contact-list">
+              <li>
+                <strong>Courriel :</strong>
+                <a href="mailto:atelierstelme@gmail.com">atelierstelme@gmail.com</a>
+              </li>
+              <li>
+                <strong>Téléphone :</strong>
+                <a href="tel:+14186666177">418-666-6177</a> (répondeur)
+              </li>
+            </ul>
+          </div>
+
+          <div class="info-card info-card-note">
+            <h3>Notes importantes</h3>
+            <ul>
+              <li>Carte de membre obligatoire (30$ + taxes) pour les cours réguliers adultes</li>
+              <li>Argile et cuissons en sus pour les cours de céramique</li>
+              <li>Matériel vitrail pour débutants : 55$ + taxes</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  {# Alternative: Email directly #}
+  <section class="section section-email-alt">
+    <div class="container container-narrow">
+      <div class="email-alt-card">
+        <p>
+          <strong>Vous préférez nous écrire directement?</strong>
+          Envoyez un courriel à
+          <a href="mailto:atelierstelme@gmail.com?subject=Inscription">atelierstelme@gmail.com</a>
+          avec votre nom, téléphone, le titre du cours et le jour souhaité.
+        </p>
+      </div>
+    </div>
+  </section>
+{% endblock %}

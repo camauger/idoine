@@ -1,0 +1,726 @@
+{% extends "page.html" %}
+
+{% block content %}
+  {# Page Header #}
+  <section class="section section-page-hero cours-hero">
+    <div class="container">
+      <h1 class="page-title">{{ page.title }}</h1>
+      <p class="page-intro lead">{{ content | safe }}</p>
+    </div>
+  </section>
+
+  {# Session Announcement Banner #}
+  <section class="section session-banner" id="inscription">
+    <div class="container">
+      <div class="session-banner-content">
+        <div class="session-info">
+          <span class="session-label">{{ page.session_title | default('Session Hiver 2026') }}</span>
+          <p class="session-details">
+            <strong>Début des cours :</strong> {{ page.session_start | default('19 janvier') }} &bull;
+            <strong>Durée :</strong> {{ page.session_duration | default('8 semaines') }}
+          </p>
+          <p class="session-registration">
+            <strong>Inscriptions :</strong> à partir du {{ page.registration_open | default('30 novembre à midi') }} par courriel
+          </p>
+        </div>
+        <a href="/inscription" class="btn btn-primary btn-lg">S'inscrire par courriel</a>
+      </div>
+    </div>
+  </section>
+
+  {# Filter Bar #}
+  <nav class="section filter-bar" aria-label="Filtrer les cours">
+    <div class="container">
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-filter="all">Tous les cours</button>
+        <button class="filter-btn" data-filter="ceramique">Céramique</button>
+        <button class="filter-btn" data-filter="vitrail">Vitrail</button>
+        <button class="filter-btn" data-filter="intensif">Intensifs</button>
+        <button class="filter-btn" data-filter="enfants">Enfants</button>
+      </div>
+    </div>
+  </nav>
+
+  {# ============================================================================= #}
+  {# CÉRAMIQUE - SESSIONS RÉGULIÈRES #}
+  {# ============================================================================= #}
+  <section class="section courses-section" id="ceramique" data-discipline="ceramique">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Céramique - Sessions régulières</h2>
+        <p class="section-subtitle">Cours de 8 semaines pour développer vos compétences</p>
+      </header>
+
+      <div class="card-grid cols-2">
+        {# Tournage soir #}
+        <article class="course-card" data-category="ceramique regulier">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Tournage soir</h3>
+            <p class="course-description">
+              Développez votre coordination gestuelle et votre dextérité au tour à poterie.
+              Apprenez à centrer, tournasser et décorer vos créations.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Lun/Mar/Mer/Jeu 18h-21h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Début</span>
+                <span class="detail-value">19 janvier</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">240$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=tournage-soir" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Tournage matin #}
+        <article class="course-card" data-category="ceramique regulier">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Tournage matin</h3>
+            <p class="course-description">
+              Le même programme de tournage, dans une atmosphère matinale calme et lumineuse.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Mercredi 9h-12h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Début</span>
+                <span class="detail-value">21 janvier</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">240$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=tournage-matin" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Façonnage #}
+        <article class="course-card" data-category="ceramique regulier">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Façonnage</h3>
+            <p class="course-description">
+              Création de pièces d'argile avec outils et supports divers. Apprenez les techniques
+              de base du façonnage à la main : estampes, engobes, glaçures colorées.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Mardi 18h-21h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Début</span>
+                <span class="detail-value">20 janvier</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">267$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=faconnage" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Tournage ados #}
+        <article class="course-card" data-category="ceramique regulier ados">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Tournage ados</h3>
+            <p class="course-description">
+              Un cours adapté aux adolescents pour découvrir le tournage. Argile incluse,
+              cuissons en sus.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Samedi 9h-12h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Début</span>
+                <span class="detail-value">24 janvier</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">6 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">12-15 ans</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">231$</span>
+              <span class="price-note">non taxé</span>
+            </div>
+            <a href="/inscription?cours=tournage-ados" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Vannerie cours #}
+        <article class="course-card" data-category="ceramique regulier">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+              <span class="course-badge badge-new">Nouveau</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Cours de vannerie</h3>
+            <p class="course-description">
+              Apprenez à tresser le rotin. Initiation à la vannerie-céramique, rencontre de
+              deux métiers traditionnels.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Dimanche 13h30-16h30</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Dates</span>
+                <span class="detail-value">1er au 22 février</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">4 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">198$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=vannerie-cours" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Mosaïque #}
+        <article class="course-card" data-category="ceramique regulier">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Mosaïque</h3>
+            <p class="course-description">
+              Fabrication d'une mosaïque décorative avec tessons de céramique colorés.
+              Méthode directe pour débutant, tout le matériel inclus.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Samedi 13h30-16h30</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Début</span>
+                <span class="detail-value">24 janvier</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">174$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=mosaique" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {# ============================================================================= #}
+  {# CÉRAMIQUE - INTENSIFS #}
+  {# ============================================================================= #}
+  <section class="section courses-section courses-section-alt" data-discipline="ceramique">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Céramique - Ateliers intensifs</h2>
+        <p class="section-subtitle">Découvrez la céramique en une journée ou un week-end</p>
+      </header>
+
+      <div class="card-grid cols-3">
+        {# Potier d'un jour #}
+        <article class="course-card" data-category="ceramique intensif">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+              <span class="course-badge badge-intensif">Intensif</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Potier d'un jour</h3>
+            <p class="course-description">
+              Une belle journée pour expérimenter les techniques de base du tournage.
+              Matériel inclus, apportez votre lunch!
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">Dim. 15 février</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">10h-16h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">6 heures</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">16 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">85$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=potier-un-jour" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Folie du tournage #}
+        <article class="course-card" data-category="ceramique intensif">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+              <span class="course-badge badge-intensif">Intensif</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Folie du tournage</h3>
+            <p class="course-description">
+              Une matinée amusante pour découvrir les techniques de base du tournage.
+              Idéal pour les groupes et anniversaires.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Dates</span>
+                <span class="detail-value">1 ou 8 février</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">13h-15h30</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">2h30</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">10 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">46$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=folie-tournage" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Magie de l'argile rouge #}
+        <article class="course-card" data-category="ceramique intensif">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+              <span class="course-badge badge-intensif">Intensif</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">La magie de l'argile rouge</h3>
+            <p class="course-description">
+              Expérimentez le travail de l'argile à la main et fabriquez un bol déco.
+              Assemblages variés et personnalisés.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">Dim. 21 février</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">13h-16h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">3 heures</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">16 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">40$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=magie-argile-rouge" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Pots pincés #}
+        <article class="course-card" data-category="ceramique intensif">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+              <span class="course-badge badge-intensif">Intensif</span>
+              <span class="course-badge badge-new">Nouveau</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Pots pincés</h3>
+            <p class="course-description">
+              Fabriquez trois bols décorés à l'engobe. Le pot pincé est l'une des formes
+              les plus anciennes de la céramique.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">Sam. 14 février</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">13h-16h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">3 heures</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">16 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">70$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=pots-pinces" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Vannerie intensif #}
+        <article class="course-card" data-category="ceramique intensif">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+              <span class="course-badge badge-intensif">Intensif</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Intensif vannerie</h3>
+            <p class="course-description">
+              Initiation à la vannerie-céramique. Apprenez à tresser le rotin sur une
+              pièce céramique.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">Dim. 8 mars</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">13h30-16h30</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">3 heures</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">43$</span>
+              <span class="price-note">+ taxes</span>
+            </div>
+            <a href="/inscription?cours=vannerie-intensif" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {# ============================================================================= #}
+  {# CÉRAMIQUE - ENFANTS #}
+  {# ============================================================================= #}
+  <section class="section courses-section" data-discipline="ceramique">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Céramique - Cours enfants</h2>
+        <p class="section-subtitle">Développez la créativité de vos enfants</p>
+      </header>
+
+      <div class="card-grid cols-2">
+        {# Modelage enfants #}
+        <article class="course-card" data-category="ceramique enfants">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-ceramique">Céramique</span>
+              <span class="course-badge badge-enfants">Enfants</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Modelage enfants</h3>
+            <p class="course-description">
+              Développer la créativité et les habiletés manuelles tout en s'amusant.
+              Travail à la plaque, colombin, volume évidé et façonnage de formes.
+              Tout inclus.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Samedi 9h-11h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Début</span>
+                <span class="detail-value">24 janvier</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">8 à 14 ans</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">203$</span>
+              <span class="price-note">non taxé</span>
+            </div>
+            <a href="/inscription?cours=modelage-enfants" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {# ============================================================================= #}
+  {# VITRAIL #}
+  {# ============================================================================= #}
+  <section class="section courses-section courses-section-vitrail" id="vitrail" data-discipline="vitrail">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Vitrail Tiffany</h2>
+        <p class="section-subtitle">Apprenez la technique du cuivre et créez des pièces uniques</p>
+      </header>
+
+      <div class="card-grid cols-2">
+        {# Vitrail débutant/intermédiaire #}
+        <article class="course-card" data-category="vitrail regulier">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-vitrail">Vitrail</span>
+            </div>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Vitrail débutant/intermédiaire</h3>
+            <p class="course-description">
+              Cours d'initiation à la technique Tiffany au ruban de cuivre.
+              Groupes de niveaux mixtes pour un enseignement personnalisé.
+              Systèmes d'aspiration pour un loisir sécuritaire.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Mar/Ven 18h-20h30</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Début</span>
+                <span class="detail-value">20 ou 23 janvier</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">226$</span>
+              <span class="price-note">+ taxes + mat. 55$</span>
+            </div>
+            <a href="/inscription?cours=vitrail-debutant" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        {# Vitrail intensif #}
+        <article class="course-card" data-category="vitrail intensif">
+          <header class="course-card-header">
+            <div class="course-badges">
+              <span class="course-badge badge-vitrail">Vitrail</span>
+              <span class="course-badge badge-intensif">Intensif</span>
+            </div>
+            <span class="course-availability coming-soon">À venir</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Vitrail: couleurs et techniques</h3>
+            <p class="course-description">
+              Création d'un vitrail individuel pour se familiariser avec la technique au
+              ruban de cuivre. Idéal pour découvrir sans s'engager dans un cours régulier.
+            </p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">À venir</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Samedi 13h30-17h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">3h30</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Public</span>
+                <span class="detail-value">18 ans et +</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">À venir</span>
+              <span class="price-note"></span>
+            </div>
+            <span class="btn btn-outline btn-sm disabled">Bientôt disponible</span>
+          </footer>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {# ============================================================================= #}
+  {# Notes importantes #}
+  {# ============================================================================= #}
+  <section class="section section-notes">
+    <div class="container container-narrow">
+      <div class="notes-card">
+        <h3>Notes importantes</h3>
+        <ul>
+          <li><strong>Carte de membre obligatoire</strong> (30$ + taxes) pour les cours réguliers (8 semaines) pour adultes.</li>
+          <li><strong>Cours céramique réguliers :</strong> frais en sus pour l'argile et les cuissons. Argile en vente à l'atelier au coût de 30$ + taxes pour un sac de 22lbs.</li>
+          <li><strong>Groupes privés :</strong> possibilité d'organiser des ateliers pour groupes d'amis, famille, team-building. Contactez-nous!</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {# Registration CTA #}
+  <section class="section section-cta-registration">
+    <div class="container">
+      <div class="cta-banner">
+        <div class="cta-content">
+          <h2>Prêt à commencer?</h2>
+          <p>Inscrivez-vous dès maintenant pour la session Hiver 2026</p>
+        </div>
+        <a href="/inscription" class="btn btn-primary btn-lg">S'inscrire par courriel</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}
