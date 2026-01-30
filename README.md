@@ -1,4 +1,4 @@
-# Ludomancien – Générateur de site statique
+# IDOINE – Générateur de site statique
 
 Ce dépôt contient la version personnalisée d’IDOINE utilisée pour bâtir [ludomancien.com](https://ludomancien.com), un site unilingue consacré aux jeux de rôle.
 Le générateur assemble Markdown, templates Jinja2, assets optimisés et feuilles de style SCSS pour produire un site statique prêt à être déployé sur Netlify.

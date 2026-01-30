@@ -1,10 +1,9 @@
 ---
-title: Ludomancien
-description: Jeux de rôle, créations originales et ressources pour meneurs et joueurs.
+title: Bienvenue
+description: Bienvenue sur mon site personnel
+hero_cta: Découvrir
 template: pages/home.html
-hero_image: /assets/images/banner.jpg
-hero_description: Découvrez mes jeux de rôle, articles et outils pour enrichir vos tables.
-hero_cta_url: /articles
+hero_image: hero.jpg
 about_image: /assets/images/about.jpg
 translation_id: home
 ---

@@ -1,6 +1,6 @@
 ---
-title: Welcome to my blog
-description: A space where I share my thoughts, discoveries and experiences
+title: Blog
+description: My latest articles and thoughts
 template: pages/blog.html
 blog_title: "The Blog"
 blog_description: "Discover my latest articles"

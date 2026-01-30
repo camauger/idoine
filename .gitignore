@@ -16,7 +16,12 @@ tmp/
 # Fichiers de cache
 .cache/
 *.cache
-scripts/__pycache__/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
 
 # Environnements virtuels (exemple pour Python, à adapter si nécessaire)
 env/

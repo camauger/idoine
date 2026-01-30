@@ -79,3 +79,83 @@ fr:
   view_all_posts: Voir tous les articles
   written_by: "Écrit par"
 
+en:
+  about: About
+  about_title: About
+  article_classifications: "Article classifications"
+  all_rights_reserved: All rights reserved
+  article_information: "Article information"
+  article_related: "Related articles"
+  back_home: Back to home
+  blog: Articles
+  categories: Categories
+  categories_heading: "Categories"
+  category_link_label: "View articles in category %s"
+  close: Close
+  dark_mode: Dark mode
+  download_large: "Download large image"
+  download_medium: "Download medium image"
+  download_original: "Download original image"
+  download_small: "Download small image"
+  draft: Draft
+  gallery_title: Gallery
+  go_to_page: Go to page
+  header_actions: Header actions
+  hero_cta: View all articles
+  home: Home
+  home_title: "Role-playing games, resources and creations"
+  image_download: Download image
+  image_gallery_title: "Image gallery"
+  image_meta_description: "Discover the image {image_name} and download it in various sizes."
+  image_og_title: "Image preview: {image_name}"
+  image_page: View image page
+  image_preview: Image preview
+  image_page_title: "Image preview"
+  keyword_link_label: "View all articles with this keyword"
+  keyword_no_article: No articles found for this keyword.
+  keyword_prefix: "Keyword: "
+  keywords: Keywords
+  keywords_heading: "Keywords"
+  language: Language
+  latest_posts: Latest articles
+  learn_more: Learn more
+  light_mode: Light mode
+  main_nav: Main navigation
+  menu: Menu
+  nav_label: Main menu
+  next: Next
+  next_page: Next page
+  no_article: "No articles to display at this time."
+  no_article_category: No articles in this category.
+  no_image_found: No image found.
+  number_of_images: "Number of images:"
+  post_featured: "Featured article"
+  post_footer: Article footer
+  post_header: Article header
+  posts_list: Articles list
+  previous: Previous
+  previous_page: Previous page
+  read_more: Read more
+  recent_posts: Recent articles
+  related_posts: Related articles
+  search: Search
+  search_placeholder: Search articles...
+  skip_to_content: Skip to main content
+  social_links: Social networks
+  soft_skills: "Soft skills"
+  soft_skills_list:
+    - "Communication and teamwork"
+    - "Agile project management"
+    - "Analytical thinking and problem solving"
+  tags: Tags
+  toggle_theme: Toggle theme
+  glossary_title: "Role-playing games glossary"
+  glossary_description: "Glossary dedicated to role-playing games"
+  glossary_thumbnail_alt: "Illustration of:"
+  games_section_title: "My role-playing games"
+  resources_section_title: "Role-playing resources"
+  contact_section_title: "Contact"
+  updated_date: "Updated on"
+  updated_on: Updated on
+  view_all_posts: View all articles
+  written_by: "Written by"
