@@ -16,7 +16,7 @@ base_url: 'https://atelierstelme.ca'
 author: 'Christian Amauger'
 
 # Année pour le copyright (footer)
-year: 2025
+year: 2026
 
 # ------------------------------------------------------------
 # CONFIGURATION DES URLS
@@ -54,7 +54,7 @@ social_media:
 # Métadonnées par défaut pour le référencement
 
 default_description: 'Atelier St-Elme - Cours de céramique et vitrail à Beauport, Québec. Tournage, façonnage, modelage et technique Tiffany depuis plus de 40 ans.'
-keywords: 'céramique, vitrail, cours, atelier, Beauport, Québec, tournage, poterie, Tiffany'
+keywords: 'céramique, vitrail, cours, atelier, Beauport, Québec, tournage, poterie'
 
 # ------------------------------------------------------------
 # PARTENAIRES
