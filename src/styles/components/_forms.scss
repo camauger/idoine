@@ -9,7 +9,7 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-6);
+  gap: var(--spacing-8);
 }
 
 // -----------------------------------------------------------------------------
@@ -18,12 +18,13 @@
 .form-group {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-8);
 }
 
 .form-row {
   display: grid;
-  gap: var(--spacing-4);
+  gap: var(--spacing-6);
 
   @media (min-width: 640px) {
     grid-template-columns: repeat(2, 1fr);
@@ -62,7 +63,7 @@
 .form-textarea,
 .form-select {
   width: 100%;
-  padding: var(--spacing-3) var(--spacing-4);
+  padding: var(--spacing-4);
   font-family: var(--font-body);
   font-size: var(--text-base);
   color: var(--color-kiln-charcoal);
@@ -110,7 +111,7 @@
 }
 
 .form-textarea {
-  min-height: 8rem;
+  min-height: 10rem;
   resize: vertical;
 }
 
@@ -193,7 +194,7 @@
 .form-check-group {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-4);
+  gap: var(--spacing-5) var(--spacing-6);
 }
 
 .form-check-inline {
@@ -233,14 +234,14 @@
 .form-fieldset {
   border: none;
   padding: 0;
-  margin: 0 0 var(--spacing-6);
+  margin: 0 0 var(--spacing-8);
 
   legend {
     font-family: var(--font-display);
     font-size: var(--text-lg);
     font-weight: 600;
     color: var(--color-kiln-charcoal);
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-6);
     padding: 0;
   }
 }
@@ -252,7 +253,8 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-4);
-  padding-top: var(--spacing-4);
+  padding-top: var(--spacing-6);
+  margin-top: var(--spacing-4);
   border-top: 1px solid var(--color-border);
 
   @media (min-width: 640px) {

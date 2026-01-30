@@ -231,5 +231,101 @@
       font-weight: 600;
       color: var(--color-kiln-charcoal);
     }
+
+    &.prefilled {
+      border-color: var(--color-terracotta);
+      background-color: rgba(194, 113, 79, 0.05);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Prefill Notice (shown when coming from course page)
+// -----------------------------------------------------------------------------
+.prefill-notice {
+  margin-top: var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-4);
+  background-color: rgba(194, 113, 79, 0.1);
+  border-left: 3px solid var(--color-terracotta);
+  border-radius: var(--border-radius-sm);
+  font-size: var(--text-sm);
+  color: var(--color-kiln-charcoal);
+
+  strong {
+    color: var(--color-terracotta);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Success Card (thank you page)
+// -----------------------------------------------------------------------------
+.success-card {
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-10) var(--spacing-8);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+
+  @media (min-width: 768px) {
+    padding: var(--spacing-12) var(--spacing-10);
+  }
+}
+
+.success-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5rem;
+  height: 5rem;
+  background-color: rgba(72, 149, 72, 0.1);
+  border-radius: 50%;
+  color: var(--color-success);
+  margin-bottom: var(--spacing-6);
+
+  svg {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.success-content {
+  margin-bottom: var(--spacing-8);
+
+  .lead {
+    font-size: var(--text-lg);
+    color: var(--color-kiln-charcoal);
+    max-width: 32rem;
+    margin: 0 auto var(--spacing-8);
+  }
+}
+
+.success-details {
+  text-align: left;
+  background-color: var(--color-clay-cream);
+  border-radius: var(--border-radius-lg);
+  padding: var(--spacing-6);
+  max-width: 28rem;
+  margin: 0 auto;
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-bottom: var(--spacing-4);
+    text-align: center;
+  }
+}
+
+.success-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+  justify-content: center;
+
+  @media (min-width: 480px) {
+    flex-direction: row;
+    gap: var(--spacing-4);
   }
 }

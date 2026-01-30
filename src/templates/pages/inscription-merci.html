@@ -1,0 +1,49 @@
+{% extends "page.html" %}
+
+{% block content %}
+  <section class="section section-page-hero inscription-hero">
+    <div class="container">
+      <h1 class="page-title">{{ page.title }}</h1>
+    </div>
+  </section>
+
+  <section class="section inscription-section">
+    <div class="container container-narrow">
+      <div class="success-card">
+        <div class="success-icon" aria-hidden="true">
+          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+          </svg>
+        </div>
+
+        <div class="success-content">
+          <p class="lead">{{ content | safe }}</p>
+
+          <div class="success-details">
+            <h2>Prochaines étapes</h2>
+            <ol class="steps-list">
+              <li>
+                <span class="step-number">1</span>
+                <span class="step-text">Nous recevons votre demande et vérifions les disponibilités</span>
+              </li>
+              <li>
+                <span class="step-number">2</span>
+                <span class="step-text">Vous recevez un courriel de confirmation avec les détails du cours</span>
+              </li>
+              <li>
+                <span class="step-number">3</span>
+                <span class="step-text">Vous effectuez le paiement pour finaliser votre inscription</span>
+              </li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="success-actions">
+          <a href="/{{ page.lang }}/cours" class="btn btn-primary">Voir les autres cours</a>
+          <a href="/{{ page.lang }}" class="btn btn-outline">Retour à l'accueil</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

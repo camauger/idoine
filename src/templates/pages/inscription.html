@@ -21,7 +21,22 @@
               <p>Session Hiver 2026 - Début des cours le 19 janvier</p>
             </header>
 
-            <form class="form" id="inscription-form" action="mailto:atelierstelme@gmail.com" method="get" enctype="text/plain">
+            <form
+                class="form"
+                id="inscription-form"
+                name="inscription"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                action="/{{ page.lang }}/inscription-merci"
+              >
+              {# Hidden fields for Netlify #}
+              <input type="hidden" name="form-name" value="inscription">
+              <input type="hidden" name="subject" value="Nouvelle demande d'inscription - Ateliers St-Elme">
+              <p class="hidden" style="display:none;">
+                <label>Ne pas remplir si vous êtes humain: <input name="bot-field"></label>
+              </p>
+
               {# Personal Information #}
               <fieldset class="form-fieldset">
                 <legend>Vos coordonnées</legend>
@@ -228,7 +243,7 @@
             <ul class="contact-list">
               <li>
                 <strong>Courriel :</strong>
-                <a href="mailto:atelierstelme@gmail.com">atelierstelme@gmail.com</a>
+                <a href="mailto:info@atelierstelme.ca">info@atelierstelme.ca</a>
               </li>
               <li>
                 <strong>Téléphone :</strong>
@@ -257,10 +272,13 @@
         <p>
           <strong>Vous préférez nous écrire directement?</strong>
           Envoyez un courriel à
-          <a href="mailto:atelierstelme@gmail.com?subject=Inscription">atelierstelme@gmail.com</a>
+          <a href="mailto:info@atelierstelme.ca?subject=Inscription">info@atelierstelme.ca</a>
           avec votre nom, téléphone, le titre du cours et le jour souhaité.
         </p>
       </div>
     </div>
   </section>
+
+  {# Script de pré-remplissage du formulaire #}
+  <script src="/scripts/formPrefill.js"></script>
 {% endblock %}
