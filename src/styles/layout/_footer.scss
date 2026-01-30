@@ -65,7 +65,45 @@
   }
 }
 
-// Column 1: Navigation
+// Column 1: Branding / Logo
+.footer-branding-section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
+  .footer-logo-link {
+    display: block;
+    margin-bottom: var(--spacing-4);
+    transition: opacity var(--transition-fast);
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  .footer-logo {
+    height: 5rem;
+    width: auto;
+    max-width: 100%;
+  }
+
+  .footer-tagline {
+    color: rgba(253, 252, 250, 0.7);
+    font-size: var(--text-sm);
+    font-style: italic;
+    margin: 0;
+  }
+
+  @media (max-width: 768px) {
+    align-items: center;
+
+    .footer-logo {
+      height: 4rem;
+    }
+  }
+}
+
+// Column 2: Navigation
 .footer-nav-section {
   h2 {
     border-bottom-color: var(--color-terracotta) !important;

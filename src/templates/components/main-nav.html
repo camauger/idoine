@@ -15,7 +15,9 @@
     {% else %}
       {{ nav_link(t.courses, lang_prefix ~ '/cours', page) }}
     {% endif %}
+    {% if has_posts.get(page.lang, false) %}
     {{ nav_link(t.blog, lang_prefix ~ '/blog', page) }}
+    {% endif %}
     {{ nav_link(t.about, lang_prefix ~ '/about', page) }}
   </ul>
 </nav>

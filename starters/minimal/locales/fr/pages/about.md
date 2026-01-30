@@ -1,7 +1,7 @@
 ---
 title: À propos
-description: En savoir plus sur moi et mon parcours
-hero_cta: Me contacter
+description: En savoir plus sur l'atelier
+hero_cta: Contactez-nous
 template: pages/about.html
 about_image: /assets/images/about.jpg
 translation_id: about
@@ -9,7 +9,7 @@ translation_id: about
 
 <div class="container">
   <div class="intro">
-    <h2 class="intro-title">À propos de moi</h2>
+    <h2 class="intro-title">À propos de l'atelier</h2>
     <div class="intro-text">
       <p>Bienvenue sur mon site! Je suis ravi de vous accueillir ici.</p>
       <p>N'hésitez pas à personnaliser cette page pour vous présenter à vos visiteurs.</p>

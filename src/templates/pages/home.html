@@ -1,6 +1,10 @@
 {% extends "page.html" %}
 
 {% block content %}
+  {# Set language-specific base path #}
+  {% set lang_prefix = '' if is_unilingual else '/' ~ page.lang %}
+  {% set courses_url = lang_prefix ~ '/cours' %}
+
   {# Hero Section #}
   {% include "components/hero.html" %}
 
@@ -46,7 +50,7 @@
           <div class="discipline-content">
             <h3>Céramique</h3>
             <p>Découvrez l'art de la poterie : tournage, façonnage, modelage et vannerie-céramique. Nos cours sont adaptés à tous les niveaux.</p>
-            <a href="/cours#ceramique" class="btn btn-outline">Voir les cours</a>
+            <a href="{{ courses_url }}#ceramique" class="btn btn-outline">Voir les cours</a>
           </div>
         </article>
 
@@ -57,7 +61,7 @@
           <div class="discipline-content">
             <h3>Vitrail</h3>
             <p>Apprenez la technique Tiffany du cuivre. Créez des pièces uniques en verre coloré, des attrape-soleil aux lampes décoratives.</p>
-            <a href="/cours#vitrail" class="btn btn-outline">Voir les cours</a>
+            <a href="{{ courses_url }}#vitrail" class="btn btn-outline">Voir les cours</a>
           </div>
         </article>
       </div>
@@ -98,7 +102,7 @@
               <span class="price-amount">295$</span>
               <span class="price-note">taxes incluses</span>
             </div>
-            <a href="/cours#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
+            <a href="{{ courses_url }}#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
           </footer>
         </article>
 
@@ -126,7 +130,7 @@
               <span class="price-amount">310$</span>
               <span class="price-note">taxes incluses</span>
             </div>
-            <a href="/cours#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
+            <a href="{{ courses_url }}#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
           </footer>
         </article>
 
@@ -155,13 +159,13 @@
               <span class="price-amount">95$</span>
               <span class="price-note">taxes incluses</span>
             </div>
-            <a href="/cours#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
+            <a href="{{ courses_url }}#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
           </footer>
         </article>
       </div>
 
       <div class="section-cta text-center">
-        <a href="/cours" class="btn btn-outline btn-lg">Voir tous les cours</a>
+        <a href="{{ courses_url }}" class="btn btn-outline btn-lg">Voir tous les cours</a>
       </div>
     </div>
   </section>
@@ -202,16 +206,16 @@
 
         <div class="team-card">
           <div class="team-photo">
-            <img src="/assets/images/team/team-4.jpg" alt="Denis Pradet - Professeur de céramique" loading="lazy">
+            <img src="/assets/images/team/denis-pradet.jpg" alt="Denis Pradet - Professeur de céramique" loading="lazy">
           </div>
           <h3 class="team-name">Denis Pradet</h3>
           <p class="team-role">Céramique</p>
         </div>
       </div>
 
-      <div class="section-cta text-center">
-        <a href="/equipe" class="btn btn-ghost btn-lg">Découvrir l'équipe complète</a>
-      </div>
+      <!-- <div class="section-cta text-center">
+        <a href="{{ lang_prefix }}/equipe" class="btn btn-ghost btn-lg">Découvrir l'équipe complète</a>
+      </div> -->
     </div>
   </section>
 
@@ -221,10 +225,10 @@
       <div class="announcement-banner">
         <div class="announcement-content">
           <span class="announcement-label">Prochaine session</span>
-          <h2 class="announcement-title">Session Hiver 2025</h2>
+          <h2 class="announcement-title">Session Hiver 2026</h2>
           <p class="announcement-text">Inscriptions ouvertes du 15 janvier au 1er février</p>
         </div>
-        <a href="/cours#inscription" class="btn btn-primary btn-lg">S'inscrire maintenant</a>
+        <a href="{{ courses_url }}#inscription" class="btn btn-primary btn-lg">S'inscrire maintenant</a>
       </div>
     </div>
   </section>

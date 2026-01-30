@@ -1,14 +1,21 @@
 <footer role="contentinfo" class="site-footer">
   <div class="footer-columns">
-    <!-- Column 1: Navigation -->
+    <!-- Column 1: Logo & Branding -->
+    <section class="footer-branding-section" aria-labelledby="footer-branding">
+      <a href="{% if is_unilingual %}/{% else %}/{{ page.lang }}{% endif %}" class="footer-logo-link">
+        <img src="/assets/images/logo.png" alt="{{ site.title | default('Atelier St-Elme') }}" class="footer-logo">
+      </a>
+      <p class="footer-tagline">{{ t.tagline | default('Céramique & Vitrail') }}</p>
+    </section>
+
+    <!-- Column 2: Navigation -->
+    {% set lang_prefix = '' if is_unilingual else '/' ~ page.lang %}
     <section class="footer-nav-section" aria-labelledby="footer-nav">
       <h2 id="footer-nav">Navigation</h2>
       <ul>
-        <li><a href="/">{{ t.home }}</a></li>
-        <li><a href="/cours">Cours</a></li>
-        <li><a href="/equipe">Notre équipe</a></li>
-        <li><a href="/galerie">Galerie</a></li>
-        <li><a href="/membres">Espace membres</a></li>
+        <li><a href="{% if is_unilingual %}/{% else %}/{{ page.lang }}{% endif %}">{{ t.home }}</a></li>
+        <li><a href="{{ lang_prefix }}/cours">{{ t.courses | default('Cours') }}</a></li>
+        <li><a href="{{ lang_prefix }}/about">{{ t.about | default('À propos') }}</a></li>
       </ul>
     </section>
 
@@ -28,7 +35,7 @@
           <i class="fas fa-envelope"></i>
         </span>
         <span class="contact-text">
-          <a href="mailto:atelierstelme@gmail.com">atelierstelme@gmail.com</a>
+          <a href="mailto:info@atelierstelme.ca">info@atelierstelme.ca</a>
         </span>
       </div>
       <div class="contact-item">
@@ -98,7 +105,7 @@
   <div class="footer-bottom">
     <div class="footer-bottom-content">
       <p class="footer-text">
-        &copy; {{ site.year | default('2025') }} {{ site.title | default('Atelier St-Elme') }}.
+        &copy; {{ site.year | default('2026') }} {{ site.title | default('Atelier St-Elme') }}.
         {{ t.all_rights_reserved | default('Tous droits réservés') }}.
       </p>
     </div>

@@ -58,6 +58,9 @@ class SiteBuilder:
         self.jinja_env.globals["is_multilingual"] = self.is_multilingual
         self.jinja_env.globals["is_unilingual"] = not self.is_multilingual
 
+        # Check if there are posts for each language
+        self._init_has_posts()
+
         self.static_manager = StaticFileManager(self.src_path, self.dist_path)
 
         ctx = BuildContext(
@@ -80,6 +83,17 @@ class SiteBuilder:
             ctx,
             post_builder=self.post_builder,
         )
+
+    def _init_has_posts(self) -> None:
+        """Check if there are posts for each language and set global."""
+        has_posts = {}
+        for lang in self.site_config.get("languages", []):
+            posts_dir = self.src_path / "locales" / lang / "blog"
+            if not posts_dir.exists():
+                posts_dir = self.src_path / "locales" / lang / "posts"
+            # Check if directory exists and has .md files
+            has_posts[lang] = posts_dir.exists() and any(posts_dir.glob("*.md"))
+        self.jinja_env.globals["has_posts"] = has_posts
 
     def build(self):
         try:

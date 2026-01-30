@@ -62,6 +62,22 @@ default_description: 'Atelier St-Elme - Cours de céramique et vitrail à Beaupo
 keywords: 'céramique, vitrail, cours, atelier, Beauport, Québec, tournage, poterie, Tiffany'
 
 # ------------------------------------------------------------
+# PARTENAIRES
+# ------------------------------------------------------------
+# Logos des partenaires affichés dans le footer
+
+partners:
+  - name: 'Ville de Québec - Arrondissement de Beauport'
+    logo: '/assets/images/023.png'
+    url: 'https://www.ville.quebec.qc.ca/arrondissements/beauport/'
+  - name: 'Culture Beauport'
+    logo: '/assets/images/016.png'
+    url: 'https://www.culturebeauport.com/'
+  - name: 'Desjardins'
+    logo: '/assets/images/desjardins.png'
+    url: 'https://www.desjardins.com/'
+
+# ------------------------------------------------------------
 # OPTIONS AVANCÉES
 # ------------------------------------------------------------
 # Paramètres optionnels pour personnaliser le comportement
