@@ -1,6 +1,4 @@
 import argparse
-import logging
-import sys
 from pathlib import Path
 
 from config_loader import ConfigLoader
@@ -10,29 +8,12 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 from page_builder import PageBuilder
 from post_builder import PostBuilder
 from static_file_manager import StaticFileManager
+from utils.logger import get_logger, setup_logging
 from utils.utils import format_date_filter, markdown_filter, slugify
 
-if hasattr(sys.stdout, "reconfigure"):
-    try:
-        sys.stdout.reconfigure(encoding="utf-8")
-    except (OSError, AttributeError):
-        pass
-
-logging.basicConfig(
-    level=logging.INFO,
-    format="[%(asctime)s] %(levelname)s: %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-
-ICON_START = "🚀"
-ICON_CLEAN = "🧹"
-ICON_COPY = "📋"
-ICON_BUILD = "📝"
-ICON_GLOSSARY = "📖"
-ICON_CATEGORY = "📂"
-ICON_REDIRECT = "🔀"
-ICON_SUCCESS = "✨"
-ICON_ERROR = "❌"
+# Configure logging with icon support (respects IDOINE_USE_ICONS env var)
+setup_logging()
+logger = get_logger()
 
 
 class SiteBuilder:
@@ -90,10 +71,10 @@ class SiteBuilder:
 
     def build(self):
         try:
-            logging.info(f"{ICON_START} Début de la construction du site...")
-            logging.info(f"{ICON_CLEAN} Nettoyage du dossier de sortie...")
+            logger.start("Début de la construction du site...")
+            logger.clean("Nettoyage du dossier de sortie...")
             self.static_manager.setup_output_dir()
-            logging.info(f"{ICON_COPY} Copie des fichiers statiques...")
+            logger.copy("Copie des fichiers statiques...")
             self.static_manager.copy_static_files()
 
             gallery_builder = GalleryBuilder(
@@ -105,14 +86,14 @@ class SiteBuilder:
             )
             gallery_builder.build_gallery()
 
-            logging.info(f"{ICON_BUILD} Génération des pages...")
+            logger.build("Génération des pages...")
             self.page_builder.build_pages()
-            logging.info(f"{ICON_BUILD} Génération des posts...")
+            logger.build("Génération des posts...")
             posts = self.post_builder.build_posts()
-            logging.info(f"{ICON_GLOSSARY} Génération du glossaire...")
+            logger.glossary("Génération du glossaire...")
             self.glossary_builder.build_terms()
-            logging.info(
-                f"{ICON_CATEGORY} Regroupement des posts pour les catégories et mots-clés..."
+            logger.category(
+                "Regroupement des posts pour les catégories et mots-clés..."
             )
             categories = {}
             keywords = {}
@@ -125,19 +106,16 @@ class SiteBuilder:
             self.page_builder.build_category_pages(categories)
             self.page_builder.build_keyword_pages(keywords)
 
-            logging.info(f"{ICON_CATEGORY} Génération des pages pour les catégories...")
+            logger.category("Génération des pages pour les catégories...")
             self.page_builder.build_category_pages(categories)
-            logging.info(f"{ICON_CATEGORY} Génération des pages pour les mots-clés...")
+            logger.category("Génération des pages pour les mots-clés...")
             self.page_builder.build_keyword_pages(keywords)
-            logging.info(f"{ICON_REDIRECT} Création de la redirection racine...")
+            logger.redirect("Création de la redirection racine...")
             if self.is_multilingual:
                 self.page_builder.build_root_redirect()
-            logging.info(f"{ICON_SUCCESS} Site construit avec succès!")
+            logger.success("Site construit avec succès!")
         except Exception as e:
-            logging.error(
-                f"{ICON_ERROR} Erreur durant la construction du site: {e}",
-                exc_info=True,
-            )
+            logger.error(f"Erreur durant la construction du site: {e}", exc_info=True)
 
 
 if __name__ == "__main__":

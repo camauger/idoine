@@ -13,7 +13,7 @@ import shutil
 import stat
 from pathlib import Path
 
-from utils.path_validator import validate_path_within_base, PathValidationError
+from utils.path_validator import PathValidationError, validate_path_within_base
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +46,7 @@ class StaticFileManager:
         self.dist_path.mkdir(parents=True)
 
     def _file_checksum(self, path: Path, chunk_size: int = 1024 * 1024) -> str:
-        h = hashlib.md5()
+        h = hashlib.sha256()
         with open(path, "rb") as f:
             for chunk in iter(lambda: f.read(chunk_size), b""):
                 h.update(chunk)
@@ -60,8 +60,9 @@ class StaticFileManager:
         # If sizes equal, compare checksums to avoid unnecessary copies
         try:
             return self._file_checksum(src_file) != self._file_checksum(dst_file)
-        except Exception:
+        except (OSError, IOError) as e:
             # Fallback to mtime comparison on checksum error
+            logger.warning(f"Checksum comparison failed for {src_file}: {e}")
             return src_file.stat().st_mtime > dst_file.stat().st_mtime
 
     def copy_static_files(self):

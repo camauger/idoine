@@ -182,7 +182,7 @@ class GalleryBuilder:
             try:
                 with open(output_file, "w", encoding="utf-8") as f:
                     f.write(image_html)
-            except Exception as e:
+            except (OSError, IOError) as e:
                 logging.error("Erreur lors de l'écriture de %s: %s", output_file, e)
 
 
