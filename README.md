@@ -1,6 +1,6 @@
-# Ludomancien – Générateur de site statique
+# idoine – Générateur de site statique
 
-Ce dépôt contient la version personnalisée d’IDOINE utilisée pour bâtir [ludomancien.com](https://ludomancien.com), un site unilingue consacré aux jeux de rôle.
+Ce dépôt contient la version personnalisée d’IDOINE utilisée pour bâtir [idoine.com](https://idoine.com), un site unilingue consacré aux jeux de rôle.
 Le générateur assemble Markdown, templates Jinja2, assets optimisés et feuilles de style SCSS pour produire un site statique prêt à être déployé sur Netlify.
 
 ---
@@ -22,7 +22,7 @@ Le générateur assemble Markdown, templates Jinja2, assets optimisés et feuill
 ## Fonctionnalités
 
 - **Markdown + Front matter** : pages, articles et glossaire stockés dans `src/locales/fr`, avec prise en charge des slugs personnalisés, des héros illustrés et des champs SEO.
-- **Gabarits Jinja2** : composants `<header>`, héros, navigation et footer pensés pour Ludomancien, avec surcharge possible.
+- **Gabarits Jinja2** : composants `<header>`, héros, navigation et footer pensés pour idoine, avec surcharge possible.
 - **Gestion d’images** : tous les visuels placés dans `src/assets/images` sont copiés vers `/assets/images` _et_ `/images` pour conserver les anciens liens.
 - **Générateurs dédiés** : builders Python pour les articles, le glossaire, les pages statiques, les tags et la pagination.
 - **Pipeline front-end** : SCSS modulaires, variables de thème et mode sombre natif.
@@ -48,7 +48,7 @@ npm install -g grunt-cli
 
 ```bash
 git clone <URL_DU_DEPOT>
-cd ludomancien-idoine
+cd idoine-idoine
 
 # Dépendances Node (Grunt, PostCSS, etc.)
 npm install

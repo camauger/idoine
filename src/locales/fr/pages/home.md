@@ -1,5 +1,5 @@
 ---
-title: Ludomancien
+title: idoine
 description: Jeux de rôle, créations originales et ressources pour meneurs et joueurs.
 template: pages/home.html
 hero_image: /assets/images/banner.jpg

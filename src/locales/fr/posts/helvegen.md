@@ -35,4 +35,4 @@ Vous êtes une de ces âmes perdues, errant sur le chemin des morts.
 
 <iframe frameborder="0" src="https://itch.io/embed/827912" width="552" height="167"><a href="https://christianamauger.itch.io/helvegen">Helvegen par Christian Amauger</a></iframe>
 
-HELVEGEN a été développé par Christian Amauger (Ludomancien), sur une idée de Papaphilo développée par Garcymore pour le Cinquième [Défi Trois Fois Forgé](https://ptgptb.fr/defi-troisfoisforge) de PTGPTB. Le jeu est placé sous licence Creative Commons BY-SA-NC.
+HELVEGEN a été développé par Christian Amauger (idoine), sur une idée de Papaphilo développée par Garcymore pour le Cinquième [Défi Trois Fois Forgé](https://ptgptb.fr/defi-troisfoisforge) de PTGPTB. Le jeu est placé sous licence Creative Commons BY-SA-NC.
