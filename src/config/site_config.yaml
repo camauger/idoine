@@ -29,15 +29,10 @@ glossary_url: '/glossaire'           # URL du glossaire (optionnel)
 # ------------------------------------------------------------
 # LANGUES
 # ------------------------------------------------------------
-# Configurez le support multilingue de votre site
+# Site unilingue français
 
-languages: ['fr', 'en']              # Langues supportées
+languages: ['fr']                    # Langue unique
 default_lang: 'fr'                   # Langue par défaut
-
-# Noms affichés dans le sélecteur de langue
-language_names:
-  fr: 'Français'
-  en: 'English'
 
 # ------------------------------------------------------------
 # RÉSEAUX SOCIAUX
