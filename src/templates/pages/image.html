@@ -7,7 +7,7 @@
   content="{{ t.image_og_title | replace('{image_name}', image_name|replace('_', ' ')|title) }}">
 <meta property="og:type" content="image">
 <meta property="og:image" content="{{ image_versions.original }}">
-<meta property="og:url" content="{{ site.url }}/{{ page.lang }}/gallery/{{ image_name }}.html">
+<meta property="og:url" content="{{ site.url }}{% if not is_unilingual %}/{{ page.lang }}{% endif %}/gallery/{{ image_name }}.html">
 <meta name="twitter:card" content="summary_large_image">
 {% endblock %}
 

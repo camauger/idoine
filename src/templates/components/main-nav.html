@@ -1,7 +1,7 @@
 {% from 'macros/navigation.html' import nav_link %}
 
-{# Set language-specific base path #}
-{% set lang_prefix = '/' ~ page.lang if page.lang is defined else '/fr' %}
+{# Set language-specific base path - empty for unilingual sites #}
+{% set lang_prefix = '' if is_unilingual else ('/' ~ page.lang if page.lang is defined else '') %}
 
 <nav id="site-navigation" class="main-navigation" aria-label="{{ t.main_nav }}">
   <button aria-expanded="false" aria-controls="main-menu" class="menu-toggle">
@@ -9,12 +9,8 @@
     <span class="hamburger" aria-hidden="true"></span>
   </button>
   <ul id="main-menu" class="nav-menu" role="menu">
-    {{ nav_link(t.home, lang_prefix, page) }}
-    {% if page.lang == 'en' %}
-      {{ nav_link(t.courses, lang_prefix ~ '/courses', page) }}
-    {% else %}
-      {{ nav_link(t.courses, lang_prefix ~ '/cours', page) }}
-    {% endif %}
+    {{ nav_link(t.home, lang_prefix if lang_prefix else '/', page) }}
+    {{ nav_link(t.courses, lang_prefix ~ '/cours', page) }}
     {% if has_posts.get(page.lang, false) %}
     {{ nav_link(t.blog, lang_prefix ~ '/blog', page) }}
     {% endif %}
