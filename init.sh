@@ -217,19 +217,26 @@ configure_site() {
     # Mettre à jour le fichier de configuration
     print_info "Mise à jour de la configuration..."
 
+    # Échapper les caractères spéciaux pour YAML (doubles guillemets)
+    # Remplacer les guillemets doubles par des guillemets échappés
+    SITE_TITLE=$(echo "$SITE_TITLE" | sed 's/"/\\"/g')
+    SITE_TAGLINE=$(echo "$SITE_TAGLINE" | sed 's/"/\\"/g')
+    SITE_AUTHOR=$(echo "$SITE_AUTHOR" | sed 's/"/\\"/g')
+
     # Utiliser sed pour remplacer les valeurs (compatible macOS et Linux)
+    # Utiliser des guillemets doubles pour supporter les apostrophes
     if [[ "$OSTYPE" == "darwin"* ]]; then
         # macOS
-        sed -i '' "s|^title:.*|title: '$SITE_TITLE'|" src/config/site_config.yaml
-        sed -i '' "s|^tagline:.*|tagline: '$SITE_TAGLINE'|" src/config/site_config.yaml
-        sed -i '' "s|^author:.*|author: '$SITE_AUTHOR'|" src/config/site_config.yaml
-        sed -i '' "s|^base_url:.*|base_url: '$SITE_URL'|" src/config/site_config.yaml
+        sed -i '' "s|^title:.*|title: \"$SITE_TITLE\"|" src/config/site_config.yaml
+        sed -i '' "s|^tagline:.*|tagline: \"$SITE_TAGLINE\"|" src/config/site_config.yaml
+        sed -i '' "s|^author:.*|author: \"$SITE_AUTHOR\"|" src/config/site_config.yaml
+        sed -i '' "s|^base_url:.*|base_url: \"$SITE_URL\"|" src/config/site_config.yaml
     else
         # Linux/Windows Git Bash
-        sed -i "s|^title:.*|title: '$SITE_TITLE'|" src/config/site_config.yaml
-        sed -i "s|^tagline:.*|tagline: '$SITE_TAGLINE'|" src/config/site_config.yaml
-        sed -i "s|^author:.*|author: '$SITE_AUTHOR'|" src/config/site_config.yaml
-        sed -i "s|^base_url:.*|base_url: '$SITE_URL'|" src/config/site_config.yaml
+        sed -i "s|^title:.*|title: \"$SITE_TITLE\"|" src/config/site_config.yaml
+        sed -i "s|^tagline:.*|tagline: \"$SITE_TAGLINE\"|" src/config/site_config.yaml
+        sed -i "s|^author:.*|author: \"$SITE_AUTHOR\"|" src/config/site_config.yaml
+        sed -i "s|^base_url:.*|base_url: \"$SITE_URL\"|" src/config/site_config.yaml
     fi
 
     print_success "Configuration mise à jour"
