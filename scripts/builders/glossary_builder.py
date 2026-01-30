@@ -1,5 +1,6 @@
 import logging
 import math
+from typing import Any, Dict, List
 
 from core.context import BuildContext
 from utils.frontmatter_parser import parse_frontmatter
@@ -34,8 +35,8 @@ class GlossaryBuilder:
         )
         self.unilingual = len(self.site_config.get("languages", [])) == 1
 
-    def load_terms(self, lang):
-        terms = []
+    def load_terms(self, lang: str) -> List[Dict[str, Any]]:
+        terms: List[Dict[str, Any]] = []
         terms_dir = self.src_path / "locales" / lang / "glossaire"
         if terms_dir.exists():
             for term_file in terms_dir.glob("*.md"):
@@ -63,7 +64,9 @@ class GlossaryBuilder:
         terms.sort(key=lambda x: x["title"])
         return terms
 
-    def paginate_terms(self, terms, lang):
+    def paginate_terms(
+        self, terms: List[Dict[str, Any]], lang: str
+    ) -> List[Dict[str, Any]]:
         total_pages = math.ceil(len(terms) / self.terms_per_page)
         prefix = "" if self.unilingual else f"/{lang}"
         paginated = []
@@ -165,8 +168,8 @@ class GlossaryBuilder:
             output_path.parent.mkdir(parents=True, exist_ok=True)
             output_path.write_text(output, encoding="utf-8")
 
-    def build_tag_pages(self, terms_by_lang):
-        tag_dict = {}
+    def build_tag_pages(self, terms_by_lang: Dict[str, List[Dict[str, Any]]]) -> None:
+        tag_dict: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
 
         for lang, terms in terms_by_lang.items():
             for term in terms:
@@ -221,9 +224,9 @@ class GlossaryBuilder:
                 output_path.parent.mkdir(parents=True, exist_ok=True)
                 output_path.write_text(output, encoding="utf-8")
 
-    def build_terms(self):
-        all_terms = []
-        terms_by_lang = {}
+    def build_terms(self) -> List[Dict[str, Any]]:
+        all_terms: List[Dict[str, Any]] = []
+        terms_by_lang: Dict[str, List[Dict[str, Any]]] = {}
         for lang in self.site_config["languages"]:
             terms_dir = self.src_path / "locales" / lang / "glossaire"
             if terms_dir.exists():

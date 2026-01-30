@@ -1,10 +1,19 @@
-class BuildError(Exception):
-    """Erreur générique pour le processus de build du site."""
+"""
+Deprecated: Use exceptions.py instead.
 
+This module provides backward compatibility aliases for the legacy error classes.
+New code should import directly from exceptions.py.
+"""
 
-class FrontmatterParsingError(BuildError):
-    """Erreur lors de l'analyse du front matter Markdown."""
+from .exceptions import BuildError, ContentError
 
+# Backward compatibility aliases
+# FrontmatterParsingError and MetadataParsingError are now ContentError
+FrontmatterParsingError = ContentError
+MetadataParsingError = ContentError
 
-class MetadataParsingError(BuildError):
-    """Erreur lors de l'extraction/validation des métadonnées."""
+__all__ = [
+    "BuildError",
+    "FrontmatterParsingError",
+    "MetadataParsingError",
+]

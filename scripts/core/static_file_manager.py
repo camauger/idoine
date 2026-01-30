@@ -62,7 +62,9 @@ class StaticFileManager:
             return self._file_checksum(src_file) != self._file_checksum(dst_file)
         except (OSError, IOError) as e:
             # Fallback to mtime comparison on checksum error
-            logger.warning(f"Checksum comparison failed for {src_file}: {e}")
+            logger.warning(
+                f"Comparaison de somme de contrôle échouée pour {src_file}: {e}"
+            )
             return src_file.stat().st_mtime > dst_file.stat().st_mtime
 
     def copy_static_files(self):
@@ -82,7 +84,7 @@ class StaticFileManager:
             try:
                 validate_path_within_base(src_dir, self.src_path)
             except PathValidationError as e:
-                logger.warning(f"Skipping invalid source directory: {e}")
+                logger.warning(f"Répertoire source invalide ignoré : {e}")
                 continue
 
             dst_dir = self.dist_path / dir_name
@@ -102,7 +104,7 @@ class StaticFileManager:
                         validate_path_within_base(src_file, self.src_path)
                         validate_path_within_base(dst_file, self.dist_path)
                     except PathValidationError as e:
-                        logger.warning(f"Skipping file with invalid path: {e}")
+                        logger.warning(f"Fichier avec chemin invalide ignoré : {e}")
                         continue
 
                     if self._needs_copy(src_file, dst_file):

@@ -27,12 +27,11 @@ glossary_url: '/glossaire'
 # LANGUES
 # ------------------------------------------------------------
 
-languages: ['fr', 'en']
+languages: ['fr']
 default_lang: 'fr'
 
 language_names:
   fr: 'Français'
-  en: 'English'
 
 # ------------------------------------------------------------
 # RÉSEAUX SOCIAUX
@@ -49,3 +48,22 @@ social_media:
 
 default_description: 'Idoine - Générateur de site statique avec Python, Jinja2 et SCSS'
 keywords: 'générateur, site statique, python, jinja2, scss, markdown, blog'
+
+# ------------------------------------------------------------
+# FOOTER
+# ------------------------------------------------------------
+
+footer:
+  links:
+    - title: 'Documentation'
+      url: '/docs'
+    - title: 'Guide de démarrage'
+      url: '/docs/getting-started'
+  resources:
+    - title: 'GitHub'
+      url: 'https://github.com/camauger/idoine'
+    - title: 'Signaler un problème'
+      url: 'https://github.com/camauger/idoine/issues'
+  contact:
+    - title: 'christian@amauger.com'
+      url: 'mailto:christian@amauger.com'

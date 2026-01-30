@@ -11,7 +11,7 @@ from typing import List, Optional
 
 from PIL import Image, ImageOps
 
-from .path_validator import validate_path_within_base, PathValidationError
+from .path_validator import PathValidationError, validate_path_within_base
 
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,7 @@ def copy_images(images_dir: Path, dist_path: Path) -> None:
             try:
                 validate_path_within_base(src_image, images_dir)
             except PathValidationError as e:
-                logger.warning(f"Skipping invalid source image: {e}")
+                logger.warning(f"Image source invalide ignorée : {e}")
                 continue
 
             relative_path = src_image.relative_to(images_dir)
@@ -76,7 +76,7 @@ def copy_images(images_dir: Path, dist_path: Path) -> None:
             try:
                 validate_path_within_base(dst_image, dist_path)
             except PathValidationError as e:
-                logger.warning(f"Skipping invalid destination path: {e}")
+                logger.warning(f"Chemin de destination invalide ignoré : {e}")
                 continue
 
             dst_image.parent.mkdir(parents=True, exist_ok=True)
@@ -133,7 +133,7 @@ def generate_resized_images(images_dir: Path, dist_path: Path) -> None:
         try:
             validate_path_within_base(src_image, images_dir)
         except PathValidationError as e:
-            logger.warning(f"Skipping invalid source image: {e}")
+            logger.warning(f"Image source invalide ignorée : {e}")
             continue
 
         relative_path = src_image.relative_to(images_dir)
@@ -147,7 +147,7 @@ def generate_resized_images(images_dir: Path, dist_path: Path) -> None:
                     try:
                         validate_path_within_base(base_dest.parent, dist_path)
                     except PathValidationError as e:
-                        logger.warning(f"Skipping invalid destination: {e}")
+                        logger.warning(f"Destination invalide ignorée : {e}")
                         continue
 
                     # Save fallback in original extension (jpg/png)
