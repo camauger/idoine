@@ -16,7 +16,17 @@ tmp/
 # Fichiers de cache
 .cache/
 *.cache
-scripts/__pycache__/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+.pytest_cache/
+.mypy_cache/
 
 # Environnements virtuels (exemple pour Python, à adapter si nécessaire)
 env/
