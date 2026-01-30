@@ -1,21 +1,87 @@
+// =============================================================================
+// Layout - Atelier St-Elme
+// =============================================================================
+// Core layout utilities and structure
+
+// -----------------------------------------------------------------------------
+// Container
+// -----------------------------------------------------------------------------
 .container {
-  max-width: var(--container-width);
-  margin: 0 auto;
-  padding: 0 var(--spacing-unit);
+  width: min(100% - var(--spacing-6) * 2, var(--container-width));
+  margin-inline: auto;
 }
 
+.container-narrow {
+  width: min(100% - var(--spacing-6) * 2, var(--container-narrow));
+  margin-inline: auto;
+}
+
+.container-post {
+  width: min(100% - var(--spacing-6) * 2, var(--post-width));
+  margin-inline: auto;
+}
+
+// -----------------------------------------------------------------------------
+// Main layout
+// -----------------------------------------------------------------------------
+body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+  padding-top: var(--header-height);
+}
+
+main {
+  flex: 1;
+}
+
+// -----------------------------------------------------------------------------
+// Grid utilities
+// -----------------------------------------------------------------------------
 .grid {
   display: grid;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-6);
+}
 
-  @media (min-width: var(--bp-medium)) {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+.grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+}
+
+.grid-3 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+}
+
+.grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr));
+}
+
+// Responsive grid
+@media (min-width: 768px) {
+  .md\:grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .md\:grid-3 {
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
+@media (min-width: 1024px) {
+  .lg\:grid-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .lg\:grid-4 {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Flexbox utilities
+// -----------------------------------------------------------------------------
 .flex {
   display: flex;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-4);
 }
 
 .flex-center {
@@ -33,15 +99,84 @@
 .flex-column {
   display: flex;
   flex-direction: column;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-4);
 }
 
 .flex-wrap {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-unit);
+  gap: var(--spacing-4);
 }
 
-body {
-  padding-top: 150px; // This is the height of the fixed header
+.items-center {
+  align-items: center;
+}
+
+.items-start {
+  align-items: flex-start;
+}
+
+.items-end {
+  align-items: flex-end;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.justify-end {
+  justify-content: flex-end;
+}
+
+// -----------------------------------------------------------------------------
+// Spacing utilities
+// -----------------------------------------------------------------------------
+.gap-2 { gap: var(--spacing-2); }
+.gap-4 { gap: var(--spacing-4); }
+.gap-6 { gap: var(--spacing-6); }
+.gap-8 { gap: var(--spacing-8); }
+
+.mt-4 { margin-top: var(--spacing-4); }
+.mt-6 { margin-top: var(--spacing-6); }
+.mt-8 { margin-top: var(--spacing-8); }
+.mt-12 { margin-top: var(--spacing-12); }
+
+.mb-4 { margin-bottom: var(--spacing-4); }
+.mb-6 { margin-bottom: var(--spacing-6); }
+.mb-8 { margin-bottom: var(--spacing-8); }
+.mb-12 { margin-bottom: var(--spacing-12); }
+
+.py-8 { padding-block: var(--spacing-8); }
+.py-12 { padding-block: var(--spacing-12); }
+.py-16 { padding-block: var(--spacing-16); }
+
+.px-4 { padding-inline: var(--spacing-4); }
+.px-6 { padding-inline: var(--spacing-6); }
+
+// -----------------------------------------------------------------------------
+// Width utilities
+// -----------------------------------------------------------------------------
+.w-full { width: 100%; }
+.max-w-prose { max-width: var(--reading-measure); }
+
+// -----------------------------------------------------------------------------
+// Display utilities
+// -----------------------------------------------------------------------------
+.hidden { display: none; }
+.block { display: block; }
+.inline-block { display: inline-block; }
+.inline-flex { display: inline-flex; }
+
+@media (min-width: 768px) {
+  .md\:hidden { display: none; }
+  .md\:block { display: block; }
+  .md\:flex { display: flex; }
+}
+
+@media (max-width: 767px) {
+  .mobile-hidden { display: none; }
 }

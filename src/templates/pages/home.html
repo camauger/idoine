@@ -1,6 +1,231 @@
-
 {% extends "page.html" %}
+
 {% block content %}
+  {# Hero Section #}
   {% include "components/hero.html" %}
-  {% include "components/recent-posts.html" %}
+
+  {# Introduction Section #}
+  <section class="section section-intro">
+    <div class="container">
+      <div class="intro-content">
+        <div class="intro-text">
+          <h2>{{ page.intro_title | default('Un espace de création depuis plus de 40 ans') }}</h2>
+          <p class="lead">
+            {{ page.intro_text | default('L\'Atelier St-Elme est un organisme à but non lucratif dédié à l\'enseignement des arts traditionnels. Situé à Beauport, notre atelier accueille adultes, adolescents et enfants dans un environnement chaleureux et créatif.') }}
+          </p>
+        </div>
+
+        <div class="intro-stats">
+          <div class="stat-item">
+            <span class="stat-number">40+</span>
+            <span class="stat-label">années d'existence</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">6</span>
+            <span class="stat-label">professeurs passionnés</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number">2</span>
+            <span class="stat-label">disciplines : céramique et vitrail</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {# Disciplines Section #}
+  <section class="section section-disciplines" aria-labelledby="disciplines-title">
+    <div class="container">
+      <h2 id="disciplines-title" class="section-title text-center">Nos disciplines</h2>
+
+      <div class="disciplines-grid">
+        <article class="discipline-card discipline-ceramique">
+          <div class="discipline-image">
+            <img src="/assets/images/ceramique-preview.jpg" alt="Tournage de céramique" loading="lazy">
+          </div>
+          <div class="discipline-content">
+            <h3>Céramique</h3>
+            <p>Découvrez l'art de la poterie : tournage, façonnage, modelage et vannerie-céramique. Nos cours sont adaptés à tous les niveaux.</p>
+            <a href="/cours#ceramique" class="btn btn-outline">Voir les cours</a>
+          </div>
+        </article>
+
+        <article class="discipline-card discipline-vitrail">
+          <div class="discipline-image">
+            <img src="/assets/images/vitrail-preview.jpg" alt="Création de vitrail" loading="lazy">
+          </div>
+          <div class="discipline-content">
+            <h3>Vitrail</h3>
+            <p>Apprenez la technique Tiffany du cuivre. Créez des pièces uniques en verre coloré, des attrape-soleil aux lampes décoratives.</p>
+            <a href="/cours#vitrail" class="btn btn-outline">Voir les cours</a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  {# Featured Courses Section #}
+  <section class="section section-courses" aria-labelledby="courses-title">
+    <div class="container">
+      <header class="section-header">
+        <h2 id="courses-title" class="section-title">Cours à venir</h2>
+        <p class="section-subtitle">Inscrivez-vous maintenant pour la prochaine session</p>
+      </header>
+
+      <div class="card-grid cols-3">
+        {# Sample course cards - these would be dynamic in production #}
+        <article class="course-card">
+          <header class="course-card-header">
+            <span class="course-badge badge-ceramique">Céramique</span>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Tournage adultes</h3>
+            <p class="course-description">Apprenez les techniques de base du tournage sur le tour de potier. Idéal pour les débutants.</p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Mardi 19h-22h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">295$</span>
+              <span class="price-note">taxes incluses</span>
+            </div>
+            <a href="/cours#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        <article class="course-card">
+          <header class="course-card-header">
+            <span class="course-badge badge-vitrail">Vitrail</span>
+            <span class="course-availability available">Places disponibles</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Vitrail débutant</h3>
+            <p class="course-description">Initiez-vous à la technique Tiffany. Réalisez votre première création en vitrail.</p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Horaire</span>
+                <span class="detail-value">Mercredi 19h-22h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">8 semaines</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">310$</span>
+              <span class="price-note">taxes incluses</span>
+            </div>
+            <a href="/cours#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+
+        <article class="course-card">
+          <header class="course-card-header">
+            <span class="course-badge badge-ceramique">Céramique</span>
+            <span class="course-badge badge-intensif">Intensif</span>
+            <span class="course-availability filling">Dernières places</span>
+          </header>
+          <div class="course-card-body">
+            <h3 class="course-title">Potier d'un jour</h3>
+            <p class="course-description">Une journée complète pour découvrir le tournage. Repartez avec vos créations!</p>
+            <div class="course-details">
+              <div class="course-detail">
+                <span class="detail-label">Date</span>
+                <span class="detail-value">Samedi 10h-16h</span>
+              </div>
+              <div class="course-detail">
+                <span class="detail-label">Durée</span>
+                <span class="detail-value">1 journée</span>
+              </div>
+            </div>
+          </div>
+          <footer class="course-card-footer">
+            <div class="course-price">
+              <span class="price-amount">95$</span>
+              <span class="price-note">taxes incluses</span>
+            </div>
+            <a href="/cours#inscription" class="btn btn-primary btn-sm">S'inscrire</a>
+          </footer>
+        </article>
+      </div>
+
+      <div class="section-cta text-center">
+        <a href="/cours" class="btn btn-outline btn-lg">Voir tous les cours</a>
+      </div>
+    </div>
+  </section>
+
+  {# Team Teaser Section #}
+  <section class="section section-team" aria-labelledby="team-title">
+    <div class="container">
+      <header class="section-header text-center">
+        <h2 id="team-title" class="section-title">Notre équipe</h2>
+        <p class="section-subtitle">Des artisans passionnés qui partagent leur savoir-faire</p>
+      </header>
+
+      <div class="team-grid">
+        {# Team members - would be dynamic in production #}
+        <div class="team-card">
+          <div class="team-photo">
+            <img src="/assets/images/team/team-1.jpg" alt="Odette Fortier - Professeure de vitrail" loading="lazy">
+          </div>
+          <h3 class="team-name">Odette Fortier</h3>
+          <p class="team-role">Vitrail</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-photo">
+            <img src="/assets/images/team/team-2.jpg" alt="Sylvie Simard - Professeure de vitrail" loading="lazy">
+          </div>
+          <h3 class="team-name">Sylvie Simard</h3>
+          <p class="team-role">Vitrail</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-photo">
+            <img src="/assets/images/team/team-3.jpg" alt="Nathalie Gagné - Professeure de céramique" loading="lazy">
+          </div>
+          <h3 class="team-name">Nathalie Gagné</h3>
+          <p class="team-role">Céramique</p>
+        </div>
+
+        <div class="team-card">
+          <div class="team-photo">
+            <img src="/assets/images/team/team-4.jpg" alt="Denis Pradet - Professeur de céramique" loading="lazy">
+          </div>
+          <h3 class="team-name">Denis Pradet</h3>
+          <p class="team-role">Céramique</p>
+        </div>
+      </div>
+
+      <div class="section-cta text-center">
+        <a href="/equipe" class="btn btn-ghost btn-lg">Découvrir l'équipe complète</a>
+      </div>
+    </div>
+  </section>
+
+  {# Session Announcement Banner #}
+  <section class="section section-announcement">
+    <div class="container">
+      <div class="announcement-banner">
+        <div class="announcement-content">
+          <span class="announcement-label">Prochaine session</span>
+          <h2 class="announcement-title">Session Hiver 2025</h2>
+          <p class="announcement-text">Inscriptions ouvertes du 15 janvier au 1er février</p>
+        </div>
+        <a href="/cours#inscription" class="btn btn-primary btn-lg">S'inscrire maintenant</a>
+      </div>
+    </div>
+  </section>
 {% endblock %}

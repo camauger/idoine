@@ -1,8 +1,5 @@
 # IDOINE – Générateur de site statique
 
-Ce dépôt contient la version personnalisée d’IDOINE utilisée pour bâtir [ludomancien.com](https://ludomancien.com), un site unilingue consacré aux jeux de rôle.
-Le générateur assemble Markdown, templates Jinja2, assets optimisés et feuilles de style SCSS pour produire un site statique prêt à être déployé sur Netlify.
-
 ---
 
 ## Sommaire
@@ -114,14 +111,14 @@ Chaque fichier Markdown commence par un bloc YAML. Voici un exemple complet pour
 
 ```yaml
 ---
-title: "Oui-Et ('Yes and') dans les jeux de rôle"
+title: "Oui-Et ('Yes and') dans la céramique et le vitrail"
 description: "Guide pratique pour la narration collaborative."
 slug: oui-et
 date: 2024-03-23
 author: Christian Amauger
-categories: ["Jeux de rôle", "Création"]
+categories: ["Céramique", "Vitrail"]
 meta_keywords: ["oui-et", "improvisation"]
-tags: ["jeux de rôle", "création"]
+tags: ["céramique", "vitrail"]
 banner: /images/oui-et.png          # Image utilisée pour le hero des articles
 hero_image: /images/oui-et.png      # Optionnel : surcharge de l’image principale
 hero_description: "Découvrir la philosophie du Oui-Et."

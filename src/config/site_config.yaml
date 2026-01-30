@@ -46,27 +46,20 @@ language_names:
 # Les icônes correspondantes seront affichées dans le footer
 
 social_media:
-  github:
-    url: 'https://github.com/votre-username'
-    name: 'GitHub'
-  # Décommentez et modifiez pour ajouter d'autres réseaux:
-  # twitter:
-  #   url: 'https://twitter.com/votre-username'
-  #   name: 'Twitter'
-  # linkedin:
-  #   url: 'https://linkedin.com/in/votre-username'
-  #   name: 'LinkedIn'
-  # bsky:
-  #   url: 'https://bsky.app/profile/votre-handle'
-  #   name: 'Bluesky'
+  facebook:
+    url: 'https://www.facebook.com/atelierstelmeceramiqueetvitrail'
+    name: 'Facebook'
+  instagram:
+    url: 'https://www.instagram.com/atelierstelme/'
+    name: 'Instagram'
 
 # ------------------------------------------------------------
 # SEO - RÉFÉRENCEMENT
 # ------------------------------------------------------------
 # Métadonnées par défaut pour le référencement
 
-default_description: 'Bienvenue sur mon site personnel'
-keywords: 'blog, personnel, web'
+default_description: 'Atelier St-Elme - Cours de céramique et vitrail à Beauport, Québec. Tournage, façonnage, modelage et technique Tiffany depuis plus de 40 ans.'
+keywords: 'céramique, vitrail, cours, atelier, Beauport, Québec, tournage, poterie, Tiffany'
 
 # ------------------------------------------------------------
 # OPTIONS AVANCÉES

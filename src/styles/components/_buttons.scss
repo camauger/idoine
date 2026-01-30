@@ -1,49 +1,300 @@
+// =============================================================================
+// Buttons - Atelier St-Elme
+// =============================================================================
+// Warm, inviting buttons with terracotta primary and softer styling
+
+// -----------------------------------------------------------------------------
+// Base button styles
+// -----------------------------------------------------------------------------
 .btn {
-  display: inline-block;
-  padding: var(--spacing-2) var(--spacing-4);
-  border-radius: var(--border-radius);
-  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-6);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 600;
+  line-height: 1;
   text-decoration: none;
-  transition: all 0.2s ease-in-out;
+  text-align: center;
+  border: 2px solid transparent;
+  border-radius: var(--border-radius-lg);
+  cursor: pointer;
+  transition: all var(--transition-fast);
 
-  &.small {
-    padding: var(--spacing-1) var(--spacing-2);
+  // Ensure minimum touch target
+  min-height: 44px;
+  min-width: 44px;
+
+  // Focus state
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 
-  &.large {
-    padding: var(--spacing-3) var(--spacing-5);
+  // Disabled state
+  &:disabled,
+  &.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
   }
 
-  i {
-    margin-right: var(--spacing-2);
+  // Icon styling
+  i, svg {
+    flex-shrink: 0;
   }
 
-  &-primary {
-    background: var(--color-primary);
-    color: var(--color-white);
+  svg {
+    width: 1.25em;
+    height: 1.25em;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Button sizes
+// -----------------------------------------------------------------------------
+.btn-sm,
+.btn.small {
+  padding: var(--spacing-2) var(--spacing-4);
+  font-size: var(--text-sm);
+  border-radius: var(--border-radius);
+  min-height: 36px;
+}
+
+.btn-lg,
+.btn.large {
+  padding: var(--spacing-4) var(--spacing-8);
+  font-size: var(--text-lg);
+  border-radius: var(--border-radius-xl);
+}
+
+// -----------------------------------------------------------------------------
+// Primary button - Terracotta
+// -----------------------------------------------------------------------------
+.btn-primary {
+  background-color: var(--color-terracotta);
+  color: var(--color-warm-white);
+  border-color: var(--color-terracotta);
+  box-shadow: 0 2px 4px rgba(194, 113, 79, 0.2);
+
+  &:hover {
+    background-color: var(--color-terracotta-light);
+    border-color: var(--color-terracotta-light);
+    color: var(--color-warm-white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(194, 113, 79, 0.3);
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 1px 2px rgba(194, 113, 79, 0.2);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Secondary button - Sage green
+// -----------------------------------------------------------------------------
+.btn-secondary {
+  background-color: var(--color-sage);
+  color: var(--color-warm-white);
+  border-color: var(--color-sage);
+  box-shadow: 0 2px 4px rgba(139, 154, 125, 0.2);
+
+  &:hover {
+    background-color: var(--color-sage-light);
+    border-color: var(--color-sage-light);
+    color: var(--color-warm-white);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(139, 154, 125, 0.3);
+    text-decoration: none;
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Outline button - Terracotta border
+// -----------------------------------------------------------------------------
+.btn-outline {
+  background-color: transparent;
+  color: var(--color-terracotta);
+  border-color: var(--color-terracotta);
+
+  &:hover {
+    background-color: var(--color-terracotta);
+    color: var(--color-warm-white);
+    text-decoration: none;
+  }
+}
+
+// Outline variant - Sage
+.btn-outline-sage {
+  background-color: transparent;
+  color: var(--color-sage);
+  border-color: var(--color-sage);
+
+  &:hover {
+    background-color: var(--color-sage);
+    color: var(--color-warm-white);
+    text-decoration: none;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Ghost button - Text only with hover background
+// -----------------------------------------------------------------------------
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-terracotta);
+  border-color: transparent;
+
+  &:hover {
+    background-color: rgba(194, 113, 79, 0.1);
+    text-decoration: none;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Link button - Looks like a link but has button padding
+// -----------------------------------------------------------------------------
+.btn-link {
+  background-color: transparent;
+  color: var(--color-glass-blue);
+  border-color: transparent;
+  padding: var(--spacing-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+
+  &:hover {
+    color: var(--color-glass-blue-light);
+    text-decoration: underline;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Dark background variants
+// -----------------------------------------------------------------------------
+.btn-on-dark {
+  &.btn-primary {
+    box-shadow: 0 4px 12px rgba(194, 113, 79, 0.3);
 
     &:hover {
-      background: var(--color-primary-dark);
-      color: var(--color-white);
+      box-shadow: 0 6px 16px rgba(194, 113, 79, 0.4);
     }
   }
 
-  &-secondary {
-    background: var(--color-secondary);
-    color: var(--color-white);
+  &.btn-outline {
+    color: var(--color-warm-white);
+    border-color: rgba(253, 252, 250, 0.5);
 
     &:hover {
-      background: var(--color-secondary-dark);
+      background-color: rgba(253, 252, 250, 0.1);
+      border-color: var(--color-warm-white);
+      color: var(--color-warm-white);
     }
   }
 
-  &-outline {
-    border: 2px solid var(--color-primary);
-    color: var(--color-primary);
+  &.btn-ghost {
+    color: var(--color-warm-white);
 
     &:hover {
-      background: var(--color-primary);
-      color: var(--color-white);
+      background-color: rgba(253, 252, 250, 0.1);
     }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Icon-only button
+// -----------------------------------------------------------------------------
+.btn-icon {
+  padding: var(--spacing-2);
+  width: 44px;
+  height: 44px;
+  border-radius: var(--border-radius);
+
+  &.btn-sm {
+    width: 36px;
+    height: 36px;
+    padding: var(--spacing-1);
+  }
+
+  &.btn-lg {
+    width: 52px;
+    height: 52px;
+    padding: var(--spacing-3);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Button group
+// -----------------------------------------------------------------------------
+.btn-group {
+  display: inline-flex;
+  gap: var(--spacing-3);
+  flex-wrap: wrap;
+
+  &.btn-group-vertical {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Full width button
+// -----------------------------------------------------------------------------
+.btn-block,
+.btn-full {
+  width: 100%;
+}
+
+// -----------------------------------------------------------------------------
+// Loading state
+// -----------------------------------------------------------------------------
+.btn-loading {
+  position: relative;
+  color: transparent;
+  pointer-events: none;
+
+  &::after {
+    content: '';
+    position: absolute;
+    width: 1.25em;
+    height: 1.25em;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: btn-spin 0.6s linear infinite;
+  }
+
+  &.btn-primary::after,
+  &.btn-secondary::after {
+    border-color: var(--color-warm-white);
+    border-right-color: transparent;
+  }
+}
+
+@keyframes btn-spin {
+  to { transform: rotate(360deg); }
+}
+
+// -----------------------------------------------------------------------------
+// Reduced motion
+// -----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+
+    &:hover {
+      transform: none;
+    }
+  }
+
+  .btn-loading::after {
+    animation: none;
   }
 }

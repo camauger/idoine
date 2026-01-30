@@ -5,28 +5,52 @@
 // external requests) and privacy (no third-party tracking).
 
 // -----------------------------------------------------------------------------
-// Montserrat - Primary body font
+// Fraunces - Display/heading font (variable font)
 // -----------------------------------------------------------------------------
+// Warm, quirky serif with optical sizing - perfect for artisanal aesthetic
 @font-face {
-  font-family: 'Montserrat';
-  src: url('/assets/fonts/montserrat/montserrat-latin-300-normal.woff2') format('woff2');
-  font-weight: 300;
+  font-family: 'Fraunces';
+  src: url('/assets/fonts/fraunces/fraunces-latin-wght-normal.woff2') format('woff2');
+  font-weight: 100 900;
   font-style: normal;
   font-display: swap;
 }
 
+// -----------------------------------------------------------------------------
+// Source Serif Pro - Body font
+// -----------------------------------------------------------------------------
+// Highly readable serif with warm character
 @font-face {
-  font-family: 'Montserrat';
-  src: url('/assets/fonts/montserrat/montserrat-latin-400-normal.woff2') format('woff2');
+  font-family: 'Source Serif Pro';
+  src: url('/assets/fonts/source-serif-pro/source-serif-pro-latin-400-normal.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
+  font-family: 'Source Serif Pro';
+  src: url('/assets/fonts/source-serif-pro/source-serif-pro-latin-600-normal.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Source Serif Pro';
+  src: url('/assets/fonts/source-serif-pro/source-serif-pro-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+// -----------------------------------------------------------------------------
+// Legacy fonts (kept for backwards compatibility)
+// -----------------------------------------------------------------------------
+@font-face {
   font-family: 'Montserrat';
-  src: url('/assets/fonts/montserrat/montserrat-latin-500-normal.woff2') format('woff2');
-  font-weight: 500;
+  src: url('/assets/fonts/montserrat/montserrat-latin-400-normal.woff2') format('woff2');
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -40,36 +64,9 @@
 }
 
 @font-face {
-  font-family: 'Montserrat';
-  src: url('/assets/fonts/montserrat/montserrat-latin-700-normal.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-// -----------------------------------------------------------------------------
-// Cinzel Decorative - Display/heading font
-// -----------------------------------------------------------------------------
-@font-face {
   font-family: 'Cinzel Decorative';
   src: url('/assets/fonts/cinzel-decorative/cinzel-decorative-latin-400-normal.woff2') format('woff2');
   font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Cinzel Decorative';
-  src: url('/assets/fonts/cinzel-decorative/cinzel-decorative-latin-700-normal.woff2') format('woff2');
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'Cinzel Decorative';
-  src: url('/assets/fonts/cinzel-decorative/cinzel-decorative-latin-900-normal.woff2') format('woff2');
-  font-weight: 900;
   font-style: normal;
   font-display: swap;
 }

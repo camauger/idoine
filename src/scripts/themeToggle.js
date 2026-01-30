@@ -24,10 +24,9 @@ export function initThemeToggle() {
  * Initialise le thème au chargement
  */
 function initializeTheme() {
-  // Récupérer le thème sauvegardé ou la préférence système
+  // Récupérer le thème sauvegardé, ou défaut à light mode
   const savedTheme = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+  const initialTheme = savedTheme || "light";
 
   // Appliquer le thème initial
   applyTheme(initialTheme);

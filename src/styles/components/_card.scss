@@ -1,30 +1,379 @@
+// =============================================================================
+// Cards - Atelier St-Elme
+// =============================================================================
+// Warm, tactile card designs for content and courses
+
+// -----------------------------------------------------------------------------
+// Base card styles
+// -----------------------------------------------------------------------------
 .card {
+  background-color: var(--color-warm-white);
   border: 1px solid var(--color-border);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-unit);
+  border-radius: var(--border-radius-xl);
+  padding: var(--spacing-6);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+  }
+
+  // Link card - entire card is clickable
+  &.card-link {
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+
+    &:focus-visible {
+      outline: none;
+      box-shadow: var(--focus-ring);
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Card variants
+// -----------------------------------------------------------------------------
+.card-primary {
+  border-color: var(--color-terracotta);
+  border-left-width: 4px;
+}
+
+.card-secondary {
+  border-color: var(--color-sage);
+  border-left-width: 4px;
+}
+
+.card-elevated {
+  border: none;
+  box-shadow: var(--shadow-sm);
+
+  &:hover {
+    box-shadow: var(--shadow-lifted);
+  }
+}
+
+.card-flat {
+  background-color: var(--color-clay-cream);
+  border: none;
 
   &:hover {
     box-shadow: var(--shadow-sm);
   }
+}
 
-  &--primary {
-    border-color: var(--color-primary);
-    &:hover {
-      box-shadow: 0 2px 4px var(--color-primary);
-    }
+// -----------------------------------------------------------------------------
+// Card parts
+// -----------------------------------------------------------------------------
+.card-header {
+  margin-bottom: var(--spacing-4);
+  padding-bottom: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.card-title {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-kiln-charcoal);
+  margin-bottom: var(--spacing-2);
+}
+
+.card-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+}
+
+.card-body {
+  flex: 1;
+}
+
+.card-footer {
+  margin-top: var(--spacing-4);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-border);
+}
+
+.card-image {
+  margin: calc(var(--spacing-6) * -1);
+  margin-bottom: var(--spacing-4);
+  border-radius: var(--border-radius-xl) var(--border-radius-xl) 0 0;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+}
+
+// =============================================================================
+// Course Card - Specialized for course listings
+// =============================================================================
+.course-card {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-xl);
+  overflow: hidden;
+  transition: all var(--transition-fast);
+
+  &:hover {
+    box-shadow: var(--shadow-lifted);
+    transform: translateY(-3px);
+    border-color: var(--color-stone);
+  }
+}
+
+// Course card header with discipline badge
+.course-card-header {
+  padding: var(--spacing-4) var(--spacing-5);
+  background-color: var(--color-clay-cream);
+  border-bottom: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-3);
+}
+
+.course-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-1) var(--spacing-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  border-radius: var(--border-radius-full);
+
+  &.badge-ceramique {
+    background-color: rgba(194, 113, 79, 0.15);
+    color: var(--color-terracotta-dark);
   }
 
-  &--secondary {
-    border-color: var(--color-secondary);
-    &:hover {
-      box-shadow: 0 2px 4px var(--color-secondary);
-    }
+  &.badge-vitrail {
+    background-color: rgba(74, 124, 140, 0.15);
+    color: var(--color-glass-blue);
   }
 
-  &--dark {
-    border-color: var(--color-text);
+  &.badge-intensif {
+    background-color: rgba(212, 168, 83, 0.15);
+    color: #9A7B2C;
+  }
+
+  &.badge-enfants {
+    background-color: rgba(139, 154, 125, 0.15);
+    color: #5A6B50;
+  }
+}
+
+// Availability indicator
+.course-availability {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--text-xs);
+  font-weight: 500;
+
+  &::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+  }
+
+  &.available::before {
+    background-color: var(--color-success);
+  }
+
+  &.filling::before {
+    background-color: var(--color-amber);
+  }
+
+  &.full::before {
+    background-color: var(--color-error);
+  }
+}
+
+// Course card body
+.course-card-body {
+  flex: 1;
+  padding: var(--spacing-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3);
+}
+
+.course-title {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-kiln-charcoal);
+  margin: 0;
+  line-height: var(--leading-snug);
+}
+
+.course-description {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+  line-height: var(--leading-normal);
+  margin: 0;
+
+  // Clamp to 3 lines
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+// Course details grid
+.course-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-3);
+  margin-top: auto;
+  padding-top: var(--spacing-3);
+  border-top: 1px solid var(--color-border);
+}
+
+.course-detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+
+  .detail-label {
+    font-size: var(--text-xs);
+    color: var(--color-text-light);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .detail-value {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+  }
+}
+
+// Course card footer with price and CTA
+.course-card-footer {
+  padding: var(--spacing-4) var(--spacing-5);
+  background-color: var(--color-clay-cream);
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-4);
+}
+
+.course-price {
+  .price-amount {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-terracotta);
+  }
+
+  .price-note {
+    font-size: var(--text-xs);
+    color: var(--color-text-light);
+    display: block;
+  }
+}
+
+.course-cta {
+  flex-shrink: 0;
+}
+
+// =============================================================================
+// Team Card - For instructor profiles
+// =============================================================================
+.team-card {
+  text-align: center;
+  padding: var(--spacing-6);
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-xl);
+  transition: all var(--transition-fast);
+
+  &:hover {
+    box-shadow: var(--shadow-md);
+  }
+}
+
+.team-photo {
+  width: 8rem;
+  height: 8rem;
+  margin: 0 auto var(--spacing-4);
+  border-radius: 50%;
+  overflow: hidden;
+  border: 3px solid var(--color-clay-cream);
+  box-shadow: var(--shadow-sm);
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.team-name {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--color-kiln-charcoal);
+  margin-bottom: var(--spacing-1);
+}
+
+.team-role {
+  font-size: var(--text-sm);
+  color: var(--color-terracotta);
+  font-weight: 500;
+  margin-bottom: var(--spacing-3);
+}
+
+.team-bio {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+  line-height: var(--leading-normal);
+}
+
+// =============================================================================
+// Card grid layouts
+// =============================================================================
+.card-grid {
+  display: grid;
+  gap: var(--spacing-6);
+
+  &.cols-2 {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+
+  &.cols-3 {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  }
+
+  &.cols-4 {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+}
+
+// =============================================================================
+// Reduced motion
+// =============================================================================
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .course-card,
+  .team-card {
+    transition: none;
+
     &:hover {
-      box-shadow: 0 2px 4px var(--color-text);
+      transform: none;
     }
   }
 }

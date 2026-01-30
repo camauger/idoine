@@ -1,64 +1,106 @@
 <footer role="contentinfo" class="site-footer">
-  {% if site.footer is defined and site.footer %}
   <div class="footer-columns">
-    {% if site.footer.games %}
-    <section aria-labelledby="footer-games">
-      <h2 id="footer-games">{{ t.games_section_title }}</h2>
+    <!-- Column 1: Navigation -->
+    <section class="footer-nav-section" aria-labelledby="footer-nav">
+      <h2 id="footer-nav">Navigation</h2>
       <ul>
-        {% for game in site.footer.games %}
-        <li>
-          <a href="{{ game.url }}">{{ game.title }}</a>
-        </li>
-        {% endfor %}
+        <li><a href="/">{{ t.home }}</a></li>
+        <li><a href="/cours">Cours</a></li>
+        <li><a href="/equipe">Notre équipe</a></li>
+        <li><a href="/galerie">Galerie</a></li>
+        <li><a href="/membres">Espace membres</a></li>
       </ul>
     </section>
-    {% endif %}
 
-    {% if site.footer.resources %}
-    <section aria-labelledby="footer-resources">
-      <h2 id="footer-resources">{{ t.resources_section_title }}</h2>
-      <ul>
-        {% for resource in site.footer.resources %}
-        <li>
-          <a href="{{ resource.url }}">{{ resource.title }}</a>
-        </li>
-        {% endfor %}
-      </ul>
+    <!-- Column 2: Contact -->
+    <section class="footer-contact-section" aria-labelledby="footer-contact">
+      <h2 id="footer-contact">{{ t.contact_section_title | default('Contact') }}</h2>
+      <div class="contact-item">
+        <span class="contact-icon" aria-hidden="true">
+          <i class="fas fa-phone"></i>
+        </span>
+        <span class="contact-text">
+          <a href="tel:+14186666177">418-666-6177</a>
+        </span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon" aria-hidden="true">
+          <i class="fas fa-envelope"></i>
+        </span>
+        <span class="contact-text">
+          <a href="mailto:atelierstelme@gmail.com">atelierstelme@gmail.com</a>
+        </span>
+      </div>
+      <div class="contact-item">
+        <span class="contact-icon" aria-hidden="true">
+          <i class="fas fa-house"></i>
+        </span>
+        <span class="contact-text">
+          23 rue Hugues-Pommier<br>
+          Beauport, Québec, QC<br>
+          G1E 4T8
+        </span>
+      </div>
     </section>
-    {% endif %}
 
-    {% if site.footer.contact %}
-    <section aria-labelledby="footer-contact">
-      <h2 id="footer-contact">{{ t.contact_section_title }}</h2>
-      <ul>
-        {% for item in site.footer.contact %}
-        <li>
-          <a href="{{ item.url }}">{{ item.title }}</a>
-        </li>
-        {% endfor %}
+    <!-- Column 3: Social & Partners -->
+    <section class="footer-social-section" aria-labelledby="footer-social">
+      <h2 id="footer-social">{{ t.social_links | default('Réseaux sociaux') }}</h2>
+      <ul class="social-links">
+        {% if site.social_media %}
+          {% if site.social_media.facebook %}
+          <li>
+            <a href="{{ site.social_media.facebook.url }}"
+               class="social-link"
+               aria-label="{{ site.social_media.facebook.name }}">
+              <i class="fab fa-facebook-f" aria-hidden="true"></i>
+            </a>
+          </li>
+          {% endif %}
+          {% if site.social_media.instagram %}
+          <li>
+            <a href="{{ site.social_media.instagram.url }}"
+               class="social-link"
+               aria-label="{{ site.social_media.instagram.name }}">
+              <i class="fab fa-instagram" aria-hidden="true"></i>
+            </a>
+          </li>
+          {% endif %}
+          {% if site.social_media.github %}
+          <li>
+            <a href="{{ site.social_media.github.url }}"
+               class="social-link"
+               aria-label="{{ site.social_media.github.name }}">
+              <i class="fab fa-github" aria-hidden="true"></i>
+            </a>
+          </li>
+          {% endif %}
+        {% endif %}
       </ul>
-    </section>
-    {% endif %}
-  </div>
-  {% endif %}
 
-  <div class="footer-bottom">
-    <p class="footer-text">
-      &copy; {{ site.year }}
-      {% if site.author_url %}
-      <a href="{{ site.author_url }}">{{ site.title }}</a>
-      {% else %}
-      {{ site.title }}
+      <!-- Partners (optional) -->
+      {% if site.partners %}
+      <div class="footer-partners">
+        <h3>Nos partenaires</h3>
+        <div class="partner-logos">
+          {% for partner in site.partners %}
+          <a href="{{ partner.url }}" target="_blank" rel="noopener noreferrer">
+            <img src="{{ partner.logo }}" alt="{{ partner.name }}">
+          </a>
+          {% endfor %}
+        </div>
+      </div>
       {% endif %}
-    </p>
-    {% if site.social_media.github %}
-    <a
-      class="footer-github"
-      href="{{ site.social_media.github.url }}"
-      aria-label="{{ site.social_media.github.name }}"
-    >
-      {{ site.social_media.github.name }}
-    </a>
-    {% endif %}
+    </section>
+  </div>
+
+  <!-- Footer bottom bar -->
+  <div class="footer-bottom">
+    <div class="footer-bottom-content">
+      <p class="footer-text">
+        &copy; {{ site.year | default('2025') }} {{ site.title | default('Atelier St-Elme') }}.
+        {{ t.all_rights_reserved | default('Tous droits réservés') }}.
+      </p>
+    </div>
   </div>
 </footer>

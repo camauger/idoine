@@ -1,16 +1,24 @@
-{% set hero_image = page.hero_image | default('/assets/images/banner.jpg') %}
+{% set hero_image = page.hero_image | default('/assets/images/hero-workshop.jpg') %}
 {% set hero_title = page.hero_title | default(page.title) %}
 {% set hero_description = page.hero_description | default(page.description) %}
 {% set hero_cta_label = page.hero_cta | default(t.hero_cta) %}
-{% set hero_cta_url = page.hero_cta_url | default('/articles') %}
+{% set hero_cta_url = page.hero_cta_url | default('/cours') %}
+{% set hero_cta_secondary_label = page.hero_cta_secondary | default(none) %}
+{% set hero_cta_secondary_url = page.hero_cta_secondary_url | default('/a-propos') %}
 
-<section class="hero" style="background-image: url('{{ hero_image }}');">
-  <div class="hero-overlay"></div>
+<section class="hero" style="background-image: url('{{ hero_image }}');" role="banner">
+  <div class="hero-overlay" aria-hidden="true"></div>
   <div class="hero-content">
     <h1>{{ hero_title }}</h1>
     {% if hero_description %}
     <p class="hero-description">{{ hero_description }}</p>
     {% endif %}
-    <a href="{{ hero_cta_url }}" class="btn btn-primary">{{ hero_cta_label }}</a>
+
+    <div class="hero-actions">
+      <a href="{{ hero_cta_url }}" class="btn btn-primary">{{ hero_cta_label }}</a>
+      {% if hero_cta_secondary_label %}
+      <a href="{{ hero_cta_secondary_url }}" class="btn btn-secondary">{{ hero_cta_secondary_label }}</a>
+      {% endif %}
+    </div>
   </div>
 </section>

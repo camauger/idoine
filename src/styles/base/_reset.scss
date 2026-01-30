@@ -1,8 +1,18 @@
+// =============================================================================
+// CSS Reset - Atelier St-Elme
+// =============================================================================
+// Modern CSS reset with accessibility considerations
+
 /* Box sizing rules */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+}
+
+/* Remove default margin */
+* {
+  margin: 0;
 }
 
 /* Prevent font size inflation */
@@ -12,30 +22,18 @@ html {
   text-size-adjust: none;
 }
 
-/* Remove default margin in favour of better control in authored CSS */
-body,
-h1,
-h2,
-h3,
-h4,
-p,
-figure,
-blockquote,
-dl,
-dd {
-  margin-block: 0;
+/* Set core body defaults */
+body {
+  min-height: 100dvh;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* Remove list styles on ul, ol elements with a list role, which suggests default styling will be removed */
+/* Remove list styles on ul, ol elements with a list role */
 ul[role="list"],
 ol[role="list"] {
   list-style: none;
-}
-
-/* Set core body defaults */
-body {
-  min-height: 100vh;
-  line-height: 1.5;
+  padding: 0;
 }
 
 /* Set shorter line heights on headings and interactive elements */
@@ -57,6 +55,11 @@ h4 {
   text-wrap: balance;
 }
 
+/* Improve paragraph wrapping */
+p {
+  text-wrap: pretty;
+}
+
 /* A elements that don't have a class get default styles */
 a:not([class]) {
   text-decoration-skip-ink: auto;
@@ -65,9 +68,12 @@ a:not([class]) {
 
 /* Make images easier to work with */
 img,
-picture {
-  max-width: 100%;
+picture,
+video,
+canvas,
+svg {
   display: block;
+  max-width: 100%;
 }
 
 /* Inherit fonts for inputs and buttons */
@@ -75,8 +81,7 @@ input,
 button,
 textarea,
 select {
-  font-family: inherit;
-  font-size: inherit;
+  font: inherit;
 }
 
 /* Make sure textareas without a rows attribute are not tiny */
@@ -84,7 +89,29 @@ textarea:not([rows]) {
   min-height: 10em;
 }
 
+/* Remove default button styles */
+button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
 /* Anything that has been anchored to should have extra scroll margin */
 :target {
-  scroll-margin-block: 5ex;
+  scroll-margin-block: calc(var(--header-height, 4.5rem) + 2rem);
+}
+
+/* Remove animations for people who've turned them off */
+@media (prefers-reduced-motion: reduce) {
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+}
+
+/* Smooth scrolling */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }

@@ -22,7 +22,7 @@ fr:
   header_actions: Actions d'en-tête
   hero_cta: Voir tous les articles
   home: Accueil
-  home_title: "Jeux de rôle, ressources et créations"
+  home_title: "Atelier de céramique et de vitrail"
   image_download: Télécharger l’image
   image_gallery_title: "Galerie d'images"
   image_meta_description: "Découvrez l’image {image_name} et téléchargez-la en différentes tailles."
@@ -68,11 +68,11 @@ fr:
     - "Esprit d’analyse et résolution de problèmes"
   tags: Étiquettes
   toggle_theme: Basculer le thème
-  glossary_title: "Glossaire des jeux de rôle"
-  glossary_description: "Glossaire dédié au jeu de rôle"
+  glossary_title: "Glossaire de la céramique et du vitrail"
+  glossary_description: "Glossaire dédié à la céramique et au vitrail"
   glossary_thumbnail_alt: "Illustration de :"
-  games_section_title: "Mes jeux de rôle"
-  resources_section_title: "Ressources sur le jeu de rôle"
+  games_section_title: "Mes céramiques et vitraux"
+  resources_section_title: "Ressources sur la céramique et le vitrail"
   contact_section_title: "Coordonnées"
   updated_date: "Mis à jour le"
   updated_on: Mis à jour le
@@ -103,7 +103,7 @@ en:
   header_actions: Header actions
   hero_cta: View all articles
   home: Home
-  home_title: "Role-playing games, resources and creations"
+  home_title: "Ceramic and glass workshop"
   image_download: Download image
   image_gallery_title: "Image gallery"
   image_meta_description: "Discover the image {image_name} and download it in various sizes."

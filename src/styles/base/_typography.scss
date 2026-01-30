@@ -1,74 +1,288 @@
+// =============================================================================
+// Typography - Atelier St-Elme
+// =============================================================================
+// Fraunces (display) + Source Serif Pro (body)
+// Warm, artisanal typography for a ceramics and glass workshop
+
+// -----------------------------------------------------------------------------
+// Base styles
+// -----------------------------------------------------------------------------
 body {
-  font-family: var(--font-primary);
-  line-height: 1.6;
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-normal);
   color: var(--color-text);
   background-color: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
+// -----------------------------------------------------------------------------
+// Headings
+// -----------------------------------------------------------------------------
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  line-height: var(--leading-tight);
+  color: var(--color-kiln-charcoal);
+  margin-bottom: var(--spacing-4);
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+}
+
+h2 {
+  font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+  font-weight: 600;
+}
+
+h3 {
+  font-size: clamp(var(--text-xl), 3vw, var(--text-3xl));
+  font-weight: 600;
+}
+
+h4 {
+  font-size: clamp(var(--text-lg), 2.5vw, var(--text-2xl));
+  font-weight: 600;
+}
+
+h5 {
+  font-size: var(--text-xl);
+  font-weight: 600;
+}
+
 h6 {
-  font-family: var(--font-secondary);
-  line-height: 1.2;
-  margin-bottom: var(--spacing-unit);
+  font-size: var(--text-lg);
+  font-weight: 600;
 }
 
+// -----------------------------------------------------------------------------
+// Body text
+// -----------------------------------------------------------------------------
 p {
   font-size: var(--text-base);
-  margin-bottom: var(--spacing-2);
+  line-height: var(--leading-normal);
+  margin-bottom: var(--spacing-4);
+  text-wrap: pretty;
 }
 
-a {
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: color var(--transition-fast) ease;
-}
-a:hover {
-  color: var(--color-primary-dark);
-}
-
-blockquote {
-  font-style: italic;
-  border-left: 4px solid var(--color-border);
-  margin: var(--spacing-4) 0;
-  padding-left: var(--spacing-4);
+.lead,
+.text-lead {
+  font-size: var(--text-lg);
+  line-height: var(--leading-relaxed);
   color: var(--color-text-light);
 }
+
+.text-sm {
+  font-size: var(--text-sm);
+}
+
+.text-lg {
+  font-size: var(--text-lg);
+}
+
+.text-xl {
+  font-size: var(--text-xl);
+}
+
+// -----------------------------------------------------------------------------
+// Links
+// -----------------------------------------------------------------------------
+a {
+  color: var(--color-glass-blue);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+
+  &:hover {
+    color: var(--color-glass-blue-light);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  &:focus-visible {
+    outline: none;
+    box-shadow: var(--focus-ring);
+    border-radius: var(--border-radius-sm);
+  }
+}
+
+// Links within body text - underlined for clarity
+p a,
+li a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-thickness: 1px;
+  text-decoration-color: var(--color-stone-light);
+
+  &:hover {
+    text-decoration-color: var(--color-glass-blue);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Lists
+// -----------------------------------------------------------------------------
+ul, ol {
+  margin: var(--spacing-4) 0;
+  padding-left: var(--spacing-6);
+}
+
+li {
+  margin-bottom: var(--spacing-2);
+  line-height: var(--leading-normal);
+}
+
+// Nested lists
+ul ul, ol ol, ul ol, ol ul {
+  margin: var(--spacing-2) 0;
+}
+
+// -----------------------------------------------------------------------------
+// Blockquotes
+// -----------------------------------------------------------------------------
+blockquote {
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  font-style: italic;
+  font-weight: 400;
+  border-left: 4px solid var(--color-terracotta);
+  margin: var(--spacing-8) 0;
+  padding: var(--spacing-4) var(--spacing-6);
+  background-color: var(--color-warm-white);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  color: var(--color-text);
+
+  p {
+    margin-bottom: 0;
+  }
+
+  cite {
+    display: block;
+    margin-top: var(--spacing-4);
+    font-size: var(--text-sm);
+    font-style: normal;
+    color: var(--color-text-light);
+
+    &::before {
+      content: '— ';
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Horizontal rules
+// -----------------------------------------------------------------------------
 hr {
   border: none;
   border-top: 1px solid var(--color-border);
-  margin: var(--spacing-unit) 0;
-}
-ul,
-ol {
-  margin: var(--spacing-2) 0 var(--spacing-2) var(--spacing-4);
-}
-li {
-  margin-bottom: var(--spacing-1);
+  margin: var(--spacing-8) 0;
 }
 
+// Decorative divider
+.divider {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-4);
+  margin: var(--spacing-8) 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-border);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Code
+// -----------------------------------------------------------------------------
 code {
-  font-family: monospace;
-  background: var(--color-background-alt);
-  padding: 0 var(--spacing-1);
-  border-radius: var(--border-radius);
+  font-family: 'SF Mono', 'Fira Code', 'Monaco', monospace;
+  font-size: 0.9em;
+  background-color: var(--color-warm-white);
+  padding: var(--spacing-1) var(--spacing-2);
+  border-radius: var(--border-radius-sm);
+  border: 1px solid var(--color-border);
 }
 
 pre {
-  background: var(--color-background-alt);
-  padding: var(--spacing-4);
-  border-radius: var(--border-radius);
+  background-color: var(--color-deep-brown);
+  color: var(--color-warm-white);
+  padding: var(--spacing-6);
+  border-radius: var(--border-radius-lg);
   overflow-x: auto;
+  margin: var(--spacing-6) 0;
+
+  code {
+    background: none;
+    padding: 0;
+    border: none;
+    font-size: var(--text-sm);
+    color: inherit;
+  }
 }
 
-small {
-  font-size: 0.85em;
+// -----------------------------------------------------------------------------
+// Small text and utilities
+// -----------------------------------------------------------------------------
+small,
+.text-small {
+  font-size: var(--text-sm);
   color: var(--color-text-light);
 }
-sub,
+
+.text-muted {
+  color: var(--color-text-light);
+}
+
+.text-accent {
+  color: var(--color-terracotta);
+}
+
+strong, b {
+  font-weight: 600;
+}
+
+em, i {
+  font-style: italic;
+}
+
+mark {
+  background-color: var(--color-amber);
+  padding: 0.1em 0.3em;
+  border-radius: var(--border-radius-sm);
+}
+
+sub, sup {
+  font-size: 0.75em;
+  position: relative;
+  vertical-align: baseline;
+}
+
 sup {
-  font-size: 0.8em;
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+// -----------------------------------------------------------------------------
+// Text alignment utilities
+// -----------------------------------------------------------------------------
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+// -----------------------------------------------------------------------------
+// Selection
+// -----------------------------------------------------------------------------
+::selection {
+  background-color: var(--color-terracotta);
+  color: var(--color-warm-white);
 }
