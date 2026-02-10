@@ -29,7 +29,7 @@
   </section>
 
   {# Filter Bar #}
-  <nav class="section filter-bar" aria-label="Filtrer les cours">
+  <nav class="section filter-bar" id="filtres-cours" aria-label="Filtrer les cours">
     <div class="container">
       <div class="filter-buttons">
         <button class="filter-btn active" data-filter="all">Tous les cours</button>
@@ -58,7 +58,7 @@
             <div class="course-badges">
               <span class="course-badge badge-ceramique">Céramique</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Tournage soir</h3>
@@ -90,7 +90,7 @@
               <span class="price-amount">240$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Tournage+soir" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -100,7 +100,7 @@
             <div class="course-badges">
               <span class="course-badge badge-ceramique">Céramique</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Tournage matin</h3>
@@ -131,7 +131,7 @@
               <span class="price-amount">240$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Tournage+matin" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -141,7 +141,7 @@
             <div class="course-badges">
               <span class="course-badge badge-ceramique">Céramique</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Façonnage</h3>
@@ -173,7 +173,7 @@
               <span class="price-amount">267$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Fa%C3%A7onnage" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -183,7 +183,7 @@
             <div class="course-badges">
               <span class="course-badge badge-ceramique">Céramique</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Tournage ados</h3>
@@ -215,7 +215,7 @@
               <span class="price-amount">231$</span>
               <span class="price-note">non taxé</span>
             </div>
-            <a href="/inscription?cours=Tournage+ados" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -226,7 +226,7 @@
               <span class="course-badge badge-ceramique">Céramique</span>
               <span class="course-badge badge-new">Nouveau</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Cours de vannerie</h3>
@@ -258,7 +258,7 @@
               <span class="price-amount">198$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Cours+de+vannerie" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -268,7 +268,7 @@
             <div class="course-badges">
               <span class="course-badge badge-ceramique">Céramique</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Mosaïque</h3>
@@ -300,7 +300,7 @@
               <span class="price-amount">174$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Mosa%C3%AFque" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
       </div>
@@ -310,7 +310,7 @@
   {# ============================================================================= #}
   {# CÉRAMIQUE - INTENSIFS #}
   {# ============================================================================= #}
-  <section class="section courses-section courses-section-alt" data-discipline="ceramique">
+  <section class="section courses-section courses-section-alt" id="intensif" data-discipline="ceramique">
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Céramique - Ateliers intensifs</h2>
@@ -325,7 +325,7 @@
               <span class="course-badge badge-ceramique">Céramique</span>
               <span class="course-badge badge-intensif">Intensif</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Potier d'un jour</h3>
@@ -357,7 +357,7 @@
               <span class="price-amount">85$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Potier+d%27un+jour" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -368,12 +368,12 @@
               <span class="course-badge badge-ceramique">Céramique</span>
               <span class="course-badge badge-intensif">Intensif</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Folie du tournage</h3>
             <p class="course-description">
-              Une matinée amusante pour découvrir les techniques de base du tournage.
+              Une après-midi amusante pour découvrir les techniques de base du tournage.
               Idéal pour les groupes et anniversaires.
             </p>
             <div class="course-details">
@@ -400,7 +400,7 @@
               <span class="price-amount">46$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Folie+du+tournage" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -453,9 +453,8 @@
             <div class="course-badges">
               <span class="course-badge badge-ceramique">Céramique</span>
               <span class="course-badge badge-intensif">Intensif</span>
-              <span class="course-badge badge-new">Nouveau</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability available">À venir</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Pots pincés</h3>
@@ -487,7 +486,7 @@
               <span class="price-amount">70$</span>
               <span class="price-note">+ taxes</span>
             </div>
-            <a href="/inscription?cours=Pots+pinc%C3%A9s" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">À venir</span>
           </footer>
         </article>
 
@@ -540,7 +539,7 @@
   {# ============================================================================= #}
   {# CÉRAMIQUE - ENFANTS #}
   {# ============================================================================= #}
-  <section class="section courses-section" data-discipline="ceramique">
+  <section class="section courses-section" id="enfants" data-discipline="ceramique">
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Céramique - Cours enfants</h2>
@@ -555,7 +554,7 @@
               <span class="course-badge badge-ceramique">Céramique</span>
               <span class="course-badge badge-enfants">Enfants</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Modelage enfants</h3>
@@ -588,7 +587,7 @@
               <span class="price-amount">203$</span>
               <span class="price-note">non taxé</span>
             </div>
-            <a href="/inscription?cours=Modelage+enfants" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
       </div>
@@ -602,7 +601,7 @@
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Vitrail Tiffany</h2>
-        <p class="section-subtitle">Apprenez la technique du cuivre et créez des pièces uniques</p>
+        <p class="section-subtitle">Apprenez la technique au ruban de cuivre et créez des pièces uniques</p>
       </header>
 
       <div class="card-grid cols-2">
@@ -612,7 +611,7 @@
             <div class="course-badges">
               <span class="course-badge badge-vitrail">Vitrail</span>
             </div>
-            <span class="course-availability available">Places disponibles</span>
+            <span class="course-availability full">Complet</span>
           </header>
           <div class="course-card-body">
             <h3 class="course-title">Vitrail débutant/intermédiaire</h3>
@@ -645,7 +644,7 @@
               <span class="price-amount">226$</span>
               <span class="price-note">+ taxes + mat. 55$</span>
             </div>
-            <a href="/inscription?cours=Vitrail+d%C3%A9butant%2Finterm%C3%A9diaire+-+Mardi" class="btn btn-primary btn-sm">S'inscrire</a>
+            <span class="btn btn-outline btn-sm disabled">Complet</span>
           </footer>
         </article>
 
@@ -723,4 +722,6 @@
       </div>
     </div>
   </section>
+
+  <script src="/scripts/courseFilters.js"></script>
 {% endblock %}

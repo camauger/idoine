@@ -6,6 +6,7 @@
     "scripts": {
         "dev": "grunt dev",
         "dev:py": "python scripts/dev_server.py",
+        "watch": "grunt watchOnly",
         "build": "grunt sass:prod && python scripts/core/build.py --build",
         "audit": "npm audit --audit-level=moderate || true",
         "audit:fix": "npm audit fix || true"

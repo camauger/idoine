@@ -194,6 +194,14 @@ module.exports = function (grunt) {
     "connect",
     "watch",
   ]);
+  // Watch only: rebuild CSS and HTML on file changes (no server). Use with dev:py in another terminal.
+  grunt.registerTask("watchOnly", [
+    "shell:build_html",
+    "sass:dev",
+    "postcss:dev",
+    "copy",
+    "watch",
+  ]);
   grunt.registerTask("build", [
     "shell:build_html",
     "clean:styles",
