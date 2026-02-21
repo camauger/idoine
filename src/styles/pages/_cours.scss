@@ -272,6 +272,42 @@
 }
 
 // -----------------------------------------------------------------------------
+// Course detail page (single course, e.g. mosaique-verre)
+// -----------------------------------------------------------------------------
+.course-detail-content {
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-top: var(--spacing-8);
+    margin-bottom: var(--spacing-3);
+
+    &:first-child {
+      margin-top: 0;
+    }
+  }
+
+  h3 {
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-top: var(--spacing-6);
+    margin-bottom: var(--spacing-2);
+  }
+
+  img {
+    max-width: min(100%, 20rem);
+    width: auto;
+    height: auto;
+    display: block;
+    margin-bottom: var(--spacing-4);
+    border-radius: var(--border-radius-lg);
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Course filtering (JavaScript enhancement)
 // -----------------------------------------------------------------------------
 [data-category] {
