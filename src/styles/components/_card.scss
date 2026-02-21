@@ -170,6 +170,11 @@
     background-color: rgba(139, 154, 125, 0.15);
     color: #5A6B50;
   }
+
+  &.badge-mosaique {
+    background-color: rgba(147, 112, 219, 0.15);
+    color: #5B4B8A;
+  }
 }
 
 // Availability indicator
@@ -207,6 +212,22 @@
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);
+}
+
+// Course card with image (e.g. Mosaïque de verre)
+.course-card-image {
+  margin: calc(var(--spacing-5) * -1) calc(var(--spacing-5) * -1) var(--spacing-3);
+  border-radius: 0;
+  overflow: hidden;
+  line-height: 0;
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 3 / 4;
+    object-fit: cover;
+  }
 }
 
 .course-title {
@@ -288,6 +309,9 @@
 
 .course-cta {
   flex-shrink: 0;
+  display: flex;
+  gap: var(--spacing-2);
+  flex-wrap: wrap;
 }
 
 // =============================================================================

@@ -1,0 +1,33 @@
+{% extends "page.html" %}
+
+{% block content %}
+  {# Page Hero #}
+  <section class="section section-page-hero cours-hero">
+    <div class="container">
+      <h1 class="page-title">{{ page.title }}</h1>
+      {% if page.description %}
+      <p class="page-intro lead">{{ page.description }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {# Main content from markdown #}
+  <section class="section course-detail-content">
+    <div class="container container-narrow">
+      {{ content | safe }}
+    </div>
+  </section>
+
+  {# CTA Inscription #}
+  <section class="section section-cta-registration">
+    <div class="container">
+      <div class="cta-banner">
+        <div class="cta-content">
+          <h2>S'inscrire à ce cours</h2>
+          <p>Réservez votre place pour l'atelier Mosaïque de verre</p>
+        </div>
+        <a href="/inscription?cours={{ (page.inscription_cours | default(page.title)) | urlencode }}" class="btn btn-primary btn-lg">S'inscrire par courriel</a>
+      </div>
+    </div>
+  </section>
+{% endblock %}

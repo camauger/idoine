@@ -7,6 +7,7 @@
     all: 'filtres-cours',
     ceramique: 'ceramique',
     vitrail: 'vitrail',
+    mosaique: 'mosaique',
     intensif: 'intensif',
     enfants: 'enfants'
   };
