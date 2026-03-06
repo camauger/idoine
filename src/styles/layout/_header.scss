@@ -3,11 +3,13 @@
 // =============================================================================
 // Warm, inviting navigation with artisanal feel
 
-body > header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+// Header toujours fixe en haut (sticky) — position renforcée pour éviter toute surcharge
+body > header,
+header[role="banner"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
   height: var(--header-height);
   background-color: var(--header-bg);
   border-bottom: 1px solid var(--color-border);

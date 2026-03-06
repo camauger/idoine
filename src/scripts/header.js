@@ -119,12 +119,10 @@ class HeaderController {
 
   /**
    * Gestion du comportement au scroll
-   * - Cacher/montrer le header
-   * - Animations fluides
+   * - Cacher/montrer le header (mobile uniquement)
    * - Optimisation des performances
    */
   initScrollBehavior() {
-    // Utiliser requestAnimationFrame pour optimiser les performances
     let ticking = false;
 
     window.addEventListener("scroll", () => {
@@ -136,25 +134,38 @@ class HeaderController {
         ticking = true;
       }
     });
+
+    // Réafficher le header si on redimensionne vers desktop
+    window.addEventListener("resize", () => {
+      this.handleScroll();
+    });
   }
 
   /**
    * Logique de gestion du scroll
-   * - Détection de la direction du scroll
-   * - Application des classes appropriées
+   * - Desktop (768px+) : header toujours visible (sticky)
+   * - Page cours (barre de filtres) : header toujours visible
+   * - Mobile : masquer le header au scroll vers le bas, le réafficher au scroll vers le haut
    */
   handleScroll() {
     const currentScroll = window.pageYOffset;
+    const isDesktop = window.matchMedia("(min-width: 768px)").matches;
+    const hasStickyFilters = document.getElementById("filtres-cours");
 
-    // Détecter la direction du scroll
+    if (isDesktop || hasStickyFilters) {
+      this.header.classList.remove("header-hidden");
+      this.header.classList.add("header-visible");
+      this.lastScroll = currentScroll;
+      return;
+    }
+
+    // Mobile : détecter la direction du scroll
     if (currentScroll > this.lastScroll && !this.isScrollingUp) {
-      // Scroll vers le bas
       if (currentScroll > this.scrollThreshold) {
         this.header.classList.add("header-hidden");
       }
       this.isScrollingUp = true;
     } else if (currentScroll < this.lastScroll && this.isScrollingUp) {
-      // Scroll vers le haut
       this.header.classList.remove("header-hidden");
       this.header.classList.add("header-visible");
       this.isScrollingUp = false;

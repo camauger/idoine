@@ -1,0 +1,167 @@
+{
+  "session": "Printemps 2026",
+  "titre": "Horaire des cours Printemps 2026",
+  "cours": [
+    {
+      "jour": "lundi",
+      "creneau": "AM",
+      "salle": "Salle des tours",
+      "nom": "Tournage adultes",
+      "heure": "9h-12h",
+      "duree_semaines": 10,
+      "debut": "25 mars",
+      "places": 7,
+      "prof": "Denis",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "mardi",
+      "creneau": "AM",
+      "salle": "Salle principale",
+      "nom": "Modelage enfants 7-14 ans",
+      "heure": "9h-11h",
+      "duree_semaines": 10,
+      "debut": "11 avril",
+      "places": 8,
+      "prof": "Nathalie",
+      "prix": "250$ non taxable"
+    },
+    {
+      "jour": "mercredi",
+      "creneau": "PM",
+      "salle": "Salle des tours",
+      "nom": "Tournage adultes",
+      "heure": "13h30-16h30",
+      "duree_semaines": 10,
+      "debut": "7 avril",
+      "places": 7,
+      "prof": "Nathalie",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "jeudi",
+      "creneau": "PM",
+      "salle": "Salle des tours",
+      "nom": "Tournage adultes",
+      "heure": "13h30-16h30",
+      "duree_semaines": 10,
+      "debut": "7 avril",
+      "places": 7,
+      "prof": "Nathalie",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "jeudi",
+      "creneau": "PM",
+      "salle": "Salle principale",
+      "nom": "Mosaïque de céramique",
+      "heure": "13h30-16h30",
+      "duree_semaines": 8,
+      "debut": "11 avril",
+      "places": 6,
+      "prof": "Nathalie",
+      "prix": "200$ + tx"
+    },
+    {
+      "jour": "lundi",
+      "creneau": "SOIR",
+      "salle": "Salle des tours",
+      "nom": "Tournage adultes",
+      "heure": "18h-21h",
+      "duree_semaines": 10,
+      "debut": "23 mars",
+      "places": 3,
+      "prof": "Denis",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "mardi",
+      "creneau": "SOIR",
+      "salle": "Salle des tours",
+      "nom": "Tournage adultes",
+      "heure": "18h-21h",
+      "duree_semaines": 10,
+      "debut": "24 mars",
+      "places": 4,
+      "prof": "Denis",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "mercredi",
+      "creneau": "SOIR",
+      "salle": "Salle des tours",
+      "nom": "Tournage adultes",
+      "heure": "18h-21h",
+      "duree_semaines": 10,
+      "debut": "25 mars",
+      "places": 7,
+      "prof": "Denis",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "jeudi",
+      "creneau": "SOIR",
+      "salle": "Salle des tours",
+      "nom": "Tournage adultes",
+      "heure": "18h-21h",
+      "duree_semaines": 10,
+      "debut": "26 mars",
+      "places": 2,
+      "prof": "Denis",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "mardi",
+      "creneau": "SOIR",
+      "salle": "Salle principale",
+      "nom": "Façonnage adultes",
+      "heure": "18h-21h",
+      "duree_semaines": 10,
+      "debut": "7 avril",
+      "places": 6,
+      "prof": "Nathalie",
+      "prix": "280$ + tx"
+    },
+    {
+      "jour": "mercredi",
+      "creneau": "SOIR",
+      "salle": "Salle principale",
+      "nom": "Modelage enfants 7-14 ans",
+      "heure": "18h30-20h30",
+      "duree_semaines": 10,
+      "debut": "10 avril",
+      "places": 3,
+      "prof": "Nathalie",
+      "prix": "250$"
+    },
+    {
+      "jour": "mardi",
+      "creneau": "SOIR",
+      "salle": "Salle de vitrail",
+      "nom": "Vitrail débutant / intermédiaire adultes",
+      "heure": "18h-20h30",
+      "duree_semaines": 8,
+      "debut": "7 avril",
+      "places": 4,
+      "prof": "Sylvie",
+      "prix": "226$ + tx",
+      "note": "Matériel pour débutant : 55$ + tx"
+    },
+    {
+      "jour": "vendredi",
+      "creneau": "SOIR",
+      "salle": "Salle de vitrail",
+      "nom": "Vitrail débutant / intermédiaire adultes",
+      "heure": "18h-20h30",
+      "duree_semaines": 8,
+      "debut": "10 avril",
+      "places": 2,
+      "prof": "Sylvie",
+      "prix": "226$ + tx",
+      "note": "Matériel pour débutant : 55$ + tx"
+    }
+  ],
+  "notes_importantes": [
+    "Cours de vitrail réguliers : Matériel pour débutant : 55$ + tx (à ajouter dans notes importantes, comme l'argile pour les cours)"
+  ]
+}

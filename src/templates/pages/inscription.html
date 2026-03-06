@@ -135,6 +135,9 @@
                       <option value="Vitrail débutant/intermédiaire - Mardi">Vitrail débutant/intermédiaire (Mar 18h-20h30)</option>
                       <option value="Vitrail débutant/intermédiaire - Vendredi">Vitrail débutant/intermédiaire (Ven 18h-20h30)</option>
                       <option value="Vitrail: couleurs et techniques">Vitrail: couleurs et techniques (intensif)</option>
+                      <option value="Vitrail intensif – Niveau 1">Vitrail intensif – Niveau 1 - 11 avril (13h-16h)</option>
+                      <option value="Vitrail intensif – Niveau 2">Vitrail intensif – Niveau 2 - 2 mai (12h30-17h30)</option>
+                      <option value="Vitrail intensif – Niveau 2 (Pâques)">Vitrail intensif – Niveau 2 (Pâques) - 22 mars (9h-13h)</option>
                     </optgroup>
                     <optgroup label="Mosaïque">
                       <option value="Mosaïque de verre">Mosaïque de verre - 7 et 15 mars (10h-15h)</option>
@@ -283,6 +286,7 @@
     </div>
   </section>
 
-  {# Script de pré-remplissage du formulaire #}
+  {# Script API (cours depuis API, envoi vers API si ATELIER_API_URL défini) + pré-remplissage #}
+  <script src="/scripts/inscriptionApi.js"></script>
   <script src="/scripts/formPrefill.js"></script>
 {% endblock %}

@@ -1,11 +1,30 @@
 import argparse
 import logging
+import os
+import re
 import sys
 from pathlib import Path
 
 # Add scripts directory to Python path
 scripts_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(scripts_dir))
+
+
+def _load_atelier_api_url_from_env(base_path: Path) -> str:
+    """Read ATELIER_API_URL from root .env if present."""
+    env_file = base_path / ".env"
+    if not env_file.exists():
+        return ""
+    try:
+        text = env_file.read_text(encoding="utf-8")
+        for line in text.splitlines():
+            m = re.match(r"^\s*ATELIER_API_URL\s*=\s*(.+?)\s*$", line)
+            if m:
+                value = m.group(1).strip().strip("'\"")
+                return value
+    except Exception:
+        pass
+    return ""
 
 from builders.gallery_builder import GalleryBuilder
 from builders.glossary_builder import GlossaryBuilder
@@ -57,6 +76,14 @@ class SiteBuilder:
         self.is_multilingual = len(self.site_config.get("languages", [])) > 1
         self.jinja_env.globals["is_multilingual"] = self.is_multilingual
         self.jinja_env.globals["is_unilingual"] = not self.is_multilingual
+
+        # API URL for cours/inscription (env var > root .env > site_config)
+        atelier_api_url = (
+            os.environ.get("ATELIER_API_URL", "").strip()
+            or _load_atelier_api_url_from_env(self.base_path)
+            or self.site_config.get("atelier_api_url", "")
+        )
+        self.jinja_env.globals["atelier_api_url"] = atelier_api_url
 
         # Check if there are posts for each language
         self._init_has_posts()
