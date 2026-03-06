@@ -24,12 +24,16 @@
 #
 # DATABASE_URL (recommandé si vous utilisez les Netlify Functions ci-dessus)
 #   → Chaîne de connexion Neon (pooler) : postgresql://user:pass@ep-xxx-pooler.neon.tech/dbname?sslmode=require
-#   → Utilisée par netlify/functions/api.js pour /api/cours et /api/inscriptions.
+#   → Utilisée par netlify/functions/api.mjs pour /api/cours et /api/inscriptions.
 #
 # ATELIER_API_URL (optionnel en prod)
 #   → Si défini : le front appelle ce backend externe pour cours/inscriptions.
 #   → Si vide ou absent et DATABASE_URL défini : le front appelle /api/* sur le même domaine (Netlify Function).
 #   → Le build injecte cette URL dans les pages ; en prod "même origine" on peut laisser vide.
+
+# netlify dev (Windows) : si erreur "Failed to set up Deno for Edge Functions" (EBUSY),
+# supprimer le cache Deno puis réessayer : rm -rf %APPDATA%\netlify\Config\deno-cli
+# Ce projet n'utilise que des Netlify Functions (Node), pas d'Edge Functions.
 
 # Netlify Forms (formulaire d’inscription)
 # Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email
