@@ -1,12 +1,10 @@
 /**
  * courseList.js - Charge la liste des cours depuis l'API et affiche les cartes
- * Nécessite window.ATELIER_API_URL (injecté au build). En local sans URL : fallback 127.0.0.1:8000
+ * window.ATELIER_API_URL (injecté au build) : si vide, appels en même origine (/api/cours) pour netlify dev ou prod.
+ * Pour le backend local : définir ATELIER_API_URL=http://127.0.0.1:8000 dans .env avant le build.
  */
 (function () {
-  var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL) || '';
-  if (!API_URL && typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
-    API_URL = 'http://127.0.0.1:8000';
-  }
+  var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL != null) ? (window.ATELIER_API_URL || '') : '';
 
   var GRID_IDS = {
     ceramique_regulier: 'grid-ceramique',
