@@ -43,7 +43,7 @@ def _format_prix(prix: str | None, taxes: str | None) -> str | None:
         return prix
     t = (taxes or "").strip().lower()
     if t == "en sus":
-        return f"{prix} + tx"
+        return f"{prix} (taxes en sus)"
     if t == "non taxable":
         return f"{prix} non taxable"
     if t == "inclus":

@@ -75,12 +75,29 @@
     if (!horaire && !c.date_debut && !c.duree_semaines && !c.prof) details += '<div class="course-detail"><span class="detail-label">Places</span><span class="detail-value">' + (c.places_max || 0) + ' max.</span></div>';
 
     var desc = c.description ? esc(c.description) : 'Cours à l\'Atelier St-Elme. Inscription via le formulaire en ligne.';
-    var prixStr = (c.prix || '').toLowerCase();
-    var taxInclus = /non taxable|taxes incluses|incluses/.test(prixStr);
+    var prix = (c.prix || '').trim();
+    var prixStr = prix.toLowerCase();
+    var amount = prix;
+    var taxLine = '';
+    if (prix) {
+      var idx = prix.indexOf(' (');
+      if (idx !== -1) {
+        amount = prix.slice(0, idx).trim();
+        taxLine = prix.slice(idx).trim();
+      } else {
+        idx = prix.indexOf(' non taxable');
+        if (idx !== -1) {
+          amount = prix.slice(0, idx).trim();
+          taxLine = '(non taxable)';
+        } else if (!/non taxable|taxes incluses|taxes en sus|incluses/.test(prixStr)) {
+          taxLine = '+ taxes';
+        }
+      }
+    }
     var prixHtml = '';
-    if (c.prix) {
-      prixHtml = '<span class="price-amount">' + esc(c.prix) + '</span>';
-      prixHtml += '<span class="price-tax-line">' + (taxInclus ? '(taxes incluses)' : '+ taxes') + '</span>';
+    if (prix) {
+      prixHtml = '<span class="price-amount">' + esc(amount) + '</span>';
+      if (taxLine) prixHtml += '<span class="price-tax-line">' + esc(taxLine) + '</span>';
     } else {
       prixHtml = '<span class="price-note">Sur demande</span>';
     }

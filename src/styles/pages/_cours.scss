@@ -4,17 +4,14 @@
 // Layout: 8px grid, clear section rhythm. Contrast: WCAG AA. Hierarchy: H1 > strip > notes > nav > H2 > cards.
 
 // -----------------------------------------------------------------------------
-// Hero + Session — bloc unique (titre, intro, session + CTA)
+// Hero unique — titre, intro, session, CTA et notes dans un seul bloc
 // -----------------------------------------------------------------------------
 .cours-hero {
   background-color: var(--color-clay-cream);
-  padding: var(--spacing-12) 0 0;
+  padding: var(--spacing-12) 0;
 }
 
-.cours-hero-top {
-  text-align: center;
-  padding-bottom: var(--spacing-10);
-
+.cours-hero-inner {
   .page-title {
     font-family: var(--font-display);
     font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
@@ -26,55 +23,92 @@
   }
 
   .page-intro {
-    max-width: var(--reading-measure);
-    margin: 0 auto;
     color: var(--color-kiln-charcoal);
     font-size: var(--text-lg);
     line-height: var(--leading-relaxed);
+    margin-bottom: var(--spacing-8);
+
+    p {
+      margin: 0 0 var(--spacing-4);
+      &:last-child { margin-bottom: 0; }
+    }
   }
-}
 
-.cours-hero-session {
-  background: linear-gradient(135deg, #c4922f 0%, #9a6b1f 100%);
-  color: var(--color-warm-white);
-  padding: var(--spacing-6) 0;
-}
+  .cours-hero-meta {
+    padding: var(--spacing-6) 0;
+    margin-bottom: var(--spacing-8);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
 
-.cours-hero-session .session-inner {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-6);
-  text-align: center;
+    .session-label {
+      display: inline-block;
+      background-color: var(--color-terracotta);
+      color: var(--color-warm-white);
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--border-radius-full);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wide);
+      margin-bottom: var(--spacing-3);
+    }
 
-  @media (min-width: 768px) {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
+    .session-details,
+    .session-registration {
+      margin: var(--spacing-2) 0;
+      font-size: var(--text-base);
+      color: var(--color-kiln-charcoal);
+    }
   }
-}
 
-.cours-hero .session-info {
-  .session-label {
-    display: inline-block;
-    background-color: rgba(253, 252, 250, 0.2);
-    color: var(--color-warm-white);
-    padding: var(--spacing-2) var(--spacing-4);
-    border-radius: var(--border-radius-full);
-    font-size: var(--text-sm);
+  .cours-hero-notes {
+    background-color: var(--color-warm-white);
+    border-left: 6px solid var(--color-terracotta);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-sm);
+
+    @media (min-width: 768px) {
+      padding: var(--spacing-8);
+    }
+  }
+
+  .notes-heading {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
     font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wide);
-    margin-bottom: var(--spacing-3);
-    border: 1px solid rgba(253, 252, 250, 0.4);
+    color: var(--color-kiln-charcoal);
+    margin: 0 0 var(--spacing-4);
+    line-height: var(--leading-tight);
   }
 
-  .session-details,
-  .session-registration {
-    margin: var(--spacing-2) 0;
+  .notes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .notes-list li {
+    position: relative;
+    padding-left: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
     font-size: var(--text-base);
-    color: var(--color-warm-white);
-    font-weight: 500;
+    color: var(--color-kiln-charcoal);
+    line-height: var(--leading-relaxed);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-terracotta);
+      border-radius: 50%;
+    }
+
+    &:last-child { margin-bottom: 0; }
+    strong { color: var(--color-kiln-charcoal); }
   }
 }
 
@@ -85,7 +119,6 @@
   background-color: var(--color-warm-white);
   border-bottom: 2px solid var(--color-border);
   padding: var(--spacing-5) 0;
-  position: sticky;
   top: var(--header-height);
   z-index: var(--z-sticky);
   box-shadow: 0 2px 0 rgba(45, 42, 38, 0.04);

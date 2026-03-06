@@ -1,38 +1,26 @@
 {% extends "page.html" %}
 
 {% block content %}
-  {# Hero + Session — bloc unique #}
-  <section class="section cours-hero" id="inscription">
-    <div class="container cours-hero-top">
-      <h1 class="page-title">{{ page.title }}</h1>
-      <p class="page-intro lead">{{ content | safe }}</p>
-    </div>
-    <div class="cours-hero-session">
-      <div class="container session-inner">
-        <div class="session-info">
-          <span class="session-label">{{ page.session_title | default('Session Printemps 2026') }}</span>
-          <p class="session-details">
-            <strong>Début des cours :</strong> {{ page.session_start | default('25 mars') }} &bull;
-            <strong>Durée :</strong> {{ page.session_duration | default('8 à 10 semaines') }}
-          </p>
-          <p class="session-registration">
-            <strong>Inscriptions :</strong> à partir du {{ page.registration_open | default('1er mars') }} via le formulaire en ligne
-          </p>
-        </div>
-        <a href="/inscription" class="btn btn-primary btn-lg">S'inscrire</a>
+  {# Hero unique : titre, intro, session, CTA et notes #}
+  <section class="section cours-hero" id="inscription" aria-labelledby="cours-hero-title">
+    <div class="container container-narrow cours-hero-inner">
+      <h1 id="cours-hero-title" class="page-title">{{ page.title }}</h1>
+      <div class="page-intro lead">{{ content | safe }}</div>
+      <div class="cours-hero-meta">
+        <span class="session-label">{{ page.session_title | default('Session Printemps 2026') }}</span>
+        <p class="session-details">
+          <strong>Début des cours :</strong> {{ page.session_start | default('25 mars') }} &bull;
+          <strong>Durée :</strong> {{ page.session_duration | default('8 à 10 semaines') }}
+        </p>
+        <p class="session-registration">
+          <strong>Inscriptions :</strong> à partir du {{ page.registration_open | default('1er mars') }} via le formulaire en ligne
+        </p>
       </div>
-    </div>
-  </section>
-
-  {# Notes importantes - placées en haut pour visibilité #}
-  <section class="section section-notes" id="notes-importantes" aria-labelledby="notes-importantes-title">
-    <div class="container container-narrow">
-      <div class="notes-card">
-        <h2 id="notes-importantes-title" class="notes-card-heading">À savoir avant de vous inscrire</h2>
-        <h3 class="notes-card-subtitle">Notes importantes</h3>
-        <ul>
-          <li><strong>Carte de membre obligatoire</strong> (30$ + taxes) pour les cours réguliers (8 semaines) pour adultes.</li>
-          <li><strong>Cours céramique réguliers :</strong> frais en sus pour l'argile et les cuissons. Argile en vente à l'atelier au coût de 30$ + taxes pour un sac de 22lbs.</li>
+      <div class="cours-hero-notes" id="notes-importantes" aria-labelledby="notes-importantes-title">
+        <h2 id="notes-importantes-title" class="notes-heading">À savoir avant de vous inscrire</h2>
+        <ul class="notes-list">
+          <li><strong>Carte de membre obligatoire</strong> (30$ (taxes en sus)) pour les cours réguliers (8 semaines) pour adultes.</li>
+          <li><strong>Cours céramique réguliers :</strong> frais en sus pour l'argile et les cuissons. Argile en vente à l'atelier au coût de 30$ (taxes en sus) pour un sac de 22 lbs.</li>
           <li><strong>Groupes privés :</strong> possibilité d'organiser des ateliers pour groupes d'amis, famille, team-building. Contactez-nous!</li>
         </ul>
       </div>

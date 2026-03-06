@@ -2,6 +2,7 @@
 
 {# Set language-specific base path - empty for unilingual sites #}
 {% set lang_prefix = '' if is_unilingual else ('/' ~ page.lang if page.lang is defined else '') %}
+{% set cours_base = lang_prefix ~ '/cours' %}
 
 <nav id="site-navigation" class="main-navigation" aria-label="{{ t.main_nav }}">
   <button aria-expanded="false" aria-controls="main-menu" class="menu-toggle">
@@ -10,7 +11,18 @@
   </button>
   <ul id="main-menu" class="nav-menu" role="menu">
     {{ nav_link(t.home, lang_prefix if lang_prefix else '/', page) }}
-    {{ nav_link(t.courses, lang_prefix ~ '/cours', page) }}
+    <li class="nav-item-has-submenu" role="none">
+      {% set is_cours_page = (page.url is defined and (page.url.rstrip('/') == cours_base.rstrip('/') or page.url.rstrip('/') == '/cours')) %}
+<a href="{{ cours_base }}" class="nav-link-submenu-trigger" aria-haspopup="true" aria-expanded="false" {% if is_cours_page %}aria-current="page"{% endif %} role="menuitem">{{ t.courses }}</a>
+      <ul class="nav-submenu" role="menu" aria-label="{{ t.courses }}">
+        <li role="none"><a href="{{ cours_base }}" role="menuitem">{{ t.nav_courses_all | default('Tous les cours') }}</a></li>
+        <li role="none"><a href="{{ cours_base }}#ceramique" role="menuitem">{{ t.nav_courses_ceramique | default('Céramique') }}</a></li>
+        <li role="none"><a href="{{ cours_base }}#vitrail" role="menuitem">{{ t.nav_courses_vitrail | default('Vitrail') }}</a></li>
+        <li role="none"><a href="{{ cours_base }}#mosaique" role="menuitem">{{ t.nav_courses_mosaique | default('Mosaïque') }}</a></li>
+        <li role="none"><a href="{{ cours_base }}#intensif" role="menuitem">{{ t.nav_courses_intensif | default('Intensifs') }}</a></li>
+        <li role="none"><a href="{{ cours_base }}#enfants" role="menuitem">{{ t.nav_courses_enfants | default('Enfants') }}</a></li>
+      </ul>
+    </li>
     {% if has_posts.get(page.lang, false) %}
     {{ nav_link(t.blog, lang_prefix ~ '/blog', page) }}
     {% endif %}

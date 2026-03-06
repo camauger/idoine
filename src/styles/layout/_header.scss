@@ -190,6 +190,27 @@ header[role="banner"] {
       margin: 0;
     }
 
+    .nav-item-has-submenu {
+      .nav-submenu {
+        list-style: none;
+        padding: 0;
+        margin: var(--spacing-2) 0 0 var(--spacing-4);
+        border-left: 2px solid var(--color-terracotta);
+      }
+      @media (max-width: 767px) {
+        .nav-submenu {
+          display: none;
+        }
+        .nav-submenu.submenu-open {
+          display: block;
+        }
+      }
+      .nav-submenu a {
+        padding: var(--spacing-2) var(--spacing-4);
+        font-size: var(--text-sm);
+      }
+    }
+
     a {
       display: block;
       font-family: var(--font-body);
@@ -280,6 +301,53 @@ header[role="banner"] {
 
         &[aria-current="page"]::before {
           display: none;
+        }
+      }
+
+      .nav-item-has-submenu {
+        position: relative;
+
+        .nav-submenu {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          min-width: 12rem;
+          margin: 0;
+          padding: var(--spacing-2);
+          margin-top: var(--spacing-1);
+          background-color: var(--header-bg);
+          border: 1px solid var(--color-border);
+          border-radius: var(--border-radius-lg);
+          box-shadow: var(--shadow-lg);
+          list-style: none;
+          opacity: 0;
+          visibility: hidden;
+          transform: translateY(-4px);
+          transition: opacity var(--transition-fast), transform var(--transition-fast), visibility var(--transition-fast);
+          z-index: 10;
+          border-left: none;
+        }
+
+        &:hover .nav-submenu,
+        &:focus-within .nav-submenu {
+          opacity: 1;
+          visibility: visible;
+          transform: translateY(0);
+        }
+
+        .nav-link-submenu-trigger::after {
+          display: none;
+        }
+
+        .nav-submenu a {
+          display: block;
+          padding: var(--spacing-2) var(--spacing-3);
+          font-size: var(--text-sm);
+          white-space: nowrap;
+
+          &::after {
+            display: none;
+          }
         }
       }
     }

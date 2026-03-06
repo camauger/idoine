@@ -1,9 +1,9 @@
 /**
- * courseFilters.js - Navigation par ancre sur la page des cours
- * Au clic sur un bouton : mise à jour de l'onglet actif et défilement vers la section.
- * Aucun masquage de cartes (navigation uniquement).
+ * courseFilters.js - Ancres vers les sections de cours + barre de filtres
+ * Les ancres fonctionnent même sans barre de filtres (scroll direct vers l'id).
  */
 (function () {
+  var SECTION_IDS = ['ceramique', 'vitrail', 'mosaique', 'intensif', 'enfants', 'filtres-cours'];
   var ANCHOR_MAP = {
     all: 'filtres-cours',
     ceramique: 'ceramique',
@@ -13,14 +13,43 @@
     enfants: 'enfants'
   };
 
-  function scrollToAnchor(id) {
+  function hashToFilter(hash) {
+    var id = (hash || '').replace(/^#/, '');
+    var map = { filtres-cours: 'all', ceramique: 'ceramique', vitrail: 'vitrail', mosaique: 'mosaique', intensif: 'intensif', enfants: 'enfants' };
+    return map[id] || null;
+  }
+
+  function isSectionId(id) {
+    return SECTION_IDS.indexOf(id) !== -1;
+  }
+
+  /** Roule vers l'élément d'id donné et affiche la section si elle est masquée. */
+  function scrollToId(id) {
     var el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (!el) return;
+    var section = el.id === id && el.classList && el.classList.contains('courses-section') ? el : (el.closest && el.closest('section'));
+    if (section && section.classList && section.classList.contains('courses-section')) {
+      section.style.setProperty('display', '');
     }
+    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /** Applique le hash courant : scroll vers la section (indépendant de la barre de filtres). */
+  function applyHash() {
+    var hash = (window.location.hash || '').replace(/^#/, '');
+    if (!hash || !isSectionId(hash)) return;
+    scrollToId(hash);
+  }
+
+  /** Applique le hash après un court délai (pour laisser le DOM se mettre à jour). */
+  function applyHashSoon() {
+    applyHash();
+    setTimeout(applyHash, 100);
+    setTimeout(applyHash, 500);
   }
 
   function setActiveTab(btn, filterBtns) {
+    if (!filterBtns || !filterBtns.length) return;
     filterBtns.forEach(function (b) {
       var isActive = b === btn;
       b.classList.toggle('active', isActive);
@@ -29,28 +58,49 @@
   }
 
   function goToSection(filter, filterBtns) {
-    setActiveTab(
-      Array.prototype.find.call(filterBtns, function (b) {
+    if (filterBtns && filterBtns.length) {
+      var btn = Array.prototype.find.call(filterBtns, function (b) {
         return (b.getAttribute('data-filter') || '') === filter;
-      }) || filterBtns[0],
-      filterBtns
-    );
+      }) || filterBtns[0];
+      setActiveTab(btn, filterBtns);
+    }
     var anchorId = ANCHOR_MAP[filter];
-    if (anchorId) scrollToAnchor(anchorId);
+    if (anchorId) {
+      scrollToId(anchorId);
+      var hash = filter === 'all' ? '' : anchorId;
+      if (window.history.replaceState) {
+        window.history.replaceState(null, '', hash ? '#' + hash : window.location.pathname);
+      } else {
+        window.location.hash = hash;
+      }
+    }
   }
 
   function init() {
     var filterBar = document.getElementById('filtres-cours');
     var filterBtns = filterBar ? filterBar.querySelectorAll('.filter-btn') : [];
-    if (!filterBtns.length) return;
 
-    if (filterBar.getAttribute('data-filters-initialized') === 'true') return;
-    filterBar.setAttribute('data-filters-initialized', 'true');
+    // --- Ancres : toujours actives si on a un hash de section ---
+    applyHashSoon();
+    window.addEventListener('hashchange', applyHashSoon);
+
+    if (!filterBar || !filterBtns.length) return;
+
+    var alreadyInit = filterBar.getAttribute('data-filters-initialized') === 'true';
+    if (!alreadyInit) filterBar.setAttribute('data-filters-initialized', 'true');
 
     filterBtns.forEach(function (b) {
       var isActive = b.classList.contains('active');
       b.setAttribute('aria-selected', isActive ? 'true' : 'false');
     });
+
+    var filterFromHash = hashToFilter(window.location.hash);
+    if (filterFromHash) goToSection(filterFromHash, filterBtns);
+
+    if (alreadyInit) {
+      if (filterFromHash) goToSection(filterFromHash, filterBtns);
+      return;
+    }
 
     filterBtns.forEach(function (btn) {
       btn.addEventListener('click', function () {
