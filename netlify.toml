@@ -9,9 +9,27 @@
   NODE_VERSION = "18"
   PYTHON_VERSION = "3.11"
 
-# Requis pour la page Cours : Netlify UI > Site settings > Environment variables
-# Valeur : URL du backend (ex. https://votre-api.onrender.com), sans slash final.
-# Le build injecte cette URL dans les pages pour que le site appelle l’API en production.
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# API cours + inscriptions (Neon) : rewrite /api/* vers la function (path conservé via :splat)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# Variables d'environnement (Netlify UI > Site settings > Environment variables)
+#
+# DATABASE_URL (recommandé si vous utilisez les Netlify Functions ci-dessus)
+#   → Chaîne de connexion Neon (pooler) : postgresql://user:pass@ep-xxx-pooler.neon.tech/dbname?sslmode=require
+#   → Utilisée par netlify/functions/api.js pour /api/cours et /api/inscriptions.
+#
+# ATELIER_API_URL (optionnel en prod)
+#   → Si défini : le front appelle ce backend externe pour cours/inscriptions.
+#   → Si vide ou absent et DATABASE_URL défini : le front appelle /api/* sur le même domaine (Netlify Function).
+#   → Le build injecte cette URL dans les pages ; en prod "même origine" on peut laisser vide.
 
 # Netlify Forms (formulaire d’inscription)
 # Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email

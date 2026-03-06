@@ -1,9 +1,10 @@
 /**
  * inscriptionApi.js - Charge les cours depuis l'API et envoie le formulaire vers l'API (BD)
- * Nécessite window.ATELIER_API_URL. Si défini : liste des cours depuis l'API, envoi vers POST /api/inscriptions
+ * Liste des cours : GET /api/cours. Envoi : POST /api/inscriptions.
+ * Si window.ATELIER_API_URL est défini, les appels vont vers cette origine ; sinon même origine (ex. Netlify Function).
  */
 (function () {
-  var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL) || '';
+  var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL != null) ? (window.ATELIER_API_URL || '') : '';
 
   function byDisciplineType(c) {
     if (c.discipline === 'ceramique' && c.type_cours === 'regulier') return 'Céramique - Sessions régulières';
@@ -31,8 +32,7 @@
     var submitBtn = form && form.querySelector('button[type="submit"]');
     if (!form || !select) return;
 
-    if (API_URL) {
-      fetch(API_URL + '/api/cours')
+    fetch(API_URL + '/api/cours')
         .then(function (r) { return r.ok ? r.json() : []; })
         .then(function (cours) {
           if (!cours.length) return;
@@ -72,10 +72,8 @@
           }
         })
         .catch(function () {});
-    }
 
     form.addEventListener('submit', function (e) {
-      if (!API_URL) return;
       e.preventDefault();
       var coursVal = (select.value || '').trim();
       if (!coursVal) {
