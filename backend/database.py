@@ -3,12 +3,16 @@ import os
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = os.getenv(
-    "DATABASE_URL",
-    "sqlite:///./atelier_cours.db"
+# Netlify + Neon fournissent NETLIFY_DATABASE_URL (pooled) et NETLIFY_DATABASE_URL_UNPOOLED
+# En local ou ailleurs : DATABASE_URL
+DATABASE_URL = (
+    os.getenv("NETLIFY_DATABASE_URL")
+    or os.getenv("NETLIFY_DATABASE_URL_UNPOOLED")
+    or os.getenv("DATABASE_URL")
+    or "sqlite:///./atelier_cours.db"
 )
-if DATABASE_URL.startswith("postgresql://"):
-    # Render/Railway use postgres://, SQLAlchemy 2 wants postgresql://
+# Neon et certains hébergeurs fournissent postgres:// ; SQLAlchemy 2 attend postgresql://
+if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
 connect_args = {} if DATABASE_URL.startswith("postgresql") else {"check_same_thread": False}

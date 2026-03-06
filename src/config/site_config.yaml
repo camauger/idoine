@@ -78,7 +78,7 @@ partners:
 # URL de l'API backend (cours, places, inscriptions).
 # En dev : mettre ATELIER_API_URL dans le .env à la racine (ex. http://127.0.0.1:8000).
 # En prod : définir ici ou via la variable d'environnement ATELIER_API_URL au build.
-# atelier_api_url: 'https://votre-api.onrender.com'
+# atelier_api_url: 'https://votre-api.example.com'   # backend connecté à Neon
 
 # ------------------------------------------------------------
 # OPTIONS AVANCÉES

@@ -8,7 +8,7 @@ Ce guide décrit comment mettre en place la base de données et l’API pour les
 
 - **Python 3.10 ou plus** (vérifier avec `python --version` ou `python3 --version`).
 - Un terminal (PowerShell, CMD, ou bash sous Linux/macOS).
-- Optionnel pour la production : un compte [Render](https://render.com) ou [Railway](https://railway.app) pour héberger l’API.
+- Optionnel pour la production : une base [Neon](https://neon.tech) (PostgreSQL) et, pour exposer l’API, un hébergeur (Render, Railway, etc.).
 
 ---
 
@@ -147,27 +147,30 @@ Pour vous connecter à l’admin, utilisez le mot de passe défini par `ADMIN_PA
 
 ## 7. Brancher le site statique sur l’API (optionnel)
 
-Pour que le site Netlify affiche les places en temps réel et envoie les inscriptions vers l’API :
+Pour que le site affiche les places en temps réel et envoie les inscriptions vers l’API, le front doit connaître l’**URL du backend** via `ATELIER_API_URL`.
 
-1. **Déployer d’abord le backend** (voir section 8) pour obtenir une URL publique (ex. `https://atelierstelme-api.onrender.com`).
+### Où trouver la bonne adresse pour ATELIER_API_URL ?
 
-2. **Indiquer cette URL au site** : définir `window.ATELIER_API_URL` avant les scripts qui appellent l’API. Par exemple dans le template de base ou sur les pages **Cours** et **Inscription** :
+| Contexte | Valeur à utiliser |
+|----------|-------------------|
+| **En local** (site sur localhost:9000, API sur votre machine) | `http://127.0.0.1:8000` ou `http://localhost:8000` — c’est l’URL où tourne `uvicorn` (section 5). À mettre dans le fichier **`.env` à la racine du projet** (pas dans `backend/`). |
+| **En production** (site sur Netlify, API déployée ailleurs) | L’**URL publique de votre backend** une fois déployé. Vous la récupérez sur la plateforme qui héberge l’API : tableau de bord du service (Render, Railway, Fly.io, etc.) → onglet du déploiement → URL du type `https://votre-service.onrender.com` ou `https://xxx.railway.app`. **Sans** chemin ni barre finale (ex. `https://atelierstelme-api.onrender.com`). À définir dans **Netlify** : Site settings > Environment variables > `ATELIER_API_URL`. |
 
-   ```html
-   <script>window.ATELIER_API_URL = 'https://votre-api.onrender.com';</script>
-   ```
+Le build du site (Python + Grunt) lit `ATELIER_API_URL` depuis le `.env` à la racine (en local) ou depuis les variables d’environnement Netlify (en prod), et l’injecte dans les pages. Aucune modification de code nécessaire.
 
-   (À adapter selon votre URL réelle et votre façon d’injecter la config au build.)
+### Étapes rapides
 
-3. **CORS** : sur le backend (Render/Railway), définir la variable d’environnement `CORS_ORIGINS` avec l’URL du site (ex. `https://atelierstelme.ca,https://xxx.netlify.app`).
+1. **Déployer le backend** (voir section 9) pour obtenir son URL publique en production.
+2. **Définir `ATELIER_API_URL`** au bon endroit (`.env` en local, variables Netlify en prod).
+3. **CORS** : sur le backend, définir `CORS_ORIGINS` avec l’URL du site (ex. `https://atelierstelme.ca,https://xxx.netlify.app`).
 
-Sans `ATELIER_API_URL`, le site continue d’afficher les cours en dur et d’utiliser le formulaire Netlify.
+Sans `ATELIER_API_URL`, le site affiche les cours en dur et le formulaire d’inscription n’envoie pas vers l’API (fallback Netlify Forms si configuré).
 
 ---
 
 ## 8. Utiliser Neon comme base PostgreSQL
 
-[Neon](https://neon.tech) est une base PostgreSQL serverless (gratuite pour de petits projets), pratique si vous hébergez le backend sur Render, Railway ou ailleurs sans base incluse.
+[Neon](https://neon.tech) est une base PostgreSQL serverless (gratuite pour de petits projets). On l’utilise ici comme base de données ; l’API (FastAPI) peut être hébergée sur n’importe quelle plateforme (Render, Railway, etc.) et se connecte à Neon via `DATABASE_URL`.
 
 ### 8.1 Créer une base Neon
 
@@ -183,27 +186,27 @@ Sans `ATELIER_API_URL`, le site continue d’afficher les cours en dur et d’ut
   ```
   Puis lancez une fois `python seed_courses.py` pour créer les tables et les données de base.
 
-- **En production** (Render, Railway, etc.) : dans les variables d’environnement du service backend, définissez `DATABASE_URL` avec la même URL Neon. Aucune base PostgreSQL à créer sur la plateforme : tout passe par Neon.
+- **En production** (sur l’hébergeur de votre API) : dans les variables d’environnement du backend, définissez `DATABASE_URL` avec l’URL Neon. La base reste sur Neon ; l’API s’y connecte à distance.
 
 Le backend (`database.py`) accepte déjà les URLs `postgresql://` et convertit automatiquement `postgres://` en `postgresql://` si besoin. Neon exige SSL : l’URL fournie par Neon inclut déjà `?sslmode=require`, rien à modifier.
 
-**Résumé** : Netlify héberge le site statique ; le backend (FastAPI) tourne sur Render/Railway (ou autre) et se connecte à Neon. Vous n’installez pas de base « dans » Netlify : la base est sur Neon et utilisée par l’API.
+**Intégration Netlify + Neon** : si vous connectez Neon à votre site Netlify, Netlify injecte automatiquement `NETLIFY_DATABASE_URL` (pooled) et `NETLIFY_DATABASE_URL_UNPOOLED`. Le backend utilise ces variables en priorité lorsqu’elles sont présentes (par ex. si l’API tourne dans un contexte Netlify). En local, continuez d’utiliser `DATABASE_URL` dans `backend/.env`.
+
+**Résumé** : Netlify héberge le site statique ; la base de données est sur **Neon** ; le backend (FastAPI) tourne sur l’hébergeur de votre choix et se connecte à Neon. La base n’est pas hébergée sur Netlify.
 
 ---
 
 ## 9. Mettre en production (résumé)
 
-1. **Créer un service backend** sur Render ou Railway (Web Service, Python).
-2. **Connecter le dépôt Git** du projet et définir la racine du service sur le dossier `backend/` (ou le répertoire où se trouve `main.py`).
-3. **Variables d’environnement** à définir sur la plateforme :
-   - `DATABASE_URL` : URL PostgreSQL (Neon, ou base fournie par Render/Railway).
+1. **Base de données** : utiliser **Neon** (section 8). Récupérer l’URL de connexion et la garder pour l’étape 3.
+2. **Héberger l’API** : créer un service backend (Web Service Python) sur la plateforme de votre choix (Render, Railway, Fly.io, etc.), en pointant vers le dossier `backend/` ou le répertoire de `main.py`.
+3. **Variables d’environnement** du backend (sur la plateforme d’hébergement de l’API) :
+   - `DATABASE_URL` : **URL Neon** (PostgreSQL) copiée depuis le tableau de bord Neon.
    - `ADMIN_PASSWORD` : mot de passe de l’interface admin.
-   - `SECRET_KEY` : clé secrète pour les jetons JWT (générer une chaîne aléatoire).
-   - `CORS_ORIGINS` : URL(s) du site (ex. `https://atelierstelme.ca`).
+   - `SECRET_KEY` : clé secrète pour les jetons JWT (chaîne aléatoire).
+   - `CORS_ORIGINS` : URL(s) du site (ex. `https://atelierstelme.ca,https://xxx.netlify.app`).
 4. **Build / start** : en général `pip install -r requirements.txt` puis `uvicorn main:app --host 0.0.0.0 --port 8000` (adapter si la plateforme impose un autre port).
-5. Une fois le déploiement actif, utiliser l’URL du service comme `ATELIER_API_URL` côté site (voir section 7).
-
-Pour un guide détaillé par plateforme (Render, Railway), on peut l’ajouter dans ce document ou dans le README du backend.
+5. Une fois l’API en ligne, définir son URL comme `ATELIER_API_URL` côté site (Netlify ou `.env` à la racine), voir section 7.
 
 ---
 

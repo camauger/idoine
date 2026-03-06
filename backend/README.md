@@ -12,7 +12,7 @@ pip install -r requirements.txt
 ## Base de données
 
 - **Développement** : SQLite (`atelier_cours.db` créé dans le répertoire courant).
-- **Production** : définir `DATABASE_URL` (ex. PostgreSQL sur Render/Railway).
+- **Production** : définir `DATABASE_URL` (ex. PostgreSQL sur [Neon](https://neon.tech)).
 
 ## Premier lancement
 

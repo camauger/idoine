@@ -1,16 +1,25 @@
+# Netlify - Atelier St-Elme
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
 [build]
-  command = """
-    npm install -g grunt-cli sass &&
-    npm install &&
-    pip install -r requirements.txt &&
-    grunt build
-  """
+  command = "npm ci && pip install -r requirements.txt && npx grunt build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
   PYTHON_VERSION = "3.11"
 
-# Netlify Forms - configure email notifications in Netlify UI
-# Settings > Forms > Form notifications > Add notification > Email notification
-# Recipient: info@atelierstelme.ca
+# Optionnel : définir dans Netlify UI (Site settings > Environment variables)
+# ATELIER_API_URL = "https://votre-api.example.com"   # URL du backend (cours + inscriptions, connecté à Neon)
+# Le build injecte cette URL dans les pages pour que le site appelle l’API en production.
+
+# Netlify Forms (formulaire d’inscription)
+# Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email
+# Destinataire : atelierstelme@gmail.com (ou info@atelierstelme.ca)
+
+# Redirections optionnelles (décommenter si besoin)
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
+#   force = true
