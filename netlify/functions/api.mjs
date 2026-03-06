@@ -129,9 +129,10 @@ export default async (req, context) => {
         return errorResponse("Ce cours est complet.", 400, req);
       }
 
+      const createdAt = new Date();
       const insert = await sql`
-        INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter)
-        VALUES (${course.id}, ${nom}, ${courriel}, ${telephone}, ${enfant}, ${jour_prefere}, ${horaire_prefere}, ${message}, ${newsletter})
+        INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, created_at)
+        VALUES (${course.id}, ${nom}, ${courriel}, ${telephone}, ${enfant}, ${jour_prefere}, ${horaire_prefere}, ${message}, ${newsletter}, ${createdAt})
         RETURNING id, course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, created_at
       `;
       const ins = (insert && insert[0]) || {};

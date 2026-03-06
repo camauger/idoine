@@ -81,15 +81,11 @@
         return;
       }
       var fd = new FormData(form);
-      var horairePref = [];
-      form.querySelectorAll('input[name="horaire"]:checked').forEach(function (cb) { horairePref.push(cb.value); });
       var body = {
         nom: (fd.get('nom') || '').trim(),
         courriel: (fd.get('courriel') || '').trim(),
         telephone: (fd.get('telephone') || '').trim(),
         enfant: (fd.get('enfant') || '').trim() || null,
-        jour_prefere: (fd.get('jour') || '').trim() || null,
-        horaire_prefere: horairePref.length ? horairePref.join(', ') : null,
         message: (fd.get('message') || '').trim() || null,
         newsletter: fd.get('newsletter') === 'oui'
       };
