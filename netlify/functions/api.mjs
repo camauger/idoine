@@ -5,15 +5,24 @@
  */
 import { neon } from "@neondatabase/serverless";
 
-function jsonResponse(data, status = 200) {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: { "Content-Type": "application/json" },
-  });
+function corsHeaders(req) {
+  const origin = req.headers.get("origin");
+  const ok = origin && (origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1"));
+  if (!ok) return {};
+  return {
+    "Access-Control-Allow-Origin": origin,
+    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type",
+  };
 }
 
-function errorResponse(message, status = 400) {
-  return jsonResponse({ detail: message }, status);
+function jsonResponse(data, status = 200, req = null) {
+  const headers = { "Content-Type": "application/json", ...(req ? corsHeaders(req) : {}) };
+  return new Response(JSON.stringify(data), { status, headers });
+}
+
+function errorResponse(message, status = 400, req = null) {
+  return jsonResponse({ detail: message }, status, req);
 }
 
 export default async (req, context) => {
@@ -25,9 +34,13 @@ export default async (req, context) => {
   }
   const method = req.method;
 
+  if (method === "OPTIONS") {
+    return new Response(null, { status: 204, headers: { ...corsHeaders(req), "Access-Control-Max-Age": "86400" } });
+  }
+
   const databaseUrl = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL || process.env.NETLIFY_DATABASE_URL_UNPOOLED;
   if (!databaseUrl) {
-    return jsonResponse({ detail: "DATABASE_URL non configurée" }, 500);
+    return jsonResponse({ detail: "DATABASE_URL non configurée" }, 500, req);
   }
 
   const sql = neon(databaseUrl);
@@ -50,7 +63,7 @@ export default async (req, context) => {
         const places_restantes = Math.max(0, (c.places_max || 0) - count);
         return { ...c, places_restantes };
       });
-      return jsonResponse(result);
+      return jsonResponse(result, 200, req);
     }
 
     // GET /api/cours/:slug ou :id
@@ -63,13 +76,13 @@ export default async (req, context) => {
         : await sql`SELECT * FROM courses WHERE slug = ${slugOrId}`;
       const course = (rows && rows[0]) || null;
       if (!course) {
-        return errorResponse("Cours non trouvé", 404);
+        return errorResponse("Cours non trouvé", 404, req);
       }
       const countRows = await sql`SELECT COUNT(*)::int AS cnt FROM inscriptions WHERE course_id = ${course.id}`;
       const count = (countRows && countRows[0] && countRows[0].cnt) || 0;
       const places_restantes = Math.max(0, (course.places_max || 0) - count);
       const out = { ...course, places_restantes };
-      return jsonResponse(out);
+      return jsonResponse(out, 200, req);
     }
 
     // POST /api/inscriptions
@@ -78,7 +91,7 @@ export default async (req, context) => {
       try {
         body = await req.json();
       } catch {
-        return errorResponse("Body JSON invalide", 400);
+        return errorResponse("Body JSON invalide", 400, req);
       }
       const {
         course_id,
@@ -94,7 +107,7 @@ export default async (req, context) => {
       } = body;
 
       if (!nom || !courriel || !telephone) {
-        return errorResponse("nom, courriel et telephone requis", 400);
+        return errorResponse("nom, courriel et telephone requis", 400, req);
       }
 
       let course = null;
@@ -107,13 +120,13 @@ export default async (req, context) => {
         course = (rows && rows[0]) || null;
       }
       if (!course) {
-        return errorResponse("Cours non trouvé (course_id ou cours invalide)", 400);
+        return errorResponse("Cours non trouvé (course_id ou cours invalide)", 400, req);
       }
 
       const countRows = await sql`SELECT COUNT(*)::int AS cnt FROM inscriptions WHERE course_id = ${course.id}`;
       const count = (countRows && countRows[0] && countRows[0].cnt) || 0;
       if (count >= (course.places_max || 0)) {
-        return errorResponse("Ce cours est complet.", 400);
+        return errorResponse("Ce cours est complet.", 400, req);
       }
 
       const insert = await sql`
@@ -122,18 +135,16 @@ export default async (req, context) => {
         RETURNING id, course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, created_at
       `;
       const ins = (insert && insert[0]) || {};
-      return jsonResponse({
-        ...ins,
-        course_nom: course.nom,
-      }, 201);
+      return jsonResponse(
+        { ...ins, course_nom: course.nom },
+        201,
+        req
+      );
     }
 
-    return errorResponse("Not Found", 404);
+    return errorResponse("Not Found", 404, req);
   } catch (err) {
     console.error("API error:", err);
-    return jsonResponse(
-      { detail: err.message || "Erreur serveur" },
-      500
-    );
+    return jsonResponse({ detail: err.message || "Erreur serveur" }, 500, req);
   }
 };

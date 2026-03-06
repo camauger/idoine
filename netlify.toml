@@ -31,9 +31,11 @@
 #   → Si vide ou absent et DATABASE_URL défini : le front appelle /api/* sur le même domaine (Netlify Function).
 #   → Le build injecte cette URL dans les pages ; en prod "même origine" on peut laisser vide.
 
-# netlify dev (Windows) : si erreur "Failed to set up Deno for Edge Functions" (EBUSY),
-# supprimer le cache Deno puis réessayer : rm -rf %APPDATA%\netlify\Config\deno-cli
-# Ce projet n'utilise que des Netlify Functions (Node), pas d'Edge Functions.
+# netlify dev (Windows) : si erreur "setting up the Edge Functions environment" :
+# 1) Installer Deno (recommandé) : winget install Deno.Land  ou  https://ntl.fyi/install-deno
+# 2) Sinon, contournement sans netlify dev : ATELIER_API_URL=http://localhost:9999/.netlify/functions,
+#    build, puis "npm run dev:functions" (port 9999) + serveur statique (ex. npx serve dist -l 3000),
+#    ouvrir http://localhost:3000. Ce projet n'utilise que des Netlify Functions (Node), pas d'Edge.
 
 # Netlify Forms (formulaire d’inscription)
 # Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email
