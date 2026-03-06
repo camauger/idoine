@@ -9,8 +9,8 @@
   NODE_VERSION = "18"
   PYTHON_VERSION = "3.11"
 
-# Optionnel : définir dans Netlify UI (Site settings > Environment variables)
-# ATELIER_API_URL = "https://votre-api.example.com"   # URL du backend (cours + inscriptions, connecté à Neon)
+# Requis pour la page Cours : Netlify UI > Site settings > Environment variables
+# Valeur : URL du backend (ex. https://votre-api.onrender.com), sans slash final.
 # Le build injecte cette URL dans les pages pour que le site appelle l’API en production.
 
 # Netlify Forms (formulaire d’inscription)

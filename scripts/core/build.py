@@ -84,6 +84,11 @@ class SiteBuilder:
             or self.site_config.get("atelier_api_url", "")
         )
         self.jinja_env.globals["atelier_api_url"] = atelier_api_url
+        if not atelier_api_url:
+            logging.warning(
+                "ATELIER_API_URL non défini : la page Cours affichera le message de repli en production. "
+                "Définir la variable dans Netlify (Environment variables) ou dans site_config.yaml (atelier_api_url)."
+            )
 
         # Check if there are posts for each language
         self._init_has_posts()
