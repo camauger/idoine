@@ -35,6 +35,22 @@ def type_from_nom(nom: str) -> str:
     return "regulier"
 
 
+def _format_prix(prix: str | None, taxes: str | None) -> str | None:
+    """Build display price from separate prix + taxes (from JSON)."""
+    if not prix:
+        return None
+    if not taxes:
+        return prix
+    t = (taxes or "").strip().lower()
+    if t == "en sus":
+        return f"{prix} + tx"
+    if t == "non taxable":
+        return f"{prix} non taxable"
+    if t == "inclus":
+        return f"{prix} (taxes incluses)"
+    return f"{prix} {taxes}"
+
+
 def main():
     init_db()
     db = SessionLocal()
@@ -71,7 +87,7 @@ def main():
                 duree_semaines=c.get("duree_semaines"),
                 date_debut=c.get("debut"),
                 places_max=c.get("places", 0),
-                prix=c.get("prix"),
+                prix=_format_prix(c.get("prix"), c.get("taxes")),
                 prof=c.get("prof"),
                 salle=c.get("salle"),
                 description=None,

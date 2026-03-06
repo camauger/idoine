@@ -15,7 +15,7 @@ class Course(Base):
     discipline = Column(String(50), nullable=False)  # ceramique | vitrail | mosaique
     type_cours = Column(String(50), nullable=False)   # regulier | intensif | enfants
     jour = Column(String(50), nullable=True)
-    creneau = Column(String(50), nullable=True)      # AM | PM | SOIR (from JSON)
+    creneau = Column(String(50), nullable=True)      # matin | après-midi | soir (from JSON)
     heure = Column(String(100), nullable=True)
     duree_semaines = Column(Integer, nullable=True)
     date_debut = Column(String(100), nullable=True)

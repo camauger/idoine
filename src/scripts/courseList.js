@@ -1,10 +1,12 @@
 /**
  * courseList.js - Charge la liste des cours depuis l'API et affiche les cartes
- * Nécessite window.ATELIER_API_URL (optionnel, '' = même origine)
- * Déclenche 'courses-loaded' une fois le rendu terminé (pour courseFilters.js)
+ * Nécessite window.ATELIER_API_URL (injecté au build). En local sans URL : fallback 127.0.0.1:8000
  */
 (function () {
   var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL) || '';
+  if (!API_URL && typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    API_URL = 'http://127.0.0.1:8000';
+  }
 
   var GRID_IDS = {
     ceramique_regulier: 'grid-ceramique',
