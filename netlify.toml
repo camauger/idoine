@@ -22,7 +22,12 @@
 
 # Variables d'environnement (Netlify UI > Site settings > Environment variables)
 #
-# DATABASE_URL (recommandé si vous utilisez les Netlify Functions ci-dessus)
+# PRODUCTION – Pour que les cours s'affichent :
+# 1. Définir DATABASE_URL = URL pooler Neon (Connection string > Pooled dans le dashboard Neon).
+# 2. Ne pas définir ATELIER_API_URL (ou laisser vide) pour que le front utilise /api/* sur le même domaine.
+# 3. Redéployer après avoir ajouté DATABASE_URL.
+#
+# DATABASE_URL (obligatoire pour /api/cours et /api/inscriptions)
 #   → Chaîne de connexion Neon (pooler) : postgresql://user:pass@ep-xxx-pooler.neon.tech/dbname?sslmode=require
 #   → Utilisée par netlify/functions/api.mjs pour /api/cours et /api/inscriptions.
 #

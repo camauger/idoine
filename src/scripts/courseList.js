@@ -133,7 +133,13 @@
     var fallbackEl = document.getElementById('courses-fallback');
 
     fetch(API_URL + '/api/cours')
-      .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('API error')); })
+      .then(function (r) {
+        if (r.ok) return r.json();
+        return r.json().catch(function () { return {}; }).then(function (body) {
+          console.warn("[Cours] API erreur", r.status, body.detail || body.error || r.statusText);
+          return Promise.reject(new Error(body.detail || body.error || "API error"));
+        });
+      })
       .then(function (cours) {
         if (loadingEl) loadingEl.style.display = 'none';
         if (!cours || !cours.length) {

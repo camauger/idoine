@@ -86,8 +86,8 @@ class SiteBuilder:
         self.jinja_env.globals["atelier_api_url"] = atelier_api_url
         if not atelier_api_url:
             logging.warning(
-                "ATELIER_API_URL non défini : la page Cours affichera le message de repli en production. "
-                "Définir la variable dans Netlify (Environment variables) ou dans site_config.yaml (atelier_api_url)."
+                "ATELIER_API_URL non défini : le site appellera /api/cours et /api/inscriptions sur le même domaine. "
+                "En production Netlify, définir DATABASE_URL (Neon pooler) dans Netlify > Environment variables pour que les cours s'affichent."
             )
 
         # Check if there are posts for each language
