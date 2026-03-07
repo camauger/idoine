@@ -15,7 +15,8 @@
       "statut": "actif",
       "prof": null,
       "salle": null,
-      "description": "Colibri à suspendre, bases Tiffany."
+      "description": "Colibri à suspendre, bases Tiffany.",
+      "page_dediee": "vitrail-intensif-niveau-1"
     },
     {
       "nom": "Vitrail intensif – Niveau 2",
@@ -32,7 +33,8 @@
       "statut": "actif",
       "prof": null,
       "salle": null,
-      "description": "Support à plantes en verre, technique Tiffany."
+      "description": "Support à plantes en verre, technique Tiffany.",
+      "page_dediee": "vitrail-intensif-niveau-2"
     },
     {
       "nom": "Vitrail intensif – Niveau 2 (Pâques)",
@@ -49,7 +51,8 @@
       "statut": "actif",
       "prof": null,
       "salle": null,
-      "description": "Projet thème Pâques, technique Tiffany."
+      "description": "Projet thème Pâques, technique Tiffany.",
+      "page_dediee": "vitrail-intensif-paques"
     },
     {
       "nom": "Mosaïque de verre",

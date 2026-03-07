@@ -133,13 +133,22 @@ def main():
         else:
             print("intensifs.json not found, skipping intensifs")
             intensifs = []
+        updated = 0
         for d in intensifs:
             # Skip non-active courses
             if d.get("statut", "actif") != "actif":
                 print(f"  Skipping inactive: {d['slug']}")
                 continue
-            if db.query(Course).filter(Course.slug == d["slug"]).first():
-                skipped += 1
+            existing = db.query(Course).filter(Course.slug == d["slug"]).first()
+            if existing:
+                # Update page_dediee if changed
+                new_page = d.get("page_dediee")
+                if new_page and existing.page_dediee != new_page:
+                    existing.page_dediee = new_page
+                    updated += 1
+                    print(f"  ~ {d['nom']} (page_dediee: {new_page})")
+                else:
+                    skipped += 1
                 continue
             # Process intensif data - handle taxes and statut fields
             prix_formatted = _format_prix(d.get("prix"), d.get("taxes"))
@@ -167,7 +176,7 @@ def main():
             print(f"  + {d['nom']}")
         db.commit()
         total = db.query(Course).count()
-        print(f"\nRésultat: {added} ajoutés, {skipped} ignorés (existants)")
+        print(f"\nRésultat: {added} ajoutés, {updated} mis à jour, {skipped} ignorés")
         print(f"Total en BD: {total} cours")
     finally:
         db.close()
