@@ -13,6 +13,10 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
+# Désactiver Edge Functions (pas utilisées dans ce projet)
+[dev]
+  edge_functions = false
+
 # API cours + inscriptions (Neon) : rewrite /api/* vers la function (path conservé via :splat)
 [[redirects]]
   from = "/api/*"
