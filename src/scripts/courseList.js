@@ -26,13 +26,18 @@
   function sectionKey(c) {
     var d = (c.discipline || '').toLowerCase();
     var t = (c.type_cours || '').toLowerCase();
-    if (d === 'ceramique' || d === 'céramique') {
-      if (t === 'intensif') return 'ceramique_intensif';
-      if (t === 'enfants') return 'ceramique_enfants';
-      return 'ceramique_regulier';
-    }
+    
+    // All intensifs go to the intensif section, regardless of discipline
+    if (t === 'intensif') return 'ceramique_intensif';
+    
+    // Enfants courses
+    if (t === 'enfants') return 'ceramique_enfants';
+    
+    // Regular courses by discipline
+    if (d === 'ceramique' || d === 'céramique') return 'ceramique_regulier';
     if (d === 'vitrail') return 'vitrail';
     if (d === 'mosaique' || d === 'mosaïque') return 'mosaique';
+    
     return 'ceramique_regulier';
   }
 

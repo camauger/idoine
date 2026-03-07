@@ -1,14 +1,15 @@
 /**
  * courseFilters.js - Filtrage des sections de cours
  * Affiche/masque les sections selon le filtre sélectionné
+ * Supporte les ancres URL: /cours#intensif, /cours#vitrail, etc.
  */
 (function () {
   'use strict';
 
   var SECTION_IDS = ['ceramique', 'intensif', 'enfants', 'vitrail', 'mosaique'];
 
-  var FILTER_SECTIONS = {
-    all: ['ceramique', 'intensif', 'enfants', 'vitrail', 'mosaique'],
+  var FILTER_MAP = {
+    all: SECTION_IDS,
     ceramique: ['ceramique'],
     vitrail: ['vitrail'],
     mosaique: ['mosaique'],
@@ -16,130 +17,121 @@
     enfants: ['enfants']
   };
 
-  var sectionsWithCourses = {};
+  function getFilterFromHash() {
+    var hash = (window.location.hash || '').replace(/^#/, '').toLowerCase();
+    if (FILTER_MAP[hash]) return hash;
+    return 'all';
+  }
 
-  function recordSectionsWithCourses() {
+  function getSectionsWithContent() {
+    var result = {};
     SECTION_IDS.forEach(function(id) {
       var section = document.getElementById(id);
       if (section) {
         var grid = section.querySelector('.card-grid');
-        var hasCourses = grid && grid.children.length > 0;
-        sectionsWithCourses[id] = hasCourses;
+        result[id] = grid && grid.children.length > 0;
+      } else {
+        result[id] = false;
       }
     });
+    return result;
   }
 
-  function setActiveTab(btn, filterBtns) {
-    if (!filterBtns || !filterBtns.length) return;
-    filterBtns.forEach(function (b) {
-      var isActive = b === btn;
-      b.classList.toggle('active', isActive);
-      b.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-  }
+  function applyFilter(filter, filterBtns, sectionsWithContent) {
+    var sectionsToShow = FILTER_MAP[filter] || FILTER_MAP.all;
 
-  function applyFilter(filter) {
-    var sectionsToShow = FILTER_SECTIONS[filter] || FILTER_SECTIONS.all;
+    // Update button states
+    if (filterBtns && filterBtns.length) {
+      filterBtns.forEach(function(btn) {
+        var btnFilter = btn.getAttribute('data-filter') || 'all';
+        var isActive = btnFilter === filter;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-selected', isActive ? 'true' : 'false');
+      });
+    }
 
+    // Show/hide sections
     SECTION_IDS.forEach(function(id) {
       var section = document.getElementById(id);
       if (!section) return;
 
-      var shouldShow = sectionsToShow.indexOf(id) !== -1;
-      var hasCourses = sectionsWithCourses[id];
-
-      if (shouldShow && hasCourses) {
-        section.style.display = '';
-      } else {
-        section.style.display = 'none';
-      }
+      var shouldShow = sectionsToShow.indexOf(id) !== -1 && sectionsWithContent[id];
+      section.style.display = shouldShow ? '' : 'none';
     });
+  }
 
-    var firstVisibleSection = null;
+  function scrollToFirstVisible(filter, sectionsWithContent) {
+    var sectionsToShow = FILTER_MAP[filter] || FILTER_MAP.all;
+    
     for (var i = 0; i < sectionsToShow.length; i++) {
       var id = sectionsToShow[i];
-      if (sectionsWithCourses[id]) {
-        firstVisibleSection = document.getElementById(id);
-        break;
-      }
-    }
-
-    if (firstVisibleSection) {
-      setTimeout(function() {
-        var filterBar = document.getElementById('filtres-cours');
-        var scrollTarget = filter === 'all' ? filterBar : firstVisibleSection;
-        if (scrollTarget) {
-          scrollTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (sectionsWithContent[id]) {
+        var section = document.getElementById(id);
+        if (section) {
+          setTimeout(function() {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }, 100);
+          return;
         }
-      }, 50);
+      }
     }
   }
 
   function init() {
     var filterBar = document.getElementById('filtres-cours');
-    var filterBtns = filterBar ? filterBar.querySelectorAll('.filter-btn') : [];
+    if (!filterBar) return;
 
-    if (!filterBar || !filterBtns.length) return;
+    var filterBtns = filterBar.querySelectorAll('.filter-btn');
+    var sectionsWithContent = getSectionsWithContent();
 
-    recordSectionsWithCourses();
+    // Apply initial filter from hash
+    var currentFilter = getFilterFromHash();
+    applyFilter(currentFilter, filterBtns, sectionsWithContent);
 
-    var alreadyInit = filterBar.getAttribute('data-filters-initialized') === 'true';
-    if (alreadyInit) return;
-    filterBar.setAttribute('data-filters-initialized', 'true');
-
-    filterBtns.forEach(function (b) {
-      var isActive = b.classList.contains('active');
-      b.setAttribute('aria-selected', isActive ? 'true' : 'false');
-    });
-
-    filterBtns.forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var filter = this.getAttribute('data-filter') || 'all';
-        setActiveTab(this, filterBtns);
-        applyFilter(filter);
-      });
-
-      btn.addEventListener('keydown', function (e) {
-        var key = e.key;
-        var idx = Array.prototype.indexOf.call(filterBtns, btn);
-        var nextIdx = idx;
-        if (key === 'ArrowRight' || key === 'ArrowDown') {
-          e.preventDefault();
-          nextIdx = (idx + 1) % filterBtns.length;
-        } else if (key === 'ArrowLeft' || key === 'ArrowUp') {
-          e.preventDefault();
-          nextIdx = idx - 1;
-          if (nextIdx < 0) nextIdx = filterBtns.length - 1;
-        } else if (key === 'Home') {
-          e.preventDefault();
-          nextIdx = 0;
-        } else if (key === 'End') {
-          e.preventDefault();
-          nextIdx = filterBtns.length - 1;
-        }
-        if (nextIdx !== idx) {
-          filterBtns[nextIdx].focus();
-          filterBtns[nextIdx].click();
-        }
-      });
-    });
-  }
-
-  function run() {
-    init();
-  }
-
-  document.addEventListener('courses-loaded', function() {
-    var filterBar = document.getElementById('filtres-cours');
-    if (filterBar) {
-      filterBar.removeAttribute('data-filters-initialized');
+    // Only scroll if there's a specific hash (not 'all')
+    if (currentFilter !== 'all' && window.location.hash) {
+      scrollToFirstVisible(currentFilter, sectionsWithContent);
     }
-    run();
+
+    // Add click handlers (only once)
+    if (filterBar.getAttribute('data-handlers-attached') === 'true') return;
+    filterBar.setAttribute('data-handlers-attached', 'true');
+
+    filterBtns.forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var filter = this.getAttribute('data-filter') || 'all';
+        var freshSections = getSectionsWithContent();
+        applyFilter(filter, filterBtns, freshSections);
+        scrollToFirstVisible(filter, freshSections);
+
+        // Update URL hash
+        var newHash = filter === 'all' ? '' : '#' + filter;
+        if (window.history.replaceState) {
+          window.history.replaceState(null, '', window.location.pathname + newHash);
+        }
+      });
+    });
+
+    // Handle hash changes
+    window.addEventListener('hashchange', function() {
+      var filter = getFilterFromHash();
+      var freshSections = getSectionsWithContent();
+      applyFilter(filter, filterBtns, freshSections);
+      if (filter !== 'all') {
+        scrollToFirstVisible(filter, freshSections);
+      }
+    });
+  }
+
+  // Run after courses are loaded
+  window.addEventListener('courses-loaded', function() {
+    setTimeout(init, 50);
   });
 
+  // Also run on DOMContentLoaded as fallback
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', run);
+    document.addEventListener('DOMContentLoaded', init);
   } else {
-    run();
+    init();
   }
 })();
