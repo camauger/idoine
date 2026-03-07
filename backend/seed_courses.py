@@ -66,6 +66,10 @@ def main():
         data = json.loads(json_path.read_text(encoding="utf-8"))
         seen = set()
         for i, c in enumerate(data["cours"]):
+            # Skip non-active courses
+            if c.get("statut", "actif") != "actif":
+                print(f"  Skipping inactive: {c.get('nom', 'unknown')}")
+                continue
             nom = c["nom"]
             jour = c.get("jour", "")
             creneau = c.get("creneau", "")
@@ -104,9 +108,34 @@ def main():
             print("intensifs.json not found, skipping intensifs")
             intensifs = []
         for d in intensifs:
+            # Skip non-active courses
+            if d.get("statut", "actif") != "actif":
+                print(f"  Skipping inactive: {d['slug']}")
+                continue
             if db.query(Course).filter(Course.slug == d["slug"]).first():
                 continue
-            db.add(Course(actif=True, badge_new=False, **d))
+            # Process intensif data - handle taxes and statut fields
+            prix_formatted = _format_prix(d.get("prix"), d.get("taxes"))
+            course = Course(
+                nom=d["nom"],
+                slug=d["slug"],
+                discipline=d.get("discipline", "ceramique"),
+                type_cours=d.get("type_cours", "intensif"),
+                jour=d.get("jour"),
+                creneau=d.get("creneau"),
+                heure=d.get("heure"),
+                duree_semaines=d.get("duree_semaines"),
+                date_debut=d.get("date_debut"),
+                places_max=d.get("places_max", 0),
+                prix=prix_formatted,
+                prof=d.get("prof"),
+                salle=d.get("salle"),
+                description=d.get("description"),
+                actif=True,
+                badge_new=d.get("badge_new", False),
+                page_dediee=d.get("page_dediee"),
+            )
+            db.add(course)
         db.commit()
         print("Seed OK:", db.query(Course).count(), "courses")
     finally:
