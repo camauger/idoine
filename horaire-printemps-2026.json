@@ -204,7 +204,7 @@
       "prof": "Sylvie",
       "prix": "226$",
       "taxes": "en sus",
-      "note": "Matériel pour débutant : 55$ + tx"
+      "note": "Frais en sus pour le matériel. Pour les débutants, le matériel est fourni pour 55$ (taxes en sus)."
     },
     {
       "jour": "vendredi",
@@ -221,7 +221,7 @@
       "prof": "Sylvie",
       "prix": "226$",
       "taxes": "en sus",
-      "note": "Matériel pour débutant : 55$ + tx",
+      "note": "Frais en sus pour le matériel. Pour les débutants, le matériel est fourni pour 55$ (taxes en sus).",
       "statut": "actif"
     }
   ]

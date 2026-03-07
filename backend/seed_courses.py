@@ -101,8 +101,16 @@ def main():
                 slug = f"{base_slug}-{idx}"
             seen.add(slug)
             # Check if course already exists
-            if db.query(Course).filter(Course.slug == slug).first():
-                skipped += 1
+            existing = db.query(Course).filter(Course.slug == slug).first()
+            if existing:
+                # Update description (note) if changed
+                new_desc = c.get("note")
+                if new_desc and existing.description != new_desc:
+                    existing.description = new_desc
+                    added += 1
+                    print(f"  ~ {nom} (description mise à jour)")
+                else:
+                    skipped += 1
                 continue
             course = Course(
                 nom=nom,
@@ -118,7 +126,7 @@ def main():
                 prix=_format_prix(c.get("prix"), c.get("taxes")),
                 prof=c.get("prof"),
                 salle=c.get("salle"),
-                description=None,
+                description=c.get("note"),
                 actif=True,
                 badge_new=False,
             )
