@@ -1,0 +1,65 @@
+{
+  "intensifs": [
+    {
+      "nom": "Vitrail intensif – Niveau 1",
+      "slug": "vitrail-intensif-niveau-1",
+      "discipline": "vitrail",
+      "type_cours": "intensif",
+      "jour": "samedi",
+      "heure": "13h-16h",
+      "duree_semaines": null,
+      "date_debut": "11 avril",
+      "places_max": 6,
+      "prix": "50$ (taxes incluses)",
+      "prof": null,
+      "salle": null,
+      "description": "Colibri à suspendre, bases Tiffany."
+    },
+    {
+      "nom": "Vitrail intensif – Niveau 2",
+      "slug": "vitrail-intensif-niveau-2",
+      "discipline": "vitrail",
+      "type_cours": "intensif",
+      "jour": "samedi",
+      "heure": "12h30-17h30",
+      "duree_semaines": null,
+      "date_debut": "2 mai",
+      "places_max": 6,
+      "prix": "65$ (taxes incluses)",
+      "prof": null,
+      "salle": null,
+      "description": "Support à plantes en verre, technique Tiffany."
+    },
+    {
+      "nom": "Vitrail intensif – Niveau 2 (Pâques)",
+      "slug": "vitrail-intensif-niveau-2-paques",
+      "discipline": "vitrail",
+      "type_cours": "intensif",
+      "jour": "samedi",
+      "heure": "9h-13h",
+      "duree_semaines": null,
+      "date_debut": "22 mars",
+      "places_max": 4,
+      "prix": "50$ (taxes incluses)",
+      "prof": null,
+      "salle": null,
+      "description": "Projet thème Pâques, technique Tiffany."
+    },
+    {
+      "nom": "Mosaïque de verre",
+      "slug": "mosaique-de-verre",
+      "discipline": "mosaique",
+      "type_cours": "intensif",
+      "jour": "samedi / dimanche",
+      "heure": "10h-15h",
+      "duree_semaines": null,
+      "date_debut": "7 et 15 mars",
+      "places_max": 6,
+      "prix": "50$ (taxes incluses)",
+      "prof": "Guy Frève",
+      "salle": null,
+      "description": "Mosaïque de verre, matériel inclus.",
+      "page_dediee": "mosaique-verre"
+    }
+  ]
+}

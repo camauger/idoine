@@ -95,70 +95,14 @@ def main():
                 badge_new=False,
             )
             db.add(course)
-        # Intensifs (vitrail, mosaïque) from site
-        intensifs = [
-            {
-                "nom": "Vitrail intensif – Niveau 1",
-                "slug": "vitrail-intensif-niveau-1",
-                "discipline": "vitrail",
-                "type_cours": "intensif",
-                "jour": "samedi",
-                "heure": "13h-16h",
-                "duree_semaines": None,
-                "date_debut": "11 avril",
-                "places_max": 6,
-                "prix": "50$ (taxes incluses)",
-                "prof": None,
-                "salle": None,
-                "description": "Colibri à suspendre, bases Tiffany.",
-            },
-            {
-                "nom": "Vitrail intensif – Niveau 2",
-                "slug": "vitrail-intensif-niveau-2",
-                "discipline": "vitrail",
-                "type_cours": "intensif",
-                "jour": "samedi",
-                "heure": "12h30-17h30",
-                "duree_semaines": None,
-                "date_debut": "2 mai",
-                "places_max": 6,
-                "prix": "65$ (taxes incluses)",
-                "prof": None,
-                "salle": None,
-                "description": "Support à plantes en verre, technique Tiffany.",
-            },
-            {
-                "nom": "Vitrail intensif – Niveau 2 (Pâques)",
-                "slug": "vitrail-intensif-niveau-2-paques",
-                "discipline": "vitrail",
-                "type_cours": "intensif",
-                "jour": "samedi",
-                "heure": "9h-13h",
-                "duree_semaines": None,
-                "date_debut": "22 mars",
-                "places_max": 4,
-                "prix": "50$ (taxes incluses)",
-                "prof": None,
-                "salle": None,
-                "description": "Projet thème Pâques, technique Tiffany.",
-            },
-            {
-                "nom": "Mosaïque de verre",
-                "slug": "mosaique-de-verre",
-                "discipline": "mosaique",
-                "type_cours": "intensif",
-                "jour": "samedi / dimanche",
-                "heure": "10h-15h",
-                "duree_semaines": None,
-                "date_debut": "7 et 15 mars",
-                "places_max": 6,
-                "prix": "50$ (taxes incluses)",
-                "prof": "Guy Frève",
-                "salle": None,
-                "description": "Mosaïque de verre, matériel inclus.",
-                "page_dediee": "mosaique-verre",
-            },
-        ]
+        # Intensifs (vitrail, mosaïque) from intensifs.json
+        intensifs_path = Path(__file__).parent.parent / "intensifs.json"
+        if intensifs_path.exists():
+            intensifs_data = json.loads(intensifs_path.read_text(encoding="utf-8"))
+            intensifs = intensifs_data.get("intensifs", [])
+        else:
+            print("intensifs.json not found, skipping intensifs")
+            intensifs = []
         for d in intensifs:
             if db.query(Course).filter(Course.slug == d["slug"]).first():
                 continue
