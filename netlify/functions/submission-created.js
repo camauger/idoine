@@ -9,8 +9,15 @@ const { neon } = require('@neondatabase/serverless');
 
 exports.handler = async (event) => {
   try {
-    const payload = JSON.parse(event.body);
-    const { form_name, data } = payload;
+    const body = JSON.parse(event.body);
+    
+    // Netlify sends: { payload: { form_name, data, ... } }
+    // Handle both structures for safety
+    const payload = body.payload || body;
+    const form_name = payload.form_name || payload.form || body.form_name;
+    const data = payload.data || payload;
+
+    console.log('Received submission:', JSON.stringify({ form_name, data_keys: Object.keys(data || {}) }));
 
     // Only process "inscription" form submissions
     if (form_name !== 'inscription') {
@@ -18,7 +25,7 @@ exports.handler = async (event) => {
       return { statusCode: 200, body: 'OK - form ignored' };
     }
 
-    console.log('Processing inscription:', data);
+    console.log('Processing inscription:', JSON.stringify(data));
 
     // Get database URL from environment
     const databaseUrl = process.env.DATABASE_URL || process.env.NETLIFY_DATABASE_URL;
