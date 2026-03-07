@@ -28,7 +28,7 @@
                 method="POST"
                 data-netlify="true"
                 netlify-honeypot="bot-field"
-                action="/inscription-merci/"
+                action="/{{ page.lang }}/inscription-merci/"
               >
               {# Hidden fields for Netlify #}
               <input type="hidden" name="form-name" value="inscription">
@@ -246,7 +246,6 @@
     </div>
   </section>
 
-  {# Script API (cours depuis API, envoi vers API si ATELIER_API_URL défini) + pré-remplissage #}
-  <script src="/scripts/inscriptionApi.js"></script>
+  {# Script de pré-remplissage du formulaire (depuis paramètres URL) #}
   <script src="/scripts/formPrefill.js"></script>
 {% endblock %}
