@@ -160,6 +160,7 @@
           if (bySection[key]) bySection[key].push(c);
         });
 
+        var visibleDelay = 0;
         Object.keys(GRID_IDS).forEach(function (key) {
           var gridId = GRID_IDS[key];
           var grid = document.getElementById(gridId);
@@ -167,7 +168,19 @@
           var list = bySection[key] || [];
           if (grid) {
             grid.innerHTML = list.map(buildCard).join('');
-            if (section) section.style.display = list.length ? '' : 'none';
+            if (section) {
+              if (list.length) {
+                section.style.display = '';
+                (function(s, d) {
+                  setTimeout(function() {
+                    s.classList.add('visible');
+                  }, d);
+                })(section, visibleDelay);
+                visibleDelay += 100;
+              } else {
+                section.style.display = 'none';
+              }
+            }
           }
         });
 

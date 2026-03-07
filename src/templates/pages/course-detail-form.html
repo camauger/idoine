@@ -1,0 +1,189 @@
+{% extends "page.html" %}
+
+{% block content %}
+  {# Page Hero #}
+  <section class="section section-page-hero cours-hero">
+    <div class="container">
+      <h1 class="page-title">{{ page.title }}</h1>
+      {% if page.description %}
+      <p class="page-intro lead">{{ page.description }}</p>
+      {% endif %}
+    </div>
+  </section>
+
+  {# Main content from markdown #}
+  <section class="section course-detail-content">
+    <div class="container container-narrow">
+      {{ content | safe }}
+    </div>
+  </section>
+
+  {# Embedded Registration Form #}
+  <section class="section inscription-section" id="inscription">
+    <div class="container container-narrow">
+      <div class="form-card">
+        <header class="form-card-header">
+          <h2>Inscription - {{ page.title }}</h2>
+          <p>Choisissez votre date et inscrivez-vous</p>
+        </header>
+
+        <form
+            class="form"
+            id="inscription-form"
+            name="inscription"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            action="/inscription-merci/"
+          >
+          {# Hidden fields for Netlify #}
+          <input type="hidden" name="form-name" value="inscription">
+          <input type="hidden" name="subject" value="Inscription {{ page.title }} - Ateliers St-Elme">
+          <p class="hidden" style="display:none;">
+            <label>Ne pas remplir si vous êtes humain: <input name="bot-field"></label>
+          </p>
+
+          {# Course Selection - filtered by page_dediee #}
+          <fieldset class="form-fieldset">
+            <legend>Choix de la date</legend>
+
+            <div class="form-group">
+              <label for="cours" class="form-label">
+                Date souhaitée <span class="required">*</span>
+              </label>
+              <select id="cours" name="cours" class="form-select" required data-page-slug="{{ page.slug }}">
+                <option value="">Chargement des dates...</option>
+              </select>
+              <p id="cours-error" class="form-error" style="display: none;">
+                Impossible de charger les dates disponibles.
+              </p>
+            </div>
+          </fieldset>
+
+          {# Personal Information #}
+          <fieldset class="form-fieldset">
+            <legend>Vos coordonnées</legend>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="nom" class="form-label">
+                  Nom complet <span class="required">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="nom"
+                  name="nom"
+                  class="form-input"
+                  placeholder="Prénom et nom"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="courriel" class="form-label">
+                  Courriel <span class="required">*</span>
+                </label>
+                <input
+                  type="email"
+                  id="courriel"
+                  name="courriel"
+                  class="form-input"
+                  placeholder="votre@courriel.com"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="telephone" class="form-label">
+                  Téléphone <span class="required">*</span>
+                </label>
+                <input
+                  type="tel"
+                  id="telephone"
+                  name="telephone"
+                  class="form-input"
+                  placeholder="(418) 123-4567"
+                  pattern="[0-9() +\-]+"
+                  required
+                >
+              </div>
+
+              <div class="form-group">
+                <label for="enfant" class="form-label">
+                  Si inscription pour un enfant
+                  <span class="form-label-optional">(optionnel)</span>
+                </label>
+                <input
+                  type="text"
+                  id="enfant"
+                  name="enfant"
+                  class="form-input"
+                  placeholder="Âge et prénom de l'enfant"
+                >
+              </div>
+            </div>
+          </fieldset>
+
+          {# Membership #}
+          <fieldset class="form-fieldset">
+            <legend>Adhésion</legend>
+
+            <div class="form-group">
+              <span class="form-label">Êtes-vous membre de l'atelier? <span class="required">*</span></span>
+              <div class="form-radio-group">
+                <label class="form-radio">
+                  <input type="radio" name="est_membre" value="oui" class="form-radio-input" required>
+                  <span class="form-radio-label">Oui, je suis membre</span>
+                </label>
+                <label class="form-radio">
+                  <input type="radio" name="est_membre" value="non" class="form-radio-input" required>
+                  <span class="form-radio-label">Non, je ne suis pas encore membre</span>
+                </label>
+              </div>
+              <p class="form-hint">La carte de membre (30$ + taxes) est obligatoire pour les cours réguliers adultes.</p>
+            </div>
+          </fieldset>
+
+          {# Additional Information #}
+          <fieldset class="form-fieldset">
+            <legend>Informations complémentaires</legend>
+
+            <div class="form-group">
+              <label for="message" class="form-label">
+                Message
+                <span class="form-label-optional">(optionnel)</span>
+              </label>
+              <textarea
+                id="message"
+                name="message"
+                class="form-textarea"
+                placeholder="Questions ou commentaires..."
+                rows="3"
+              ></textarea>
+            </div>
+
+            <div class="form-group">
+              <label class="form-check">
+                <input type="checkbox" name="newsletter" value="oui" class="form-check-input">
+                <span class="form-check-label">
+                  Oui, j'accepte de recevoir des infolettres occasionnelles
+                </span>
+              </label>
+            </div>
+          </fieldset>
+
+          {# Submit #}
+          <div class="form-actions">
+            <button type="submit" class="btn btn-primary btn-lg">
+              Envoyer ma demande d'inscription
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <script src="/scripts/courseDetailForm.js"></script>
+{% endblock %}

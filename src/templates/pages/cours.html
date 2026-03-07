@@ -42,7 +42,10 @@
   </nav>
 
   {# Cours chargés dynamiquement depuis l'API (courseList.js) #}
-  <div id="courses-loading" class="section" style="text-align:center; padding: 1.5rem;">Chargement des cours…</div>
+  <div id="courses-loading" class="courses-loading-container">
+    <div class="loading-spinner"></div>
+    <span class="loading-text">Chargement des cours…</span>
+  </div>
   <div id="courses-fallback" class="section section-notes" style="display:none;">
     <div class="container container-narrow">
       <p>Les cours ne sont pas disponibles pour le moment. <a href="/inscription">Utilisez le formulaire d'inscription</a> pour nous indiquer le cours souhaité.</p>
