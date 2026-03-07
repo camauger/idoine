@@ -15,7 +15,8 @@
     "author": "Christian Amauger <christian@amauger.com>",
     "license": "MIT",
     "dependencies": {
-        "@neondatabase/serverless": "^0.10.0"
+        "@neondatabase/serverless": "^0.10.0",
+        "jsonwebtoken": "^9.0.3"
     },
     "devDependencies": {
         "@fontsource/cinzel-decorative": "^5.2.8",

@@ -1,19 +1,42 @@
 /**
- * Netlify Function: API cours + inscriptions (Neon DB)
+ * Netlify Function: API cours + inscriptions + admin (Neon DB)
  * Réplique le comportement du backend FastAPI pour le front vanilla.
- * Routes: GET /api/cours, GET /api/cours/:slug, POST /api/inscriptions
+ * Routes: 
+ *   GET /api/cours, GET /api/cours/:slug, POST /api/inscriptions
+ *   POST /api/admin/login, GET /api/admin/courses, GET /api/admin/inscriptions
+ *   GET /api/admin/inscriptions/export
  */
 import { neon } from "@neondatabase/serverless";
+import jwt from "jsonwebtoken";
+
+const SECRET_KEY = process.env.SECRET_KEY || "change-me-in-production";
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
 
 function corsHeaders(req) {
   const origin = req.headers.get("origin");
-  const ok = origin && (origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1"));
+  const ok = origin && (origin.startsWith("http://localhost") || origin.startsWith("http://127.0.0.1") || origin.includes("netlify") || origin.includes("atelierstelme"));
   if (!ok) return {};
   return {
     "Access-Control-Allow-Origin": origin,
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Access-Control-Allow-Headers": "Content-Type",
+    "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization",
   };
+}
+
+function createToken() {
+  return jwt.sign({ admin: true }, SECRET_KEY, { expiresIn: "24h" });
+}
+
+function verifyToken(req) {
+  const auth = req.headers.get("authorization");
+  if (!auth || !auth.startsWith("Bearer ")) return false;
+  const token = auth.slice(7);
+  try {
+    jwt.verify(token, SECRET_KEY);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 function jsonResponse(data, status = 200, req = null) {
@@ -141,6 +164,120 @@ export default async (req, context) => {
         201,
         req
       );
+    }
+
+    // ===== ADMIN ROUTES =====
+
+    // POST /api/admin/login
+    if (method === "POST" && pathname === "/api/admin/login") {
+      let body;
+      try {
+        body = await req.json();
+      } catch {
+        return errorResponse("Body JSON invalide", 400, req);
+      }
+      if (body.password !== ADMIN_PASSWORD) {
+        return errorResponse("Mot de passe incorrect", 401, req);
+      }
+      return jsonResponse({ access_token: createToken(), token_type: "bearer" }, 200, req);
+    }
+
+    // Protected admin routes
+    if (pathname.startsWith("/api/admin/")) {
+      if (!verifyToken(req)) {
+        return errorResponse("Non autorisé", 401, req);
+      }
+
+      // GET /api/admin/courses
+      if (method === "GET" && pathname === "/api/admin/courses") {
+        const courses = await sql`SELECT * FROM courses ORDER BY discipline, nom`;
+        const counts = await sql`
+          SELECT course_id, COUNT(*)::int AS cnt
+          FROM inscriptions
+          GROUP BY course_id
+        `;
+        const countByCourse = Object.fromEntries((counts || []).map((r) => [r.course_id, r.cnt]));
+        const result = (courses || []).map((c) => {
+          const count = countByCourse[c.id] || 0;
+          const places_restantes = Math.max(0, (c.places_max || 0) - count);
+          return { ...c, places_restantes };
+        });
+        return jsonResponse(result, 200, req);
+      }
+
+      // GET /api/admin/inscriptions
+      if (method === "GET" && pathname === "/api/admin/inscriptions") {
+        const courseId = url.searchParams.get("course_id");
+        let inscriptions;
+        if (courseId) {
+          inscriptions = await sql`
+            SELECT i.*, c.nom as course_nom 
+            FROM inscriptions i 
+            JOIN courses c ON i.course_id = c.id 
+            WHERE i.course_id = ${parseInt(courseId, 10)}
+            ORDER BY i.created_at DESC
+          `;
+        } else {
+          inscriptions = await sql`
+            SELECT i.*, c.nom as course_nom 
+            FROM inscriptions i 
+            JOIN courses c ON i.course_id = c.id 
+            ORDER BY i.created_at DESC
+          `;
+        }
+        return jsonResponse(inscriptions || [], 200, req);
+      }
+
+      // GET /api/admin/inscriptions/export
+      if (method === "GET" && pathname === "/api/admin/inscriptions/export") {
+        const courseId = url.searchParams.get("course_id");
+        let inscriptions;
+        if (courseId) {
+          inscriptions = await sql`
+            SELECT i.*, c.nom as course_nom 
+            FROM inscriptions i 
+            JOIN courses c ON i.course_id = c.id 
+            WHERE i.course_id = ${parseInt(courseId, 10)}
+            ORDER BY i.created_at DESC
+          `;
+        } else {
+          inscriptions = await sql`
+            SELECT i.*, c.nom as course_nom 
+            FROM inscriptions i 
+            JOIN courses c ON i.course_id = c.id 
+            ORDER BY i.created_at DESC
+          `;
+        }
+        
+        // Build CSV
+        const rows = [["id", "date", "cours", "nom", "courriel", "telephone", "enfant", "jour_prefere", "horaire_prefere", "message", "newsletter", "est_membre"]];
+        for (const i of (inscriptions || [])) {
+          rows.push([
+            i.id,
+            i.created_at ? new Date(i.created_at).toISOString() : "",
+            i.course_nom || "",
+            i.nom || "",
+            i.courriel || "",
+            i.telephone || "",
+            i.enfant || "",
+            i.jour_prefere || "",
+            i.horaire_prefere || "",
+            (i.message || "").replace(/\n/g, " "),
+            i.newsletter ? "oui" : "non",
+            i.est_membre ? "oui" : "non",
+          ]);
+        }
+        const csv = rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(",")).join("\n");
+        
+        return new Response(csv, {
+          status: 200,
+          headers: {
+            "Content-Type": "text/csv; charset=utf-8",
+            "Content-Disposition": "attachment; filename=inscriptions.csv",
+            ...corsHeaders(req),
+          },
+        });
+      }
     }
 
     return errorResponse("Not Found", 404, req);
