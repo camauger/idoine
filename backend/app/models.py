@@ -44,6 +44,7 @@ class Inscription(Base):
     horaire_prefere = Column(String(100), nullable=True)  # comma-separated or JSON
     message = Column(Text, nullable=True)
     newsletter = Column(Boolean, default=False, nullable=False)
+    est_membre = Column(Boolean, default=False, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     course = relationship("Course", back_populates="inscriptions")

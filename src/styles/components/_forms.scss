@@ -201,6 +201,39 @@
   display: inline-flex;
 }
 
+// Radio Button Group (alternative naming)
+.form-radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4) var(--spacing-6);
+  margin-top: var(--spacing-2);
+}
+
+.form-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+}
+
+.form-radio-input {
+  @extend .form-check-input;
+}
+
+.form-radio-label {
+  font-size: var(--text-base);
+  color: var(--color-kiln-charcoal);
+  cursor: pointer;
+}
+
+// Form hint text
+.form-hint {
+  font-size: var(--text-sm);
+  color: var(--color-text-light);
+  margin-top: var(--spacing-2);
+  font-style: italic;
+}
+
 // -----------------------------------------------------------------------------
 // Help Text and Errors
 // -----------------------------------------------------------------------------

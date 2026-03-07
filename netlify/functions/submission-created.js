@@ -38,6 +38,7 @@ exports.handler = async (event) => {
     const coursNom = data.cours || '';
     const message = data.message || null;
     const newsletter = data.newsletter === 'oui';
+    const estMembre = data.est_membre === 'oui';
 
     // Find the course by name
     const courses = await sql`
@@ -69,8 +70,8 @@ exports.handler = async (event) => {
 
     // Insert inscription into database
     const result = await sql`
-      INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, message, newsletter, created_at)
-      VALUES (${courseId}, ${nom}, ${courriel}, ${telephone}, ${enfant}, ${message}, ${newsletter}, NOW())
+      INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, message, newsletter, est_membre, created_at)
+      VALUES (${courseId}, ${nom}, ${courriel}, ${telephone}, ${enfant}, ${message}, ${newsletter}, ${estMembre}, NOW())
       RETURNING id
     `;
 

@@ -18,7 +18,7 @@
           <div class="form-card">
             <header class="form-card-header">
               <h2>Demande d'inscription</h2>
-              <p>Session Hiver 2026 - Début des cours le 19 janvier</p>
+              <p>Session Printemps 2026 - Début des cours le 25 mars</p>
             </header>
 
             <form
@@ -103,7 +103,7 @@
                 </div>
               </fieldset>
 
-              {# Course Selection #}
+              {# Course Selection - populated dynamically via formPrefill.js #}
               <fieldset class="form-fieldset">
                 <legend>Choix du cours</legend>
 
@@ -112,37 +112,27 @@
                     Titre du cours <span class="required">*</span>
                   </label>
                   <select id="cours" name="cours" class="form-select" required>
-                    <option value="">Choisissez un cours...</option>
-                    <optgroup label="Céramique - Sessions régulières">
-                      <option value="Tournage soir">Tournage soir (Lun/Mar/Mer/Jeu 18h-21h)</option>
-                      <option value="Tournage matin">Tournage matin (Mer 9h-12h)</option>
-                      <option value="Façonnage">Façonnage (Mar 18h-21h)</option>
-                      <option value="Tournage ados">Tournage ados (Sam 9h-12h)</option>
-                      <option value="Cours de vannerie">Cours de vannerie (Dim 13h30-16h30)</option>
-                      <option value="Mosaïque">Mosaïque (Sam 13h30-16h30)</option>
-                    </optgroup>
-                    <optgroup label="Céramique - Intensifs">
-                      <option value="Potier d'un jour">Potier d'un jour - 15 fév.</option>
-                      <option value="Folie du tournage">Folie du tournage - 1 ou 8 fév.</option>
-                      <option value="La magie de l'argile rouge">La magie de l'argile rouge - 21 fév.</option>
-                      <option value="Pots pincés">Pots pincés - 14 fév.</option>
-                      <option value="Intensif vannerie">Intensif vannerie - 8 mars</option>
-                    </optgroup>
-                    <optgroup label="Céramique - Enfants">
-                      <option value="Modelage enfants">Modelage enfants 8-14 ans (Sam 9h-11h)</option>
-                    </optgroup>
-                    <optgroup label="Vitrail">
-                      <option value="Vitrail débutant/intermédiaire - Mardi">Vitrail débutant/intermédiaire (Mar 18h-20h30)</option>
-                      <option value="Vitrail débutant/intermédiaire - Vendredi">Vitrail débutant/intermédiaire (Ven 18h-20h30)</option>
-                      <option value="Vitrail: couleurs et techniques">Vitrail: couleurs et techniques (intensif)</option>
-                      <option value="Vitrail intensif – Niveau 1">Vitrail intensif – Niveau 1 - 11 avril (13h-16h)</option>
-                      <option value="Vitrail intensif – Niveau 2">Vitrail intensif – Niveau 2 - 2 mai (12h30-17h30)</option>
-                      <option value="Vitrail intensif – Niveau 2 (Pâques)">Vitrail intensif – Niveau 2 (Pâques) - 22 mars (9h-13h)</option>
-                    </optgroup>
-                    <optgroup label="Mosaïque">
-                      <option value="Mosaïque de verre">Mosaïque de verre - 7 et 15 mars (10h-15h)</option>
-                    </optgroup>
+                    <option value="">Chargement des cours...</option>
                   </select>
+                  <p id="cours-error" class="form-error" style="display: none;">
+                    Impossible de charger la liste des cours. 
+                    <a href="mailto:info@atelierstelme.ca?subject=Inscription">Contactez-nous par courriel</a> pour vous inscrire.
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <span class="form-label">Êtes-vous membre de l'atelier? <span class="required">*</span></span>
+                  <div class="form-radio-group">
+                    <label class="form-radio">
+                      <input type="radio" name="est_membre" value="oui" class="form-radio-input" required>
+                      <span class="form-radio-label">Oui, je suis membre</span>
+                    </label>
+                    <label class="form-radio">
+                      <input type="radio" name="est_membre" value="non" class="form-radio-input" required>
+                      <span class="form-radio-label">Non, je ne suis pas encore membre</span>
+                    </label>
+                  </div>
+                  <p class="form-hint">La carte de membre (30$ + taxes) est obligatoire pour les cours réguliers adultes.</p>
                 </div>
               </fieldset>
 

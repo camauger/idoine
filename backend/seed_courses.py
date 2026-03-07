@@ -1,4 +1,10 @@
-"""Seed courses from horaire-printemps-2026.json and add intensifs."""
+"""Seed courses from horaire-printemps-2026.json and add intensifs.
+
+Usage:
+    python seed_courses.py          # Initial seed (fails if DB has courses)
+    python seed_courses.py --update # Add only new courses (skip existing)
+"""
+import argparse
 import json
 import re
 import sys
@@ -52,12 +58,26 @@ def _format_prix(prix: str | None, taxes: str | None) -> str | None:
 
 
 def main():
+    parser = argparse.ArgumentParser(description="Seed courses to database")
+    parser.add_argument(
+        "--update",
+        action="store_true",
+        help="Add only new courses (skip existing by slug)",
+    )
+    args = parser.parse_args()
+
     init_db()
     db = SessionLocal()
+    added = 0
+    skipped = 0
     try:
-        if db.query(Course).first():
-            print("DB already has courses. Skip seed or delete DB first.")
+        existing_count = db.query(Course).count()
+        if existing_count > 0 and not args.update:
+            print(f"DB already has {existing_count} courses.")
+            print("Use --update to add only new courses, or delete DB first.")
             return
+        if args.update:
+            print(f"Mode update: {existing_count} cours existants")
         # Load horaire Printemps 2026
         json_path = Path(__file__).parent.parent / "horaire-printemps-2026.json"
         if not json_path.exists():
@@ -80,6 +100,10 @@ def main():
                 idx += 1
                 slug = f"{base_slug}-{idx}"
             seen.add(slug)
+            # Check if course already exists
+            if db.query(Course).filter(Course.slug == slug).first():
+                skipped += 1
+                continue
             course = Course(
                 nom=nom,
                 slug=slug,
@@ -99,6 +123,8 @@ def main():
                 badge_new=False,
             )
             db.add(course)
+            added += 1
+            print(f"  + {nom}")
         # Intensifs (vitrail, mosaïque) from intensifs.json
         intensifs_path = Path(__file__).parent.parent / "intensifs.json"
         if intensifs_path.exists():
@@ -113,6 +139,7 @@ def main():
                 print(f"  Skipping inactive: {d['slug']}")
                 continue
             if db.query(Course).filter(Course.slug == d["slug"]).first():
+                skipped += 1
                 continue
             # Process intensif data - handle taxes and statut fields
             prix_formatted = _format_prix(d.get("prix"), d.get("taxes"))
@@ -136,8 +163,12 @@ def main():
                 page_dediee=d.get("page_dediee"),
             )
             db.add(course)
+            added += 1
+            print(f"  + {d['nom']}")
         db.commit()
-        print("Seed OK:", db.query(Course).count(), "courses")
+        total = db.query(Course).count()
+        print(f"\nRésultat: {added} ajoutés, {skipped} ignorés (existants)")
+        print(f"Total en BD: {total} cours")
     finally:
         db.close()
 
