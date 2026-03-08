@@ -35,4 +35,3 @@ Aucun prérequis.
 
 - Vêtements confortables que vous ne craignez pas de salir
 - Chaussures fermées (recommandé)
-- Votre lunch (pause repas possible sur place)
