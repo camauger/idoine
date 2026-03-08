@@ -9,17 +9,9 @@ inscription_cours: Vitrail intensif – Niveau 2
 
 ![Support à plantes en vitrail Tiffany](/assets/images/intensifs-vitrail/intensif-vitrail-2-1.jpeg)
 
-Poursuivez votre apprentissage du vitrail Tiffany avec ce projet plus élaboré : un support à plantes décoratif en verre coloré. Ce projet vous permettra de consolider vos acquis et d'explorer des assemblages plus complexes.
+Venez réaliser un support à plantes en verre selon la technique de vitrail Tiffany. Vous apprendrez la coupe et le meulage du verre ainsi que la pose du ruban de cuivre et la soudure au fil de plomb.
 
 ![Détail du support à plantes](/assets/images/intensifs-vitrail/intensif-vitrail-2-2.jpeg)
-
-## Ce que vous apprendrez
-
-- Travail sur un projet en 3 dimensions
-- Assemblage de pièces multiples
-- Techniques de soudure avancées
-- Renforcement structurel
-- Finition et patine professionnelle
 
 ## Dates et horaire
 
@@ -37,10 +29,10 @@ Tout le matériel est fourni : verre coloré, ruban de cuivre, étain, outils sp
 
 ## Prérequis
 
-Cet atelier est destiné aux personnes ayant **déjà suivi le Niveau 1** ou ayant une expérience équivalente en vitrail Tiffany.
+Aucun prérequis.
 
 ## À prévoir
 
 - Vêtements confortables que vous ne craignez pas de salir
-- Chaussures fermées (obligatoire pour la sécurité)
+- Chaussures fermées (recommandé)
 - Votre lunch (pause repas possible sur place)

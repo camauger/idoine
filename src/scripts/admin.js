@@ -175,10 +175,12 @@
       return;
     }
 
-    tbody.innerHTML = inscriptions.map(function(i) {
+    tbody.innerHTML = inscriptions.map(function(i, idx) {
       var date = i.created_at ? new Date(i.created_at).toLocaleDateString('fr-CA') : '-';
       var membre = i.est_membre ? 'Oui' : 'Non';
-      var message = i.message ? '<span class="has-message" title="' + esc(i.message) + '">Voir</span>' : '-';
+      var message = i.message 
+        ? '<button class="btn-message" data-idx="' + idx + '">Voir</button>' 
+        : '-';
       
       return '<tr>' +
         '<td>' + esc(date) + '</td>' +
@@ -190,6 +192,50 @@
         '<td>' + message + '</td>' +
       '</tr>';
     }).join('');
+
+    // Add click handlers for message buttons
+    tbody.querySelectorAll('.btn-message').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var idx = parseInt(this.getAttribute('data-idx'), 10);
+        var insc = inscriptions[idx];
+        if (insc && insc.message) {
+          showMessageModal(insc);
+        }
+      });
+    });
+  }
+
+  function showMessageModal(inscription) {
+    // Remove existing modal if any
+    var existing = document.getElementById('message-modal');
+    if (existing) existing.remove();
+
+    var modal = document.createElement('div');
+    modal.id = 'message-modal';
+    modal.className = 'modal-overlay';
+    modal.innerHTML = 
+      '<div class="modal-content">' +
+        '<div class="modal-header">' +
+          '<h3>Message de ' + esc(inscription.nom) + '</h3>' +
+          '<button class="modal-close">&times;</button>' +
+        '</div>' +
+        '<div class="modal-body">' +
+          '<p><strong>Cours:</strong> ' + esc(inscription.course_nom || '-') + '</p>' +
+          '<p><strong>Date:</strong> ' + (inscription.created_at ? new Date(inscription.created_at).toLocaleDateString('fr-CA') : '-') + '</p>' +
+          '<hr>' +
+          '<p class="message-text">' + esc(inscription.message).replace(/\n/g, '<br>') + '</p>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(modal);
+
+    // Close handlers
+    modal.querySelector('.modal-close').addEventListener('click', function() {
+      modal.remove();
+    });
+    modal.addEventListener('click', function(e) {
+      if (e.target === modal) modal.remove();
+    });
   }
 
   function updateStats() {

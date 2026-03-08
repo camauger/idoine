@@ -9,7 +9,8 @@ inscription_cours: Vitrail intensif – Niveau 2 (Pâques)
 
 ![Décoration de Pâques en vitrail Tiffany](/assets/images/intensifs-vitrail/intensif-vitrail-3-1.jpeg)
 
-Célébrez Pâques avec une création unique en vitrail! Cet atelier thématique vous propose de réaliser une décoration festive en verre coloré, parfaite pour égayer votre intérieur ou offrir en cadeau.
+Découvrez les bases de la technique du vitrail Tiffany en réalisant un joli projet sous le thème de Pâques.
+Vous apprendrez la coupe et le meulage du verre ainsi que la pose du ruban de cuivre et la soudure au fil de plomb.
 
 ![Détail de la décoration Pâques](/assets/images/intensifs-vitrail/intensif-vitrail-3-2.jpeg)
 
@@ -33,9 +34,9 @@ Tout le matériel est fourni : verre coloré aux teintes printanières, ruban de
 
 ## Pour qui?
 
-Cet atelier correspond au **Niveau 2** et s'adresse aux personnes ayant déjà une expérience de base en vitrail Tiffany (Niveau 1 complété ou équivalent).
+Aucun prérequis.
 
 ## À prévoir
 
 - Vêtements confortables que vous ne craignez pas de salir
-- Chaussures fermées (obligatoire pour la sécurité)
+- Chaussures fermées (recommandé)

@@ -244,11 +244,94 @@
   font-weight: 500;
 }
 
-// Message tooltip
-.has-message {
-  color: var(--color-primary);
-  cursor: help;
-  text-decoration: underline dotted;
+// Message button
+.btn-message {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.25em 0.75em;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-xs);
+  cursor: pointer;
+  transition: background 0.2s;
+
+  &:hover {
+    background: var(--color-primary-dark, #1e40af);
+  }
+}
+
+// Modal
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: var(--spacing-4);
+}
+
+.modal-content {
+  background: white;
+  border-radius: var(--radius-lg);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-4) var(--spacing-6);
+  border-bottom: 1px solid var(--color-gray-200);
+
+  h3 {
+    margin: 0;
+    font-size: var(--text-lg);
+  }
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: var(--color-gray-500);
+  line-height: 1;
+  padding: 0;
+
+  &:hover {
+    color: var(--color-gray-700);
+  }
+}
+
+.modal-body {
+  padding: var(--spacing-6);
+
+  p {
+    margin: 0 0 var(--spacing-2);
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid var(--color-gray-200);
+    margin: var(--spacing-4) 0;
+  }
+
+  .message-text {
+    background: var(--color-gray-50);
+    padding: var(--spacing-4);
+    border-radius: var(--radius-md);
+    white-space: pre-wrap;
+    line-height: 1.6;
+  }
 }
 
 // Form select small

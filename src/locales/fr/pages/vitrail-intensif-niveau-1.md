@@ -9,17 +9,10 @@ inscription_cours: Vitrail intensif – Niveau 1
 
 ![Colibri en vitrail Tiffany - réalisation type de l'atelier](/assets/images/intensifs-vitrail/intensif-vitrail-1-1.jpeg)
 
-Découvrez l'art du vitrail Tiffany lors de cet atelier intensif d'initiation. En une après-midi, apprenez les bases de la technique au ruban de cuivre et repartez avec votre propre création : un magnifique colibri à suspendre.
+Découvrez les bases de la technique du vitrail Tiffany en réalisant un joli colibri à suspendre.
+Vous apprendrez la coupe et le meulage du verre ainsi que la pose du ruban de cuivre et la soudure au fil de plomb.
 
 ![Détail du colibri en vitrail](/assets/images/intensifs-vitrail/intensif-vitrail-1-2.jpeg)
-
-## Ce que vous apprendrez
-
-- Découpe du verre avec le coupe-verre
-- Meulage des bords pour un ajustement parfait
-- Pose du ruban de cuivre (technique Tiffany)
-- Soudure à l'étain
-- Finition et patine
 
 ## Dates et horaire
 
