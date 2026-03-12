@@ -58,13 +58,25 @@
   function buildOptionLabel(c) {
     var parts = [c.nom];
     var details = [];
+    if (c.date_debut) details.push(c.date_debut);
     if (c.jour) details.push(c.jour);
     if (c.heure) details.push(c.heure);
-    if (c.date_debut) details.push(c.date_debut);
     if (details.length > 0) {
       parts.push('(' + details.join(' - ') + ')');
     }
     return parts.join(' ');
+  }
+
+  function buildOptionValue(c) {
+    // Include name and date to uniquely identify the course
+    var value = c.nom;
+    if (c.date_debut) {
+      value += ' - ' + c.date_debut;
+    }
+    if (c.jour && c.heure) {
+      value += ' (' + c.jour + ' ' + c.heure + ')';
+    }
+    return value;
   }
 
   function populateDropdown(selectElement, courses, preselect) {
@@ -97,8 +109,10 @@
 
       list.forEach(function(c) {
         var option = document.createElement('option');
-        option.value = c.nom;
+        var optValue = buildOptionValue(c);
+        option.value = optValue;
         option.textContent = buildOptionLabel(c);
+        option.setAttribute('data-course-id', c.id);
         
         if (c.places_restantes === 0) {
           option.textContent += ' [COMPLET]';
@@ -107,7 +121,7 @@
 
         optgroup.appendChild(option);
 
-        if (preselect && c.nom === preselect) {
+        if (preselect && (c.nom === preselect || optValue === preselect)) {
           preselectedIndex = optionIndex;
         }
         optionIndex++;

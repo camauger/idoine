@@ -11,10 +11,21 @@
 
   function buildOptionLabel(c) {
     var parts = [];
-    if (c.jour) parts.push(c.jour);
     if (c.date_debut) parts.push(c.date_debut);
+    if (c.jour) parts.push(c.jour);
     if (c.heure) parts.push(c.heure);
     return parts.join(' - ') || c.nom;
+  }
+
+  function buildOptionValue(c) {
+    var value = c.nom;
+    if (c.date_debut) {
+      value += ' - ' + c.date_debut;
+    }
+    if (c.jour && c.heure) {
+      value += ' (' + c.jour + ' ' + c.heure + ')';
+    }
+    return value;
   }
 
   function populateDropdown(selectElement, courses) {
@@ -30,9 +41,10 @@
 
     if (courses.length === 1) {
       var singleOption = document.createElement('option');
-      singleOption.value = courses[0].nom;
+      singleOption.value = buildOptionValue(courses[0]);
       singleOption.textContent = buildOptionLabel(courses[0]);
       singleOption.selected = true;
+      singleOption.setAttribute('data-course-id', courses[0].id);
       selectElement.appendChild(singleOption);
       return;
     }
@@ -44,8 +56,9 @@
 
     courses.forEach(function(c) {
       var option = document.createElement('option');
-      option.value = c.nom;
+      option.value = buildOptionValue(c);
       option.textContent = buildOptionLabel(c);
+      option.setAttribute('data-course-id', c.id);
       
       if (c.places_restantes === 0) {
         option.textContent += ' [COMPLET]';

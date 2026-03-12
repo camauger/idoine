@@ -42,21 +42,50 @@ exports.handler = async (event) => {
     const courriel = data.courriel || '';
     const telephone = data.telephone || '';
     const enfant = data.enfant || null;
-    const coursNom = data.cours || '';
+    const coursValeur = data.cours || '';
     const message = data.message || null;
     const newsletter = data.newsletter === 'oui';
     const estMembre = data.est_membre === 'oui';
 
-    // Find the course by name
-    const courses = await sql`
-      SELECT id FROM courses WHERE nom = ${coursNom} LIMIT 1
-    `;
+    // Parse the course value which may include date info
+    // Format: "Course Name - date_debut (jour heure)" or just "Course Name"
+    let coursNom = coursValeur;
+    let coursDate = null;
+    
+    // Try to extract date from format "Name - date (details)"
+    const dateMatch = coursValeur.match(/^(.+?)\s*-\s*(\d{4}-\d{2}-\d{2})/);
+    if (dateMatch) {
+      coursNom = dateMatch[1].trim();
+      coursDate = dateMatch[2];
+    }
 
+    console.log('Parsed course:', { coursNom, coursDate, original: coursValeur });
+
+    // Find the course by name and date
     let courseId = null;
-    if (courses.length > 0) {
-      courseId = courses[0].id;
-    } else {
-      // Try partial match
+    
+    if (coursDate) {
+      // Try exact match with name and date
+      const coursesExact = await sql`
+        SELECT id FROM courses WHERE nom = ${coursNom} AND date_debut = ${coursDate} LIMIT 1
+      `;
+      if (coursesExact.length > 0) {
+        courseId = coursesExact[0].id;
+      }
+    }
+    
+    if (!courseId) {
+      // Fallback: try by name only
+      const courses = await sql`
+        SELECT id FROM courses WHERE nom = ${coursNom} LIMIT 1
+      `;
+      if (courses.length > 0) {
+        courseId = courses[0].id;
+      }
+    }
+    
+    if (!courseId) {
+      // Try partial match as last resort
       const coursesPartial = await sql`
         SELECT id FROM courses WHERE nom ILIKE ${'%' + coursNom + '%'} LIMIT 1
       `;

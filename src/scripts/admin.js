@@ -171,23 +171,33 @@
   function renderInscriptions() {
     var tbody = document.querySelector('#inscriptions-table tbody');
     if (!inscriptions.length) {
-      tbody.innerHTML = '<tr><td colspan="7" class="empty">Aucune inscription</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">Aucune inscription</td></tr>';
       return;
     }
 
     tbody.innerHTML = inscriptions.map(function(i, idx) {
-      var date = i.created_at ? new Date(i.created_at).toLocaleDateString('fr-CA') : '-';
+      var dateInscription = i.created_at ? new Date(i.created_at).toLocaleDateString('fr-CA') : '-';
       var membre = i.est_membre ? 'Oui' : 'Non';
       var message = i.message 
         ? '<button class="btn-message" data-idx="' + idx + '">Voir</button>' 
         : '-';
       
+      // Use course_date from API (fallback to courses lookup if not available)
+      var coursDate = i.course_date || '-';
+      if (coursDate === '-') {
+        var courseInfo = courses.find(function(c) { return c.id === i.course_id; });
+        if (courseInfo && courseInfo.date_debut) {
+          coursDate = courseInfo.date_debut;
+        }
+      }
+      
       return '<tr>' +
-        '<td>' + esc(date) + '</td>' +
+        '<td>' + esc(dateInscription) + '</td>' +
         '<td>' + esc(i.nom) + '</td>' +
         '<td><a href="mailto:' + esc(i.courriel) + '">' + esc(i.courriel) + '</a></td>' +
         '<td>' + esc(i.telephone || '-') + '</td>' +
         '<td>' + esc(i.course_nom || '-') + '</td>' +
+        '<td>' + esc(coursDate) + '</td>' +
         '<td>' + membre + '</td>' +
         '<td>' + message + '</td>' +
       '</tr>';

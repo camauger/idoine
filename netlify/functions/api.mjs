@@ -211,7 +211,7 @@ export default async (req, context) => {
         let inscriptions;
         if (courseId) {
           inscriptions = await sql`
-            SELECT i.*, c.nom as course_nom 
+            SELECT i.*, c.nom as course_nom, c.date_debut as course_date
             FROM inscriptions i 
             JOIN courses c ON i.course_id = c.id 
             WHERE i.course_id = ${parseInt(courseId, 10)}
@@ -219,7 +219,7 @@ export default async (req, context) => {
           `;
         } else {
           inscriptions = await sql`
-            SELECT i.*, c.nom as course_nom 
+            SELECT i.*, c.nom as course_nom, c.date_debut as course_date
             FROM inscriptions i 
             JOIN courses c ON i.course_id = c.id 
             ORDER BY i.created_at DESC
@@ -234,7 +234,7 @@ export default async (req, context) => {
         let inscriptions;
         if (courseId) {
           inscriptions = await sql`
-            SELECT i.*, c.nom as course_nom 
+            SELECT i.*, c.nom as course_nom, c.date_debut as course_date
             FROM inscriptions i 
             JOIN courses c ON i.course_id = c.id 
             WHERE i.course_id = ${parseInt(courseId, 10)}
@@ -242,7 +242,7 @@ export default async (req, context) => {
           `;
         } else {
           inscriptions = await sql`
-            SELECT i.*, c.nom as course_nom 
+            SELECT i.*, c.nom as course_nom, c.date_debut as course_date
             FROM inscriptions i 
             JOIN courses c ON i.course_id = c.id 
             ORDER BY i.created_at DESC
@@ -250,18 +250,17 @@ export default async (req, context) => {
         }
         
         // Build CSV
-        const rows = [["id", "date", "cours", "nom", "courriel", "telephone", "enfant", "jour_prefere", "horaire_prefere", "message", "newsletter", "est_membre"]];
+        const rows = [["id", "date_inscription", "cours", "date_cours", "nom", "courriel", "telephone", "enfant", "message", "newsletter", "est_membre"]];
         for (const i of (inscriptions || [])) {
           rows.push([
             i.id,
             i.created_at ? new Date(i.created_at).toISOString() : "",
             i.course_nom || "",
+            i.course_date || "",
             i.nom || "",
             i.courriel || "",
             i.telephone || "",
             i.enfant || "",
-            i.jour_prefere || "",
-            i.horaire_prefere || "",
             (i.message || "").replace(/\n/g, " "),
             i.newsletter ? "oui" : "non",
             i.est_membre ? "oui" : "non",
