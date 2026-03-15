@@ -23,6 +23,7 @@
         <li role="none"><a href="{{ cours_base }}#enfants" role="menuitem">{{ t.nav_courses_enfants | default('Enfants') }}</a></li>
       </ul>
     </li>
+    {{ nav_link(t.calendar | default('Calendrier'), lang_prefix ~ '/calendrier', page) }}
     {% if has_posts.get(page.lang, false) %}
     {{ nav_link(t.blog, lang_prefix ~ '/blog', page) }}
     {% endif %}
