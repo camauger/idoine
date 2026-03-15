@@ -305,19 +305,23 @@
   function fetchWithRetry() {
     var proxyUrl = getProxyUrl();
     console.log('[Calendar] Trying proxy:', CORS_PROXIES[currentProxyIndex]);
+    console.log('[Calendar] Full URL:', proxyUrl);
 
     return fetch(proxyUrl)
       .then(function(response) {
+        console.log('[Calendar] Response status:', response.status);
         if (!response.ok) throw new Error('HTTP ' + response.status);
         return response.text();
       })
       .then(function(icsData) {
+        console.log('[Calendar] Data received, length:', icsData.length, 'starts with:', icsData.substring(0, 50));
         if (!icsData || icsData.indexOf('BEGIN:VCALENDAR') === -1) {
           throw new Error('Invalid ICS data');
         }
         return icsData;
       })
       .catch(function(err) {
+        console.log('[Calendar] Error:', err.message);
         currentProxyIndex++;
         if (currentProxyIndex < CORS_PROXIES.length) {
           console.log('[Calendar] Retrying with next proxy...');
