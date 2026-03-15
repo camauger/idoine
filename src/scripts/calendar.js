@@ -24,14 +24,15 @@
   }
 
   var ICS_URL = window.CALENDAR_ICS_URL || '';
-
-  // Liste de proxies CORS à essayer
+  
+  // Liste de proxies à essayer (Netlify Function en premier, puis fallbacks)
   var CORS_PROXIES = [
+    '/.netlify/functions/calendar-proxy?url=',
     'https://corsproxy.io/?',
     'https://api.codetabs.com/v1/proxy?quest='
   ];
   var currentProxyIndex = 0;
-
+  
   function getProxyUrl() {
     return CORS_PROXIES[currentProxyIndex] + encodeURIComponent(ICS_URL);
   }
