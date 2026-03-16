@@ -24,6 +24,7 @@
       </ul>
     </li>
     {{ nav_link(t.calendar | default('Calendrier'), lang_prefix ~ '/calendrier', page) }}
+    {{ nav_link(t.jobs | default('Offre d\'emploi'), lang_prefix ~ '/emploi', page) }}
     {% if has_posts.get(page.lang, false) %}
     {{ nav_link(t.blog, lang_prefix ~ '/blog', page) }}
     {% endif %}

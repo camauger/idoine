@@ -1,0 +1,98 @@
+{% extends "page.html" %}
+
+{% block content %}
+<main id="main-content" role="main" class="emploi-page">
+  <section class="section emploi-hero">
+    <div class="container container-narrow">
+      <span class="emploi-badge">Offre d'emploi</span>
+      <h1 class="page-title">Direction générale</h1>
+      <div class="page-intro lead">{{ content | safe }}</div>
+      <div class="emploi-meta">
+        <span class="meta-item">
+          <i class="fas fa-clock" aria-hidden="true"></i>
+          15 à 20 heures par semaine
+        </span>
+        <span class="meta-item">
+          <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+          Beauport, Québec
+        </span>
+        <span class="meta-item">
+          <i class="fas fa-home" aria-hidden="true"></i>
+          Hybride
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section class="section emploi-content">
+    <div class="container container-narrow">
+
+      <div class="emploi-section">
+        <h2>Sommaire du poste</h2>
+        <p>Relevant du conseil d'administration, le directeur ou la directrice générale a pour mandat d'assurer la direction et la gestion de l'organisme. En raison de sa taille, l'Atelier fonctionne avec peu de personnel, le directeur ou la directrice générale doit jouer un rôle actif dans toutes les opérations, notamment dans les activités de programmation et de collecte de fonds.</p>
+        <p>De plus, la direction générale contribue au rayonnement de l'organisme en développant des partenariats communautaires, institutionnels et municipaux, en assurant la promotion des activités sur différents canaux de communication et en représentant l'organisme lors d'événements et de rencontres externes.</p>
+      </div>
+
+      <div class="emploi-section">
+        <h2>Profil des compétences et qualifications requises</h2>
+
+        <h3>Formation / Expérience</h3>
+        <ul>
+          <li>Diplôme d'étude collégiale ou universitaire dans un domaine relié au poste, notamment en administration, métiers d'art ou tout autre domaine pertinent.</li>
+          <li>Expérience minimum de 5 ans dans la gestion d'un organisme à but non lucratif, ou expérience dans un rôle de direction ayant des responsabilités financières, gestion des opérations et des ressources humaines.</li>
+          <li>Ou toute combinaison de formation et d'expérience pertinente.</li>
+        </ul>
+
+        <h3>Connaissances</h3>
+        <ul>
+          <li>Connaissance des principes de leadership et de gestion propres à un petit organisme (OBNL).</li>
+          <li>Bonne maîtrise de la langue française, tant à l'oral qu'à l'écrit.</li>
+          <li>Facilité à utiliser les fonctions de base des logiciels et médias sociaux suivants : Microsoft Word, Excel, Zoho billings ou QuickBooks, et certains médias sociaux tels Facebook et Instagram.</li>
+          <li>Connaissance des techniques de cuisson de la céramique à l'aide de fours électriques (un atout important).</li>
+          <li>Connaissance des sources et stratégies de financement (un atout).</li>
+        </ul>
+      </div>
+
+      <div class="emploi-section">
+        <h2>Conditions de travail</h2>
+        <div class="conditions-grid">
+          <div class="condition-item">
+            <span class="condition-label">Salaire</span>
+            <span class="condition-value">28 à 30$/h</span>
+            <span class="condition-note">selon qualifications et expérience</span>
+          </div>
+          <div class="condition-item">
+            <span class="condition-label">Horaire</span>
+            <span class="condition-value">15 à 20 heures par semaine</span>
+            <span class="condition-note">possibilité de plus</span>
+          </div>
+          <div class="condition-item">
+            <span class="condition-label">Régime de travail</span>
+            <span class="condition-value">Hybride</span>
+            <span class="condition-note">télétravail possible, présence en personne selon les tâches</span>
+          </div>
+          <div class="condition-item">
+            <span class="condition-label">Transport</span>
+            <span class="condition-value">Accessible</span>
+            <span class="condition-note">à 1 minute d'un arrêt Métrobus 800</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="emploi-section emploi-cta">
+        <h2>Postuler</h2>
+        <p>Pour plus d'information ou pour soumettre votre candidature :</p>
+        <a href="mailto:conseil.administration@atelierstelme.ca" class="btn btn-primary btn-lg">
+          <i class="fas fa-envelope" aria-hidden="true"></i>
+          conseil.administration@atelierstelme.ca
+        </a>
+        <p class="deadline">
+          <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+          <strong>Date limite :</strong> 15 mars 2026
+        </p>
+      </div>
+
+    </div>
+  </section>
+</main>
+{% endblock %}
