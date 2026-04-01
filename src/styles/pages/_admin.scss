@@ -244,6 +244,31 @@
   font-weight: 500;
 }
 
+.places-cell {
+  vertical-align: middle;
+  min-width: 200px;
+}
+
+.places-edit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--spacing-2);
+}
+
+.places-input {
+  width: 4.25rem;
+  min-width: 4rem;
+  padding: var(--spacing-1) var(--spacing-2);
+  font-size: var(--text-sm);
+}
+
+.places-inscrits-hint {
+  font-size: var(--text-xs);
+  color: var(--color-gray-500);
+  white-space: nowrap;
+}
+
 // Message button
 .btn-message {
   background: var(--color-primary);

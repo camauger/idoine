@@ -27,7 +27,7 @@
     .table-wrap::-webkit-scrollbar-track { background: #eee; border-radius: 4px; }
     .table-wrap::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 4px; }
     .table-wrap::-webkit-scrollbar-thumb:hover { background: #868e96; }
-    table { width: 100%; min-width: 1100px; border-collapse: collapse; font-size: 0.85rem; }
+    table { width: 100%; min-width: 1200px; border-collapse: collapse; font-size: 0.85rem; }
     th, td { border: 1px solid #dee2e6; padding: 0.5rem 0.6rem; text-align: left; white-space: nowrap; }
     td.cell-wrap { white-space: normal; max-width: 12rem; }
     th { background: #e9ecef; font-weight: 600; position: sticky; top: 0; z-index: 1; }
@@ -76,7 +76,7 @@
       <p><a href="#" id="export-csv">Exporter inscriptions en CSV</a></p>
       <div class="table-wrap">
         <table id="courses-table">
-          <thead><tr><th>Id</th><th>Nom</th><th>Discipline</th><th>Type</th><th>Jour</th><th>Créneau</th><th>Heure</th><th>Durée</th><th>Début</th><th>Salle</th><th>Prof</th><th>Prix</th><th>Places</th><th>Inscrits</th><th>Actif</th></tr></thead>
+          <thead><tr><th>Id</th><th>Nom</th><th>Discipline</th><th>Type</th><th>Jour</th><th>Créneau</th><th>Heure</th><th>Durée</th><th>Début</th><th>Salle</th><th>Prof</th><th>Prix</th><th>Places max</th><th>Inscrits</th><th>Places restantes</th><th>Actif</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -149,15 +149,49 @@
       tbody.innerHTML = list.map(c => {
         const empty = (v) => (v === undefined || v === null || v === '') ? '—' : v;
         const esc = (s) => (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-        return `<tr>
+        const inscrits = Math.max(0, (c.places_max || 0) - (c.places_restantes || 0));
+        return `<tr data-course-id="${c.id}">
         <td>${c.id}</td><td class="cell-wrap">${esc(c.nom)}</td><td>${empty(c.discipline)}</td><td>${empty(c.type_cours)}</td>
         <td>${empty(c.jour)}</td><td>${empty(c.creneau)}</td><td>${empty(c.heure)}</td>
         <td class="numeric">${empty(c.duree_semaines)}</td><td>${empty(c.date_debut)}</td><td>${empty(c.salle)}</td>
         <td>${empty(c.prof)}</td><td>${empty(c.prix)}</td>
-        <td class="numeric">${c.places_max}</td><td class="numeric">${c.places_max - c.places_restantes}</td>
+        <td class="numeric">${c.places_max}</td><td class="numeric">${inscrits}</td>
+        <td class="cell-wrap places-edit-cell"><input type="number" min="0" step="1" class="places-restantes-input" data-inscrits="${inscrits}" value="${c.places_restantes != null ? c.places_restantes : 0}" aria-label="Places restantes pour ${esc(c.nom)}" style="width:4rem;padding:0.35rem" />
+        <button type="button" class="btn-save-places">Enregistrer</button></td>
         <td>${c.actif ? 'Oui' : 'Non'}</td>
       </tr>`;
       }).join('');
+
+      tbody.querySelectorAll('.btn-save-places').forEach(btn => {
+        btn.onclick = async () => {
+          const row = btn.closest('tr');
+          const id = parseInt(row.getAttribute('data-course-id'), 10);
+          const input = row.querySelector('.places-restantes-input');
+          const inscrits = parseInt(input.getAttribute('data-inscrits'), 10) || 0;
+          let restantes = parseInt(input.value, 10);
+          if (isNaN(restantes) || restantes < 0) { alert('Indiquez un nombre de places restantes valide (0 ou plus).'); return; }
+          const placesMax = inscrits + restantes;
+          btn.disabled = true;
+          try {
+            const res = await fetch(API + '/api/admin/courses/' + id, {
+              method: 'PUT',
+              headers: headers(),
+              body: JSON.stringify({ places_max: placesMax })
+            });
+            if (res.status === 401) { setToken(null); location.reload(); return; }
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              alert(err.detail || 'Erreur lors de l\'enregistrement');
+              return;
+            }
+            await loadCourses();
+          } catch (e) {
+            alert(e.message || 'Erreur');
+          } finally {
+            btn.disabled = false;
+          }
+        };
+      });
     }
 
     async function loadInscriptions() {

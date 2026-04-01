@@ -1,6 +1,6 @@
 ---
 title: Vitrail intensif – Niveau 1
-description: Atelier intensif de vitrail Tiffany niveau débutant à l'Atelier St-Elme. Créez un colibri à suspendre en verre coloré. Technique du ruban de cuivre.
+description: Atelier intensif de vitrail Tiffany niveau débutant à l'Atelier St-Elme (16 ans et plus). Créez un colibri à suspendre en verre coloré. Technique du ruban de cuivre.
 template: pages/course-detail-form.html
 slug: vitrail-intensif-niveau-1
 translation_id: vitrail-intensif-niveau-1
@@ -30,7 +30,7 @@ Tout le matériel est fourni : verre coloré, ruban de cuivre, étain, outils (c
 
 ## Pour qui?
 
-Cet atelier est destiné aux **débutants** n'ayant jamais fait de vitrail. Aucune expérience préalable requise.
+**16 ans et plus.** Cet atelier est destiné aux **débutants** n'ayant jamais fait de vitrail. Aucune expérience préalable requise.
 
 ## À prévoir
 

@@ -153,19 +153,79 @@
     tbody.innerHTML = courses.map(function(c) {
       var statusClass = c.actif ? 'status-active' : 'status-inactive';
       var statusText = c.actif ? 'Actif' : 'Inactif';
+      var inscrits = Math.max(0, (c.places_max || 0) - (c.places_restantes || 0));
       var placesClass = c.places_restantes === 0 ? 'places-full' : (c.places_restantes <= 2 ? 'places-low' : '');
-      
-      return '<tr>' +
+
+      return '<tr data-course-id="' + c.id + '">' +
         '<td class="course-name">' + esc(c.nom) + '</td>' +
         '<td><span class="badge badge-' + esc(c.discipline) + '">' + esc(c.discipline) + '</span></td>' +
         '<td>' + esc(c.jour || '-') + '</td>' +
         '<td>' + esc(c.heure || '-') + '</td>' +
         '<td>' + esc(c.date_debut || '-') + '</td>' +
-        '<td class="' + placesClass + '">' + c.places_restantes + '/' + c.places_max + '</td>' +
+        '<td class="places-cell ' + placesClass + '">' +
+          '<div class="places-edit" title="Places restantes = capacité − inscriptions. Modifier ajuste la capacité du cours.">' +
+            '<input type="number" class="form-input places-input" min="0" step="1" ' +
+              'data-inscrits="' + inscrits + '" ' +
+              'value="' + (c.places_restantes != null ? c.places_restantes : 0) + '" ' +
+              'aria-label="Places restantes pour ' + esc(c.nom) + '" />' +
+            '<span class="places-inscrits-hint">' + inscrits + ' insc.</span>' +
+            '<button type="button" class="btn btn-outline btn-sm btn-save-places">Enregistrer</button>' +
+          '</div>' +
+        '</td>' +
         '<td>' + esc(c.prix || '-') + '</td>' +
         '<td><span class="status ' + statusClass + '">' + statusText + '</span></td>' +
       '</tr>';
     }).join('');
+
+    tbody.querySelectorAll('.btn-save-places').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var row = btn.closest('tr');
+        var id = parseInt(row.getAttribute('data-course-id'), 10);
+        var input = row.querySelector('.places-input');
+        var inscrits = parseInt(input.getAttribute('data-inscrits'), 10) || 0;
+        var restantes = parseInt(input.value, 10);
+        if (isNaN(restantes) || restantes < 0) {
+          alert('Indiquez un nombre de places restantes valide (0 ou plus).');
+          return;
+        }
+        var placesMax = inscrits + restantes;
+        btn.disabled = true;
+        fetch(API_URL + '/api/admin/courses/' + id, {
+          method: 'PUT',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+          body: JSON.stringify({ places_max: placesMax })
+        })
+          .then(function(r) {
+            if (r.status === 401) { clearToken(); showLogin(); throw new Error('Session expirée'); }
+            if (!r.ok) {
+              return r.json().then(
+                function(j) {
+                  var d = j && j.detail;
+                  var msg = typeof d === 'string' ? d : (Array.isArray(d) ? d.map(function(x) { return x.msg || ''; }).filter(Boolean).join(', ') : '');
+                  return Promise.reject(new Error(msg || 'Erreur'));
+                },
+                function() {
+                  return Promise.reject(new Error('Erreur HTTP ' + r.status));
+                }
+              );
+            }
+            return r.json();
+          })
+          .then(function(updated) {
+            var i = courses.findIndex(function(x) { return x.id === id; });
+            if (i >= 0) courses[i] = updated;
+            renderCourses();
+            updateStats();
+            populateCourseFilter();
+          })
+          .catch(function(err) {
+            alert(err.message || 'Impossible d\'enregistrer les places.');
+          })
+          .finally(function() {
+            btn.disabled = false;
+          });
+      });
+    });
   }
 
   function renderInscriptions() {

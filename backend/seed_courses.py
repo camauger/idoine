@@ -149,12 +149,19 @@ def main():
                 continue
             existing = db.query(Course).filter(Course.slug == d["slug"]).first()
             if existing:
-                # Update page_dediee if changed
+                # Update page_dediee or description if changed
                 new_page = d.get("page_dediee")
+                new_desc = d.get("description")
+                changed = False
                 if new_page and existing.page_dediee != new_page:
                     existing.page_dediee = new_page
+                    changed = True
+                if new_desc is not None and existing.description != new_desc:
+                    existing.description = new_desc
+                    changed = True
+                if changed:
                     updated += 1
-                    print(f"  ~ {d['nom']} (page_dediee: {new_page})")
+                    print(f"  ~ {d['nom']} (mise à jour)")
                 else:
                     skipped += 1
                 continue
