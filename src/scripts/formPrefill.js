@@ -110,10 +110,12 @@
       list.forEach(function(c) {
         var option = document.createElement('option');
         var optValue = buildOptionValue(c);
-        option.value = optValue;
+        // Valeur = id (Netlify + submission-created) ; libellé long pour pré-sélection URL héritée
+        option.value = String(c.id);
         option.textContent = buildOptionLabel(c);
         option.setAttribute('data-course-id', c.id);
-        
+        option.setAttribute('data-cours-label', optValue);
+
         if (c.places_restantes === 0) {
           option.textContent += ' [COMPLET]';
           option.disabled = true;
@@ -121,7 +123,12 @@
 
         optgroup.appendChild(option);
 
-        if (preselect && (c.nom === preselect || optValue === preselect)) {
+        if (preselect && (
+          c.nom === preselect ||
+          optValue === preselect ||
+          String(c.id) === preselect ||
+          decodeURIComponent(preselect) === optValue
+        )) {
           preselectedIndex = optionIndex;
         }
         optionIndex++;

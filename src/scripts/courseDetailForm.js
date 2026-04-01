@@ -41,7 +41,7 @@
 
     if (courses.length === 1) {
       var singleOption = document.createElement('option');
-      singleOption.value = buildOptionValue(courses[0]);
+      singleOption.value = String(courses[0].id);
       singleOption.textContent = buildOptionLabel(courses[0]);
       singleOption.selected = true;
       singleOption.setAttribute('data-course-id', courses[0].id);
@@ -56,7 +56,7 @@
 
     courses.forEach(function(c) {
       var option = document.createElement('option');
-      option.value = buildOptionValue(c);
+      option.value = String(c.id);
       option.textContent = buildOptionLabel(c);
       option.setAttribute('data-course-id', c.id);
       
