@@ -104,6 +104,24 @@ exports.handler = async (event) => {
       };
     }
 
+    const enfantStr = enfant || '';
+    const dupCheck = await sql`
+      SELECT id FROM inscriptions
+      WHERE course_id = ${courseId}
+        AND lower(trim(courriel)) = lower(trim(${courriel}))
+        AND lower(trim(nom)) = lower(trim(${nom}))
+        AND coalesce(trim(enfant), '') = coalesce(trim(${enfantStr}), '')
+        AND created_at > now() - interval '15 minutes'
+      LIMIT 1
+    `;
+    if (dupCheck && dupCheck.length > 0) {
+      console.log('Duplicate inscription ignored (same cours + personne récente):', dupCheck[0].id);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ success: true, duplicate: true, inscription_id: dupCheck[0].id, course_id: courseId }),
+      };
+    }
+
     // Insert inscription into database
     const result = await sql`
       INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, message, newsletter, est_membre, created_at)

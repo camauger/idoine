@@ -152,6 +152,22 @@ export default async (req, context) => {
         return errorResponse("Ce cours est complet.", 400, req);
       }
 
+      // Évite les doublons (double clic, double envoi) : même cours + personne dans les 15 dernières minutes
+      const enfantVal = enfant || "";
+      const dupRows = await sql`
+        SELECT id, course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, created_at
+        FROM inscriptions
+        WHERE course_id = ${course.id}
+          AND lower(trim(courriel)) = lower(trim(${courriel}))
+          AND lower(trim(nom)) = lower(trim(${nom}))
+          AND coalesce(trim(enfant), '') = coalesce(trim(${enfantVal}), '')
+          AND created_at > now() - interval '15 minutes'
+        LIMIT 1
+      `;
+      if (dupRows && dupRows[0]) {
+        return jsonResponse({ ...dupRows[0], course_nom: course.nom }, 200, req);
+      }
+
       const createdAt = new Date();
       const insert = await sql`
         INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, created_at)

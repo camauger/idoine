@@ -1,4 +1,6 @@
 """Public API: courses list and inscription submission."""
+from datetime import datetime, timedelta
+
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
@@ -60,6 +62,25 @@ def create_inscription(data: InscriptionCreate, db: Session = Depends(get_db)):
     count = db.query(func.count(Inscription.id)).filter(Inscription.course_id == course.id).scalar() or 0
     if count >= course.places_max:
         raise HTTPException(status_code=400, detail="Ce cours est complet.")
+    since = datetime.utcnow() - timedelta(minutes=15)
+    nom_n = data.nom.strip().lower()
+    email_n = data.courriel.strip().lower()
+    enfant_n = (data.enfant or "").strip()
+    recent = (
+        db.query(Inscription)
+        .filter(Inscription.course_id == course.id, Inscription.created_at >= since)
+        .all()
+    )
+    for row in recent:
+        if (
+            (row.nom or "").strip().lower() == nom_n
+            and (row.courriel or "").strip().lower() == email_n
+            and (row.enfant or "").strip() == enfant_n
+        ):
+            return InscriptionResponse(
+                **{k: getattr(row, k) for k in InscriptionResponse.model_fields if k != "course_nom"},
+                course_nom=course.nom,
+            )
     ins = Inscription(
         course_id=course.id,
         nom=data.nom,

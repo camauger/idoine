@@ -189,9 +189,25 @@
       });
   }
 
+  function attachSubmitGuard() {
+    var form = document.getElementById('inscription-form');
+    if (!form) return;
+    form.addEventListener('submit', function () {
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Envoi en cours…';
+      }
+    });
+  }
+
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
+    document.addEventListener('DOMContentLoaded', function () {
+      init();
+      attachSubmitGuard();
+    });
   } else {
     init();
+    attachSubmitGuard();
   }
 })();
