@@ -51,7 +51,9 @@
               <label for="cours" class="form-label">
                 Date souhaitée <span class="required">*</span>
               </label>
-              <select id="cours" name="cours" class="form-select" required data-page-slug="{{ page.slug }}">
+              <input type="hidden" name="cours" id="cours-libelle" value="">
+              <input type="hidden" name="course_id" id="course_id" value="">
+              <select id="cours" class="form-select" required data-page-slug="{{ page.slug }}" aria-describedby="cours-error">
                 <option value="">Chargement des dates...</option>
               </select>
               <p id="cours-error" class="form-error" style="display: none;">

@@ -51,20 +51,25 @@ exports.handler = async (event) => {
     const courriel = data.courriel || '';
     const telephone = data.telephone || '';
     const enfant = data.enfant || null;
+    const courseIdFromField =
+      data.course_id != null && String(data.course_id).trim() !== ''
+        ? String(data.course_id).trim()
+        : '';
     const coursValeur = (data.cours != null ? String(data.cours) : '').trim();
     const message = data.message || null;
     const newsletter = data.newsletter === 'oui';
     const estMembre = data.est_membre === 'oui';
 
     /**
-     * Résout course_id depuis le champ « cours » du formulaire.
-     * - Valeur numérique = id du cours (recommandé, envoyé par le select actuel).
-     * - Ancienne valeur texte : « Nom du cours - 11 avril (samedi …) » → extraire nom + date_debut.
+     * Résout course_id : préfère le champ « course_id » (id numérique), sinon « cours ».
+     * - course_id : id envoyé par le formulaire (champ caché).
+     * - cours : libellé lisible pour les courriels Netlify, ou ancienne valeur numérique / texte.
      */
     let courseId = null;
 
-    if (/^\d+$/.test(coursValeur)) {
-      const byId = await sql`SELECT id FROM courses WHERE id = ${parseInt(coursValeur, 10)} LIMIT 1`;
+    const idSource = /^\d+$/.test(courseIdFromField) ? courseIdFromField : coursValeur;
+    if (/^\d+$/.test(idSource)) {
+      const byId = await sql`SELECT id FROM courses WHERE id = ${parseInt(idSource, 10)} LIMIT 1`;
       if (byId.length > 0) courseId = byId[0].id;
     }
 

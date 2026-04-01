@@ -111,7 +111,10 @@
                   <label for="cours" class="form-label">
                     Titre du cours <span class="required">*</span>
                   </label>
-                  <select id="cours" name="cours" class="form-select" required>
+                  {# cours = libellé pour les courriels Netlify ; course_id = id pour la fonction submission-created #}
+                  <input type="hidden" name="cours" id="cours-libelle" value="">
+                  <input type="hidden" name="course_id" id="course_id" value="">
+                  <select id="cours" class="form-select" required aria-describedby="cours-error">
                     <option value="">Chargement des cours...</option>
                   </select>
                   <p id="cours-error" class="form-error" style="display: none;">

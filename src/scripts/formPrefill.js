@@ -146,6 +146,25 @@
     if (errorEl) errorEl.style.display = 'block';
   }
 
+  /**
+   * Netlify reçoit name="cours" : libellé lisible (courriel).
+   * name="course_id" : id pour submission-created.js (résolution fiable en base).
+   */
+  function syncCoursHiddenFields() {
+    var sel = document.getElementById('cours');
+    var libelle = document.getElementById('cours-libelle');
+    var idField = document.getElementById('course_id');
+    if (!sel || !libelle || !idField) return;
+    var opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value) {
+      libelle.value = '';
+      idField.value = '';
+      return;
+    }
+    idField.value = opt.value;
+    libelle.value = (opt.textContent || '').trim();
+  }
+
   function showPrefillNotice(coursName) {
     var formCard = document.querySelector('.form-card-header');
     if (formCard) {
@@ -189,6 +208,8 @@
           selectElement.classList.add('prefilled');
           showPrefillNotice(preselect);
         }
+        syncCoursHiddenFields();
+        selectElement.addEventListener('change', syncCoursHiddenFields);
       })
       .catch(function(err) {
         console.error('[Inscription] Erreur chargement cours:', err);
@@ -200,6 +221,7 @@
     var form = document.getElementById('inscription-form');
     if (!form) return;
     form.addEventListener('submit', function () {
+      syncCoursHiddenFields();
       var btn = form.querySelector('button[type="submit"]');
       if (btn) {
         btn.disabled = true;

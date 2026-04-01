@@ -77,6 +77,21 @@
     if (errorEl) errorEl.style.display = 'block';
   }
 
+  function syncCoursHiddenFields() {
+    var sel = document.getElementById('cours');
+    var libelle = document.getElementById('cours-libelle');
+    var idField = document.getElementById('course_id');
+    if (!sel || !libelle || !idField) return;
+    var opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value) {
+      libelle.value = '';
+      idField.value = '';
+      return;
+    }
+    idField.value = opt.value;
+    libelle.value = (opt.textContent || '').trim();
+  }
+
   function init() {
     var selectElement = document.getElementById('cours');
     if (!selectElement) return;
@@ -104,6 +119,8 @@
         });
 
         populateDropdown(selectElement, filteredCourses);
+        syncCoursHiddenFields();
+        selectElement.addEventListener('change', syncCoursHiddenFields);
       })
       .catch(function(err) {
         console.error('[CourseDetailForm] Erreur:', err);
@@ -115,6 +132,7 @@
     var form = document.getElementById('inscription-form');
     if (!form) return;
     form.addEventListener('submit', function () {
+      syncCoursHiddenFields();
       var btn = form.querySelector('button[type="submit"]');
       if (btn) {
         btn.disabled = true;
