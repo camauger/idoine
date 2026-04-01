@@ -23,6 +23,16 @@
       .replace(/"/g, '&quot;');
   }
 
+  /** Complète la description carte si la BD n’a pas encore la mention (ex. après mise à jour JSON). */
+  function enrichCardDescription(c) {
+    var d = (c.description || '').trim();
+    if (!d) return '';
+    if (c.slug === 'vitrail-intensif-niveau-1-11-avril' && !/16\s*ans/i.test(d)) {
+      d = d.replace(/\s*\.\s*$/, '') + '. 16 ans et plus.';
+    }
+    return d;
+  }
+
   function sectionKey(c) {
     var d = (c.discipline || '').toLowerCase();
     var t = (c.type_cours || '').toLowerCase();
@@ -77,7 +87,8 @@
     if (c.prof) details += '<div class="course-detail"><span class="detail-label">Professeur</span><span class="detail-value">' + esc(c.prof) + '</span></div>';
     if (!horaire && !c.date_debut && !c.duree_semaines && !c.prof) details += '<div class="course-detail"><span class="detail-label">Places</span><span class="detail-value">' + (c.places_max || 0) + ' max.</span></div>';
 
-    var desc = c.description ? esc(c.description) : 'Cours à l\'Atelier St-Elme. Inscription via le formulaire en ligne.';
+    var rawDesc = enrichCardDescription(c);
+    var desc = rawDesc ? esc(rawDesc) : 'Cours à l\'Atelier St-Elme. Inscription via le formulaire en ligne.';
     var prix = (c.prix || '').trim();
     var prixStr = prix.toLowerCase();
     var amount = prix;

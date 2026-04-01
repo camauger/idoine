@@ -3,8 +3,8 @@
  * Réplique le comportement du backend FastAPI pour le front vanilla.
  * Routes: 
  *   GET /api/cours, GET /api/cours/:slug, POST /api/inscriptions
- *   POST /api/admin/login, GET /api/admin/courses, GET /api/admin/inscriptions
- *   GET /api/admin/inscriptions/export
+ *   POST /api/admin/login, GET /api/admin/courses, PUT /api/admin/courses/:id
+ *   GET /api/admin/inscriptions, GET /api/admin/inscriptions/export
  */
 import { neon } from "@neondatabase/serverless";
 import jwt from "jsonwebtoken";
@@ -203,6 +203,36 @@ export default async (req, context) => {
           return { ...c, places_restantes };
         });
         return jsonResponse(result, 200, req);
+      }
+
+      // PUT /api/admin/courses/:id — mise à jour partielle (ex. places_max)
+      const adminCoursePut = pathname.match(/^\/api\/admin\/courses\/(\d+)$/);
+      if (method === "PUT" && adminCoursePut) {
+        const courseId = parseInt(adminCoursePut[1], 10);
+        let body;
+        try {
+          body = await req.json();
+        } catch {
+          return errorResponse("Body JSON invalide", 400, req);
+        }
+        const existing = await sql`SELECT id FROM courses WHERE id = ${courseId}`;
+        if (!existing || !existing[0]) {
+          return errorResponse("Cours non trouvé", 404, req);
+        }
+        const pm = body.places_max;
+        const placesMax =
+          typeof pm === "number" && Number.isFinite(pm) ? Math.trunc(pm) : parseInt(String(pm ?? ""), 10);
+        if (Number.isNaN(placesMax) || placesMax < 0) {
+          return errorResponse("places_max requis (entier ≥ 0)", 400, req);
+        }
+        const updated = await sql`
+          UPDATE courses SET places_max = ${placesMax} WHERE id = ${courseId} RETURNING *
+        `;
+        const c = updated[0];
+        const countRows = await sql`SELECT COUNT(*)::int AS cnt FROM inscriptions WHERE course_id = ${courseId}`;
+        const count = (countRows && countRows[0] && countRows[0].cnt) || 0;
+        const places_restantes = Math.max(0, (c.places_max || 0) - count);
+        return jsonResponse({ ...c, places_restantes }, 200, req);
       }
 
       // GET /api/admin/inscriptions
