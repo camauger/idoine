@@ -80,8 +80,9 @@ def create_inscription(data: InscriptionCreate, db: Session = Depends(get_db)):
             and (row.enfant or "").strip() == enfant_n
         ):
             return InscriptionResponse(
-                **{k: getattr(row, k) for k in InscriptionResponse.model_fields if k != "course_nom"},
+                **{k: getattr(row, k) for k in InscriptionResponse.model_fields if k not in ("course_nom", "course_date")},
                 course_nom=course.nom,
+                course_date=course.date_debut,
             )
     ins = Inscription(
         course_id=course.id,
@@ -98,6 +99,7 @@ def create_inscription(data: InscriptionCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(ins)
     return InscriptionResponse(
-        **{k: getattr(ins, k) for k in InscriptionResponse.model_fields if k != "course_nom"},
-        course_nom=course.nom
+        **{k: getattr(ins, k) for k in InscriptionResponse.model_fields if k not in ("course_nom", "course_date")},
+        course_nom=course.nom,
+        course_date=course.date_debut,
     )

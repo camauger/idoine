@@ -98,17 +98,25 @@
         c.style.display = 'none';
       });
       document.getElementById('tab-' + tabId).style.display = 'block';
+      if (tabId === 'inscriptions' && getToken()) {
+        loadInscriptions(filterCourse.value || null).catch(function() {});
+      }
     });
   });
 
-  // Load Data
+  // Load Data — cours d'abord (pour date session si l'API ne renvoie pas course_date)
   function loadData() {
-    loadCourses();
-    loadInscriptions();
+    loadCourses()
+      .then(function() {
+        return loadInscriptions();
+      })
+      .catch(function(err) {
+        console.error('Erreur chargement admin:', err);
+      });
   }
 
   function loadCourses() {
-    fetch(API_URL + '/api/admin/courses', { headers: authHeaders() })
+    return fetch(API_URL + '/api/admin/courses', { headers: authHeaders() })
       .then(function(r) {
         if (r.status === 401) { clearToken(); showLogin(); throw new Error('Session expirée'); }
         return r.json();
@@ -118,9 +126,6 @@
         renderCourses();
         updateStats();
         populateCourseFilter();
-      })
-      .catch(function(err) {
-        console.error('Erreur chargement cours:', err);
       });
   }
 
@@ -128,7 +133,7 @@
     var url = API_URL + '/api/admin/inscriptions';
     if (courseId) url += '?course_id=' + courseId;
 
-    fetch(url, { headers: authHeaders() })
+    return fetch(url, { headers: authHeaders() })
       .then(function(r) {
         if (r.status === 401) { clearToken(); showLogin(); throw new Error('Session expirée'); }
         return r.json();
@@ -137,9 +142,6 @@
         inscriptions = data;
         renderInscriptions();
         updateStats();
-      })
-      .catch(function(err) {
-        console.error('Erreur chargement inscriptions:', err);
       });
   }
 
@@ -236,8 +238,8 @@
     }
 
     tbody.innerHTML = inscriptions.map(function(i, idx) {
-      var dateInscription = i.created_at ? new Date(i.created_at).toLocaleDateString('fr-CA') : '-';
-      var membre = i.est_membre ? 'Oui' : 'Non';
+      var dateInscription = i.created_at ? new Date(i.created_at).toLocaleString('fr-CA', { dateStyle: 'short', timeStyle: 'short' }) : '-';
+      var membre = (i.est_membre === true || i.est_membre === 'true' || i.est_membre === 't' || i.est_membre === 1) ? 'Oui' : 'Non';
       var message = i.message 
         ? '<button class="btn-message" data-idx="' + idx + '">Voir</button>' 
         : '-';

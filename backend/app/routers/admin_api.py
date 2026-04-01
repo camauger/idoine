@@ -97,10 +97,12 @@ def admin_list_inscriptions(
     if course_id is not None:
         q = q.filter(Inscription.course_id == course_id)
     inscriptions = q.all()
+    skip = {"course_nom", "course_date"}
     return [
         InscriptionResponse(
-            **{k: getattr(i, k) for k in InscriptionResponse.model_fields if k != "course_nom"},
-            course_nom=i.course.nom
+            **{k: getattr(i, k) for k in InscriptionResponse.model_fields if k not in skip},
+            course_nom=i.course.nom,
+            course_date=i.course.date_debut,
         )
         for i in inscriptions
     ]

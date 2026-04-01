@@ -80,8 +80,11 @@ class InscriptionResponse(BaseModel):
     horaire_prefere: Optional[str] = None
     message: Optional[str] = None
     newsletter: bool
+    est_membre: bool = False
     created_at: datetime
     course_nom: Optional[str] = None
+    # date_debut du cours (session), ex. « 11 avril » — renseigné côté admin
+    course_date: Optional[str] = None
 
     class Config:
         from_attributes = True
