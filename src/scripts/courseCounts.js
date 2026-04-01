@@ -9,7 +9,7 @@
     var cards = document.querySelectorAll('.course-card[data-category]');
     if (!cards.length) return;
 
-    fetch(API_URL + '/api/cours')
+    fetch(API_URL + '/api/cours', { cache: 'no-store' })
       .then(function (r) { return r.ok ? r.json() : Promise.reject(new Error('API error')); })
       .then(function (cours) {
         cards.forEach(function (card) {

@@ -1,7 +1,7 @@
 """Public API: courses list and inscription submission."""
 from datetime import datetime, timedelta
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 
@@ -13,8 +13,9 @@ router = APIRouter(prefix="/api", tags=["public"])
 
 
 @router.get("/cours", response_model=list[CourseResponse])
-def list_cours(actif_only: bool = True, db: Session = Depends(get_db)):
+def list_cours(response: Response, actif_only: bool = True, db: Session = Depends(get_db)):
     """List all courses with places_restantes (inscrits count)."""
+    response.headers["Cache-Control"] = "private, no-store, no-cache, must-revalidate"
     q = db.query(Course)
     if actif_only:
         q = q.filter(Course.actif == True)
@@ -32,8 +33,9 @@ def list_cours(actif_only: bool = True, db: Session = Depends(get_db)):
 
 
 @router.get("/cours/{slug_or_id}", response_model=CourseResponse)
-def get_cours(slug_or_id: str, db: Session = Depends(get_db)):
+def get_cours(response: Response, slug_or_id: str, db: Session = Depends(get_db)):
     """Get one course by slug or id with places_restantes."""
+    response.headers["Cache-Control"] = "private, no-store, no-cache, must-revalidate"
     if slug_or_id.isdigit():
         course = db.query(Course).filter(Course.id == int(slug_or_id)).first()
     else:

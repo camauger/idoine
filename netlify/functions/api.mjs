@@ -40,7 +40,12 @@ function verifyToken(req) {
 }
 
 function jsonResponse(data, status = 200, req = null) {
-  const headers = { "Content-Type": "application/json", ...(req ? corsHeaders(req) : {}) };
+  const headers = {
+    "Content-Type": "application/json",
+    // Les places restantes changent à chaque inscription : ne pas mettre en cache (navigateur / CDN)
+    "Cache-Control": "private, no-store, no-cache, must-revalidate",
+    ...(req ? corsHeaders(req) : {}),
+  };
   return new Response(JSON.stringify(data), { status, headers });
 }
 

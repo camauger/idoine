@@ -32,7 +32,7 @@
     var submitBtn = form && form.querySelector('button[type="submit"]');
     if (!form || !select) return;
 
-    fetch(API_URL + '/api/cours')
+    fetch(API_URL + '/api/cours', { cache: 'no-store' })
         .then(function (r) { return r.ok ? r.json() : []; })
         .then(function (cours) {
           if (!cours.length) return;

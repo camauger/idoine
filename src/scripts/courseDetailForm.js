@@ -87,7 +87,7 @@
       return;
     }
 
-    fetch(API_URL + '/api/cours')
+    fetch(API_URL + '/api/cours', { cache: 'no-store' })
       .then(function(r) {
         if (!r.ok) throw new Error('API error: ' + r.status);
         return r.json();

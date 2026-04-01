@@ -148,7 +148,7 @@
     var loadingEl = document.getElementById('courses-loading');
     var fallbackEl = document.getElementById('courses-fallback');
 
-    fetch(API_URL + '/api/cours')
+    fetch(API_URL + '/api/cours', { cache: 'no-store' })
       .then(function (r) {
         if (r.ok) return r.json();
         return r.json().catch(function () { return {}; }).then(function (body) {
