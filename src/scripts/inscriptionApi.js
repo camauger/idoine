@@ -54,6 +54,7 @@
               opt.setAttribute('data-cours', c.nom || '');
               opt.textContent = c.places_restantes === 0 ? c.nom + ' (complet)' : (c.nom + (c.date_debut ? ' - ' + c.date_debut : '') + (c.heure ? ' ' + c.heure : ''));
               opt.disabled = c.places_restantes === 0;
+              opt.setAttribute('data-places-restantes', String(c.places_restantes != null ? c.places_restantes : 0));
               optgroup.appendChild(opt);
             });
             select.appendChild(optgroup);
@@ -81,13 +82,34 @@
         return;
       }
       var fd = new FormData(form);
+      var participants = [];
+      var blocks = form.querySelectorAll('.participant-block');
+      for (var bi = 0; bi < blocks.length; bi++) {
+        var nomEl = blocks[bi].querySelector('.participant-nom');
+        var enfEl = blocks[bi].querySelector('.participant-enfant');
+        var pn = nomEl ? String(nomEl.value || '').trim() : '';
+        if (!pn) continue;
+        var pe = enfEl && enfEl.value ? String(enfEl.value).trim() : null;
+        participants.push({ nom: pn, enfant: pe });
+      }
+      if (participants.length < 1) {
+        alert('Indiquez au moins une personne à inscrire (nom complet).');
+        return;
+      }
+      var opt = select.options[select.selectedIndex];
+      var places = opt && opt.getAttribute('data-places-restantes');
+      var pr = places != null && places !== '' ? parseInt(places, 10) : NaN;
+      if (!isNaN(pr) && participants.length > pr) {
+        alert('Il ne reste que ' + pr + ' place(s) pour ce cours pour le nombre de personnes demandé.');
+        return;
+      }
       var body = {
-        nom: (fd.get('nom') || '').trim(),
+        participants: participants,
         courriel: (fd.get('courriel') || '').trim(),
         telephone: (fd.get('telephone') || '').trim(),
-        enfant: (fd.get('enfant') || '').trim() || null,
         message: (fd.get('message') || '').trim() || null,
-        newsletter: fd.get('newsletter') === 'oui'
+        newsletter: fd.get('newsletter') === 'oui',
+        est_membre: fd.get('est_membre') === 'oui'
       };
       if (/^\d+$/.test(coursVal)) {
         body.course_id = parseInt(coursVal, 10);

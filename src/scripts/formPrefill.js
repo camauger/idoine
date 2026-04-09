@@ -121,6 +121,8 @@
           option.disabled = true;
         }
 
+        option.setAttribute('data-places-restantes', String(c.places_restantes != null ? c.places_restantes : 0));
+
         optgroup.appendChild(option);
 
         if (preselect && (
@@ -220,7 +222,8 @@
   function attachSubmitGuard() {
     var form = document.getElementById('inscription-form');
     if (!form) return;
-    form.addEventListener('submit', function () {
+    form.addEventListener('submit', function (ev) {
+      if (ev.defaultPrevented) return;
       syncCoursHiddenFields();
       var btn = form.querySelector('button[type="submit"]');
       if (btn) {

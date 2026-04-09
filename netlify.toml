@@ -49,6 +49,14 @@
 # Netlify Forms (formulaire d’inscription)
 # Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email
 # Destinataire : atelierstelme@gmail.com (ou info@atelierstelme.ca)
+#
+# Courriel de confirmation au participant (Resend) — optionnel mais recommandé
+# 1) Compte Resend + domaine vérifié (DNS) : https://resend.com
+# 2) Variables Netlify (Site settings > Environment variables) :
+#    RESEND_API_KEY          → clé API (ex. re_xxx)
+#    CONFIRMATION_EMAIL_FROM → expéditeur autorisé, ex. Ateliers St-Elme <inscription@atelierstelme.ca>
+# Utilisé par : netlify/functions/submission-created.js (formulaire Netlify) et api.mjs (POST /api/inscriptions).
+# Si absentes : l’inscription est quand même enregistrée ; aucun courriel automatique.
 
 # Redirections optionnelles (décommenter si besoin)
 # [[redirects]]

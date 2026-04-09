@@ -194,6 +194,17 @@ Le backend (`database.py`) accepte déjà les URLs `postgresql://` et convertit 
 
 **Résumé** : Netlify héberge le site statique ; la base de données est sur **Neon** ; le backend (FastAPI) tourne sur l’hébergeur de votre choix et se connecte à Neon. La base n’est pas hébergée sur Netlify.
 
+### Courriel de confirmation (inscriptions sur Netlify)
+
+Lorsque le site est déployé sur **Netlify** et que les inscriptions passent par le formulaire Netlify (function `submission-created`) ou par **`POST /api/inscriptions`** sur la même origine (`netlify/functions/api.mjs`), un **courriel transactionnel** est envoyé au participant après enregistrement réussi en base, via l’API [Resend](https://resend.com).
+
+Variables d’environnement à définir dans **Netlify** (Site settings > Environment variables) :
+
+- `RESEND_API_KEY` — clé API Resend  
+- `CONFIRMATION_EMAIL_FROM` — expéditeur vérifié chez Resend (ex. `Ateliers St-Elme <inscription@atelierstelme.ca>`)
+
+Si ces variables sont absentes, l’inscription fonctionne toujours mais **aucun courriel de confirmation** n’est envoyé. En cas de doublon détecté (même personne et même cours dans les 15 dernières minutes), aucun second courriel n’est envoyé.
+
 ---
 
 ## 9. Mettre en production (résumé)

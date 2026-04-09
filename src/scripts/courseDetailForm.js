@@ -41,10 +41,12 @@
 
     if (courses.length === 1) {
       var singleOption = document.createElement('option');
-      singleOption.value = String(courses[0].id);
-      singleOption.textContent = buildOptionLabel(courses[0]);
+      var c0 = courses[0];
+      singleOption.value = String(c0.id);
+      singleOption.textContent = buildOptionLabel(c0);
       singleOption.selected = true;
-      singleOption.setAttribute('data-course-id', courses[0].id);
+      singleOption.setAttribute('data-course-id', c0.id);
+      singleOption.setAttribute('data-places-restantes', String(c0.places_restantes != null ? c0.places_restantes : 0));
       selectElement.appendChild(singleOption);
       return;
     }
@@ -66,6 +68,8 @@
       } else if (c.places_restantes <= 2) {
         option.textContent += ' [' + c.places_restantes + ' place(s)]';
       }
+
+      option.setAttribute('data-places-restantes', String(c.places_restantes != null ? c.places_restantes : 0));
 
       selectElement.appendChild(option);
     });
@@ -131,7 +135,8 @@
   function attachSubmitGuard() {
     var form = document.getElementById('inscription-form');
     if (!form) return;
-    form.addEventListener('submit', function () {
+    form.addEventListener('submit', function (ev) {
+      if (ev.defaultPrevented) return;
       syncCoursHiddenFields();
       var btn = form.querySelector('button[type="submit"]');
       if (btn) {

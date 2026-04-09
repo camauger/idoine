@@ -296,6 +296,53 @@
   }
 }
 
+.form-actions-inline {
+  border-top: none;
+  padding-top: var(--spacing-4);
+  margin-top: var(--spacing-2);
+  justify-content: flex-start;
+}
+
+.participant-block {
+  margin-bottom: var(--spacing-6);
+  padding-bottom: var(--spacing-4);
+  border-bottom: 1px solid var(--color-border);
+
+  &:last-of-type {
+    border-bottom: none;
+    margin-bottom: var(--spacing-4);
+  }
+}
+
+.participant-block-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin-bottom: var(--spacing-3);
+}
+
+.participant-block-title {
+  font-weight: 600;
+  font-size: var(--text-sm);
+  color: var(--color-kiln-charcoal);
+}
+
+.btn-remove-participant {
+  flex-shrink: 0;
+  font-size: var(--text-sm);
+  text-decoration: underline;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-text-light);
+  padding: 0;
+
+  &:hover {
+    color: var(--color-kiln-charcoal);
+  }
+}
+
 // -----------------------------------------------------------------------------
 // Form Card (elevated form container)
 // -----------------------------------------------------------------------------
