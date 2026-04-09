@@ -105,6 +105,36 @@ Vous devez voir un message du type : `Seed OK: 17 courses` (ou un nombre proche)
 
 Après le seed, le fichier `backend/atelier_cours.db` doit être présent. Vous pouvez aussi vérifier en lançant l’API (étape 5) et en ouvrant http://127.0.0.1:8000/docs pour appeler `GET /api/cours`.
 
+### 4.3 Images des cours (vignettes sur la page liste `/cours/`)
+
+La liste des cours du site est générée par le script [`src/scripts/courseList.js`](../src/scripts/courseList.js), qui consomme `GET /api/cours`. Chaque carte affiche une **image en tête**.
+
+**Base de données**
+
+- Colonne **`courses.image_url`** (texte, optionnelle, jusqu’à 512 caractères) : URL **publique** telle que servie par le site, en général sous **`/assets/images/...`** (les fichiers vivent dans `src/assets/images/` et sont copiés vers `dist/assets/images/` au build Grunt).
+- Si la base existait **avant** l’ajout de ce champ, exécuter une fois la migration depuis `backend/` :
+  ```bash
+  python migrate_add_image_url.py
+  ```
+  À la racine du dépôt, **`just migrate`** enchaîne aussi `migrate_add_creneau.py` puis `migrate_add_image_url.py`.
+
+**Renseigner les images via le seed (JSON)**
+
+- Dans **`horaire-printemps-2026.json`**, chaque objet de la liste `cours` peut inclure une clé optionnelle **`image`** (chaîne), par exemple :
+  ```json
+  "image": "/assets/images/vitrail/vitrail-realisation-2.jpg"
+  ```
+- De même dans **`intensifs.json`**, pour chaque entrée de la liste `intensifs`.
+- Lors d’un **`python seed_courses.py --update`**, les champs `description` / `page_dediee` / **`image`** sont synchronisés vers la base lorsqu’ils sont présents dans le JSON.
+
+**Comportement si `image_url` est vide**
+
+Le front applique une **image par défaut** selon la discipline (et le type « enfants » pour la céramique) : aperçus vitrail, mosaïque ou céramique déjà présents sous `assets/images/`. En dernier recours (fichier manquant ou URL incorrecte), le placeholder vectoriel **`/assets/images/course-placeholder.svg`** est utilisé.
+
+**API FastAPI (admin)**
+
+- Le schéma **`CourseUpdate`** accepte **`image_url`** : un `PUT /api/admin/courses/{id}` authentifié peut définir ou corriger l’URL sans repasser par le JSON de seed.
+
 ---
 
 ## 5. Démarrer l’API en local
@@ -134,7 +164,7 @@ Pour vous connecter à l’admin, utilisez le mot de passe défini par `ADMIN_PA
 ## 6. Tester rapidement
 
 1. **Liste des cours** : dans le navigateur, ouvrir http://127.0.0.1:8000/api/cours  
-   Vous devez voir une liste JSON de cours avec `places_restantes`.
+   Vous devez voir une liste JSON de cours avec `places_restantes` et, après migration, le champ optionnel **`image_url`** pour les vignettes de la page `/cours/`.
 
 2. **Admin** : ouvrir http://127.0.0.1:8000/admin  
    Entrer le mot de passe (par défaut `admin`). Vous devez pouvoir consulter la liste des cours et des inscriptions (vide au départ).
@@ -226,6 +256,7 @@ Si ces variables sont absentes, l’inscription fonctionne toujours mais **aucun
 - **« Module not found »** : vérifier que vous êtes bien dans `backend/`, que le venv est activé et que vous avez exécuté `pip install -r requirements.txt`.
 - **« DB already has courses »** : pour repartir de zéro, vider la base puis relancer le seed : dans `backend/`, exécuter `python clear_db.py` puis `python seed_courses.py`. (En SQLite uniquement, vous pouvez aussi supprimer le fichier `atelier_cours.db` puis relancer le seed.)
 - **Colonne `creneau` manquante** : si la base a été créée avant l’ajout du champ créneau, exécuter une fois `python migrate_add_creneau.py` dans `backend/`.
+- **Colonne `image_url` manquante** (vignettes `/cours/`) : exécuter une fois `python migrate_add_image_url.py` dans `backend/`, ou `just migrate` pour appliquer les migrations cours prévues (voir section 4.3).
 - **Admin : « Mot de passe incorrect »** : vérifier la variable `ADMIN_PASSWORD` (ou utiliser le défaut `admin` en local).
 - **Le site n’affiche pas les places** : vérifier que `window.ATELIER_API_URL` est défini et que l’URL est accessible (CORS configuré sur l’API).
 

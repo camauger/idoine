@@ -50,6 +50,12 @@
     .page > p a { color: #0d6efd; }
     #inscriptions-table { min-width: 0; }
     .inscriptions-wrap { overflow-x: auto; margin-top: 0.75rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #dee2e6; }
+    .actif-cell { white-space: normal; vertical-align: middle; }
+    .actif-label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; user-select: none; }
+    .actif-pill { display: inline-block; margin-left: 0.35rem; padding: 0.15em 0.5em; font-size: 0.75rem; font-weight: 500; border-radius: 999px; }
+    .actif-pill.on { background: #dcfce7; color: #166534; }
+    .actif-pill.off { background: #fee2e2; color: #991b1b; }
+    .course-row-inactive td:not(:first-child) { color: #6c757d; }
   </style>
 </head>
 <body>
@@ -76,7 +82,7 @@
       <p><a href="#" id="export-csv">Exporter inscriptions en CSV</a></p>
       <div class="table-wrap">
         <table id="courses-table">
-          <thead><tr><th>Id</th><th>Nom</th><th>Discipline</th><th>Type</th><th>Jour</th><th>Créneau</th><th>Heure</th><th>Durée</th><th>Début</th><th>Salle</th><th>Prof</th><th>Prix</th><th>Places max</th><th>Inscrits</th><th>Places restantes</th><th>Actif</th></tr></thead>
+          <thead><tr><th>Id</th><th>Nom</th><th>Discipline</th><th>Type</th><th>Jour</th><th>Créneau</th><th>Heure</th><th>Durée</th><th>Début</th><th>Salle</th><th>Prof</th><th>Prix</th><th>Places max</th><th>Inscrits</th><th>Places restantes</th><th>Visibilité</th></tr></thead>
           <tbody></tbody>
         </table>
       </div>
@@ -141,6 +147,27 @@
       if (name === 'inscriptions') loadInscriptions();
     }
 
+    function courseIsActif(c) {
+      return !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
+    }
+
+    async function putCourseActif(courseId, actif) {
+      const row = document.querySelector('#courses-table tr[data-course-id="' + courseId + '"]');
+      const placesMax = row ? (parseInt(row.getAttribute('data-places-max'), 10) || 0) : 0;
+      const res = await fetch(API + '/api/admin/courses/' + courseId, {
+        method: 'PUT',
+        headers: headers(),
+        body: JSON.stringify({ places_max: placesMax, actif: !!actif })
+      });
+      if (res.status === 401) { setToken(null); location.reload(); throw new Error('Session expirée'); }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        const d = err.detail;
+        const msg = typeof d === 'string' ? d : (Array.isArray(d) ? d.map(x => x.msg || '').filter(Boolean).join(', ') : 'Erreur');
+        throw new Error(msg || 'Erreur');
+      }
+    }
+
     async function loadCourses() {
       const r = await fetch(API + '/api/admin/courses', { headers: headers() });
       if (r.status === 401) { setToken(null); location.reload(); return; }
@@ -150,7 +177,9 @@
         const empty = (v) => (v === undefined || v === null || v === '') ? '—' : v;
         const esc = (s) => (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
         const inscrits = Math.max(0, (c.places_max || 0) - (c.places_restantes || 0));
-        return `<tr data-course-id="${c.id}">
+        const isActif = courseIsActif(c);
+        const rowClass = isActif ? '' : ' course-row-inactive';
+        return `<tr class="${rowClass.trim()}" data-course-id="${c.id}" data-places-max="${c.places_max || 0}">
         <td>${c.id}</td><td class="cell-wrap">${esc(c.nom)}</td><td>${empty(c.discipline)}</td><td>${empty(c.type_cours)}</td>
         <td>${empty(c.jour)}</td><td>${empty(c.creneau)}</td><td>${empty(c.heure)}</td>
         <td class="numeric">${empty(c.duree_semaines)}</td><td>${empty(c.date_debut)}</td><td>${empty(c.salle)}</td>
@@ -158,9 +187,27 @@
         <td class="numeric">${c.places_max}</td><td class="numeric">${inscrits}</td>
         <td class="cell-wrap places-edit-cell"><input type="number" min="0" step="1" class="places-restantes-input" data-inscrits="${inscrits}" value="${c.places_restantes != null ? c.places_restantes : 0}" aria-label="Places restantes pour ${esc(c.nom)}" style="width:4rem;padding:0.35rem" />
         <button type="button" class="btn-save-places">Enregistrer</button></td>
-        <td>${c.actif ? 'Oui' : 'Non'}</td>
+        <td class="actif-cell"><label class="actif-label"><input type="checkbox" class="course-actif-cb" ${isActif ? 'checked' : ''} aria-label="Cours visible pour ${esc(c.nom)}" /><span>Visible</span></label><span class="actif-pill ${isActif ? 'on' : 'off'}">${isActif ? 'Actif' : 'Masqué'}</span></td>
       </tr>`;
       }).join('');
+
+      tbody.querySelectorAll('.course-actif-cb').forEach(cb => {
+        cb.addEventListener('change', async () => {
+          const row = cb.closest('tr');
+          const id = parseInt(row.getAttribute('data-course-id'), 10);
+          const want = cb.checked;
+          const revert = !want;
+          cb.disabled = true;
+          try {
+            await putCourseActif(id, want);
+            await loadCourses();
+          } catch (e) {
+            cb.checked = revert;
+            alert(e.message || 'Impossible de mettre à jour la visibilité du cours.');
+            cb.disabled = false;
+          }
+        });
+      });
 
       tbody.querySelectorAll('.btn-save-places').forEach(btn => {
         btn.onclick = async () => {

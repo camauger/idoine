@@ -115,6 +115,40 @@
       });
   }
 
+  /** Met à jour actif (+ places_max courant pour l’API Netlify). */
+  function putCourseActif(courseId, actif) {
+    var course = courses.find(function(x) { return x.id === courseId; });
+    var placesMax = course ? (course.places_max || 0) : 0;
+    if (!course) {
+      var row = document.querySelector('tr[data-course-id="' + courseId + '"]');
+      if (row) placesMax = parseInt(row.getAttribute('data-places-max'), 10) || 0;
+    }
+    return fetch(API_URL + '/api/admin/courses/' + courseId, {
+      method: 'PUT',
+      headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+      body: JSON.stringify({ places_max: placesMax, actif: !!actif })
+    })
+      .then(function(r) {
+        if (r.status === 401) { clearToken(); showLogin(); throw new Error('Session expirée'); }
+        if (!r.ok) {
+          return r.json().then(
+            function(j) {
+              var d = j && j.detail;
+              var msg = typeof d === 'string' ? d : (Array.isArray(d) ? d.map(function(x) { return x.msg || ''; }).filter(Boolean).join(', ') : '');
+              return Promise.reject(new Error(msg || 'Erreur'));
+            },
+            function() { return Promise.reject(new Error('Erreur HTTP ' + r.status)); }
+          );
+        }
+        return r.json();
+      })
+      .then(function(updated) {
+        var i = courses.findIndex(function(x) { return x.id === courseId; });
+        if (i >= 0) courses[i] = updated;
+        return updated;
+      });
+  }
+
   function loadCourses() {
     return fetch(API_URL + '/api/admin/courses', { headers: authHeaders() })
       .then(function(r) {
@@ -153,12 +187,13 @@
     }
 
     tbody.innerHTML = courses.map(function(c) {
-      var statusClass = c.actif ? 'status-active' : 'status-inactive';
-      var statusText = c.actif ? 'Actif' : 'Inactif';
+      var isActif = !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
+      var statusClass = isActif ? 'status-active' : 'status-inactive';
       var inscrits = Math.max(0, (c.places_max || 0) - (c.places_restantes || 0));
       var placesClass = c.places_restantes === 0 ? 'places-full' : (c.places_restantes <= 2 ? 'places-low' : '');
+      var rowMuted = isActif ? '' : ' course-row-inactive';
 
-      return '<tr data-course-id="' + c.id + '">' +
+      return '<tr class="' + rowMuted.trim() + '" data-course-id="' + c.id + '" data-places-max="' + (c.places_max || 0) + '">' +
         '<td class="course-name">' + esc(c.nom) + '</td>' +
         '<td><span class="badge badge-' + esc(c.discipline) + '">' + esc(c.discipline) + '</span></td>' +
         '<td>' + esc(c.jour || '-') + '</td>' +
@@ -175,7 +210,13 @@
           '</div>' +
         '</td>' +
         '<td>' + esc(c.prix || '-') + '</td>' +
-        '<td><span class="status ' + statusClass + '">' + statusText + '</span></td>' +
+        '<td class="actif-cell">' +
+          '<label class="actif-label">' +
+            '<input type="checkbox" class="course-actif-cb" ' + (isActif ? 'checked' : '') + ' aria-label="Cours visible sur le site pour ' + esc(c.nom) + '" />' +
+            '<span>Visible</span>' +
+          '</label>' +
+          '<span class="status ' + statusClass + ' actif-pill">' + (isActif ? 'Actif' : 'Masqué') + '</span>' +
+        '</td>' +
       '</tr>';
     }).join('');
 
@@ -225,6 +266,27 @@
           })
           .finally(function() {
             btn.disabled = false;
+          });
+      });
+    });
+
+    tbody.querySelectorAll('.course-actif-cb').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        var row = cb.closest('tr');
+        var id = parseInt(row.getAttribute('data-course-id'), 10);
+        var want = cb.checked;
+        var revert = !want;
+        cb.disabled = true;
+        putCourseActif(id, want)
+          .then(function() {
+            renderCourses();
+            updateStats();
+            populateCourseFilter();
+          })
+          .catch(function(err) {
+            cb.checked = revert;
+            alert(err.message || 'Impossible de mettre à jour la visibilité du cours.');
+            cb.disabled = false;
           });
       });
     });
@@ -311,8 +373,14 @@
   }
 
   function updateStats() {
-    var activeCourses = courses.filter(function(c) { return c.actif; }).length;
-    var totalPlaces = courses.reduce(function(sum, c) { return sum + (c.places_restantes || 0); }, 0);
+    var activeCourses = courses.filter(function(c) {
+      return !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
+    }).length;
+    var totalPlaces = courses
+      .filter(function(c) {
+        return !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
+      })
+      .reduce(function(sum, c) { return sum + (c.places_restantes || 0); }, 0);
     
     document.getElementById('stat-courses').textContent = activeCourses;
     document.getElementById('stat-inscriptions').textContent = inscriptions.length;

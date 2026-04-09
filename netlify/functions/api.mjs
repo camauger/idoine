@@ -292,7 +292,7 @@ export default async (req, context) => {
         return jsonResponse(result, 200, req);
       }
 
-      // PUT /api/admin/courses/:id — mise à jour partielle (ex. places_max)
+      // PUT /api/admin/courses/:id — places_max et/ou actif (booléen)
       const adminCoursePut = pathname.match(/^\/api\/admin\/courses\/(\d+)$/);
       if (method === "PUT" && adminCoursePut) {
         const courseId = parseInt(adminCoursePut[1], 10);
@@ -302,18 +302,33 @@ export default async (req, context) => {
         } catch {
           return errorResponse("Body JSON invalide", 400, req);
         }
-        const existing = await sql`SELECT id FROM courses WHERE id = ${courseId}`;
-        if (!existing || !existing[0]) {
+        const rows = await sql`SELECT * FROM courses WHERE id = ${courseId} LIMIT 1`;
+        if (!rows || !rows[0]) {
           return errorResponse("Cours non trouvé", 404, req);
         }
-        const pm = body.places_max;
-        const placesMax =
-          typeof pm === "number" && Number.isFinite(pm) ? Math.trunc(pm) : parseInt(String(pm ?? ""), 10);
-        if (Number.isNaN(placesMax) || placesMax < 0) {
-          return errorResponse("places_max requis (entier ≥ 0)", 400, req);
+        const cur = rows[0];
+        const hasPlaces =
+          body.places_max !== undefined && body.places_max !== null && String(body.places_max).trim() !== "";
+        const hasActif = typeof body.actif === "boolean";
+        if (!hasPlaces && !hasActif) {
+          return errorResponse("Fournir places_max et/ou actif (booléen)", 400, req);
+        }
+        let nextPlaces = cur.places_max ?? 0;
+        if (hasPlaces) {
+          const pm = body.places_max;
+          const n =
+            typeof pm === "number" && Number.isFinite(pm) ? Math.trunc(pm) : parseInt(String(pm), 10);
+          if (Number.isNaN(n) || n < 0) {
+            return errorResponse("places_max invalide (entier ≥ 0)", 400, req);
+          }
+          nextPlaces = n;
+        }
+        let nextActif = !!cur.actif;
+        if (hasActif) {
+          nextActif = body.actif;
         }
         const updated = await sql`
-          UPDATE courses SET places_max = ${placesMax} WHERE id = ${courseId} RETURNING *
+          UPDATE courses SET places_max = ${nextPlaces}, actif = ${nextActif} WHERE id = ${courseId} RETURNING *
         `;
         const c = updated[0];
         const countRows = await sql`SELECT COUNT(*)::int AS cnt FROM inscriptions WHERE course_id = ${courseId}`;

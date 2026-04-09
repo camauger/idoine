@@ -233,6 +233,28 @@
   }
 }
 
+.actif-cell {
+  white-space: normal;
+  vertical-align: middle;
+}
+
+.actif-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  cursor: pointer;
+  font-size: var(--text-sm);
+  user-select: none;
+}
+
+.actif-pill {
+  margin-left: var(--spacing-2);
+}
+
+.course-row-inactive td:not(:first-child) {
+  color: var(--color-gray-500);
+}
+
 // Places
 .places-full {
   color: #dc2626;
