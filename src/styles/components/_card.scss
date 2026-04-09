@@ -131,6 +131,24 @@
   }
 }
 
+// Visuel cours (liste /cours) — au-dessus des badges
+.course-card-thumb {
+  flex-shrink: 0;
+  width: 100%;
+  margin: 0;
+  background-color: var(--color-clay-cream);
+  border-bottom: 2px solid var(--color-border);
+
+  img {
+    width: 100%;
+    height: auto;
+    display: block;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    vertical-align: middle;
+  }
+}
+
 // Course card header — badges + availability (clear contrast)
 .course-card-header {
   padding: var(--spacing-4) var(--spacing-5);

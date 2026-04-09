@@ -13,9 +13,11 @@
   directory = "netlify/functions"
   node_bundler = "esbuild"
 
-# Désactiver Edge Functions (pas utilisées dans ce projet)
-[dev]
-  edge_functions = false
+# Note : `netlify dev` lance quand même l’initialisation Deno (Edge) côté CLI ; ce site n’a que des
+# fonctions Node dans netlify/functions/. En cas d’erreur « problem setting up the Edge Functions environment » :
+#   npm run reset-netlify-deno   puis   npx netlify dev
+# (dossier supprimé : %USERPROFILE%\.config\netlify\deno-cli sur Windows)
+# Autre option : winget install Deno.Land  (https://ntl.fyi/install-deno)
 
 # API cours + inscriptions (Neon) : rewrite /api/* vers la function (path conservé via :splat)
 [[redirects]]
@@ -40,11 +42,8 @@
 #   → Si vide ou absent et DATABASE_URL défini : le front appelle /api/* sur le même domaine (Netlify Function).
 #   → Le build injecte cette URL dans les pages ; en prod "même origine" on peut laisser vide.
 
-# netlify dev (Windows) : si erreur "setting up the Edge Functions environment" :
-# 1) Installer Deno (recommandé) : winget install Deno.Land  ou  https://ntl.fyi/install-deno
-# 2) Sinon, contournement sans netlify dev : ATELIER_API_URL=http://localhost:9999/.netlify/functions,
-#    build, puis "npm run dev:functions" (port 9999) + serveur statique (ex. npx serve dist -l 3000),
-#    ouvrir http://localhost:3000. Ce projet n'utilise que des Netlify Functions (Node), pas d'Edge.
+# Contournement sans netlify dev : build, npm run dev:functions (port 9999), serveur statique sur dist,
+# ATELIER_API_URL=http://localhost:9999/.netlify/functions — voir aussi la note Deno ci-dessus.
 
 # Netlify Forms (formulaire d’inscription)
 # Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email

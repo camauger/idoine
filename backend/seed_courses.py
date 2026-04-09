@@ -103,15 +103,23 @@ def main():
             # Check if course already exists
             existing = db.query(Course).filter(Course.slug == slug).first()
             if existing:
-                # Update description (note) if changed
+                # Update description (note) or image if changed
                 new_desc = c.get("note")
+                new_img = (c.get("image") or "").strip() or None
+                changed = False
                 if new_desc and existing.description != new_desc:
                     existing.description = new_desc
+                    changed = True
+                if new_img is not None and existing.image_url != new_img:
+                    existing.image_url = new_img
+                    changed = True
+                if changed:
                     added += 1
-                    print(f"  ~ {nom} (description mise à jour)")
+                    print(f"  ~ {nom} (mise à jour)")
                 else:
                     skipped += 1
                 continue
+            img = (c.get("image") or "").strip() or None
             course = Course(
                 nom=nom,
                 slug=slug,
@@ -129,6 +137,7 @@ def main():
                 description=c.get("note"),
                 actif=True,
                 badge_new=False,
+                image_url=img,
             )
             db.add(course)
             added += 1
@@ -149,15 +158,19 @@ def main():
                 continue
             existing = db.query(Course).filter(Course.slug == d["slug"]).first()
             if existing:
-                # Update page_dediee or description if changed
+                # Update page_dediee, description or image if changed
                 new_page = d.get("page_dediee")
                 new_desc = d.get("description")
+                new_img = (d.get("image") or "").strip() or None
                 changed = False
                 if new_page and existing.page_dediee != new_page:
                     existing.page_dediee = new_page
                     changed = True
                 if new_desc is not None and existing.description != new_desc:
                     existing.description = new_desc
+                    changed = True
+                if new_img is not None and existing.image_url != new_img:
+                    existing.image_url = new_img
                     changed = True
                 if changed:
                     updated += 1
@@ -167,6 +180,7 @@ def main():
                 continue
             # Process intensif data - handle taxes and statut fields
             prix_formatted = _format_prix(d.get("prix"), d.get("taxes"))
+            img_i = (d.get("image") or "").strip() or None
             course = Course(
                 nom=d["nom"],
                 slug=d["slug"],
@@ -185,6 +199,7 @@ def main():
                 actif=True,
                 badge_new=d.get("badge_new", False),
                 page_dediee=d.get("page_dediee"),
+                image_url=img_i,
             )
             db.add(course)
             added += 1

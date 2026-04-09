@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-labelledby="t">
+  <title id="t">Visuel du cours à venir</title>
+  <rect width="640" height="360" fill="#f0ebe4"/>
+  <rect x="0" y="0" width="640" height="6" fill="#a85d3f" opacity="0.35"/>
+  <g fill="none" stroke="#c4bbb0" stroke-width="1.5" opacity="0.9">
+    <rect x="220" y="120" width="200" height="140" rx="4"/>
+    <path d="M240 200 L280 160 L320 200 L360 150 L400 200"/>
+  </g>
+  <text x="320" y="295" text-anchor="middle" fill="#7a7268" font-family="system-ui,Segoe UI,sans-serif" font-size="15">Ateliers St-Elme</text>
+</svg>

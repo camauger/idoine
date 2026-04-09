@@ -6,7 +6,9 @@
     "scripts": {
         "dev": "grunt dev",
         "dev:py": "python scripts/dev_server.py",
+        "dev:netlify": "netlify dev",
         "dev:functions": "netlify functions:serve -p 9999",
+        "reset-netlify-deno": "node scripts/reset-netlify-deno-cache.js",
         "watch": "grunt watchOnly",
         "build": "grunt sass:prod && python scripts/core/build.py --build",
         "audit": "npm audit --audit-level=moderate || true",
@@ -40,6 +42,7 @@
         "marked": "^15.0.7",
         "postcss": "^8.5.6",
         "sass": "^1.69.0",
-        "sharp": "^0.34.5"
+        "sharp": "^0.34.5",
+        "netlify-cli": "^23.9.3"
     }
 }

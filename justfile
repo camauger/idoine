@@ -13,9 +13,13 @@ default:
 # DÉVELOPPEMENT
 # ============================================================================
 
-# Lancer le serveur de développement complet (Netlify Dev)
+# Lancer le serveur de développement complet (Netlify Dev, CLI versionnée via npx)
 dev:
-    netlify dev
+    npx netlify dev
+
+# Si `just dev` échoue sur Deno / Edge Functions : nettoyer le cache du CLI puis relancer `just dev`
+dev-fix-netlify-deno:
+    npm run reset-netlify-deno
 
 # Lancer uniquement le serveur Python (sans fonctions Netlify)
 dev-py:
@@ -65,9 +69,9 @@ seed-update:
 clear-db:
     cd backend && {{python}} clear_db.py
 
-# Lancer les migrations
+# Lancer les migrations (schéma cours)
 migrate:
-    cd backend && {{python}} migrate_add_creneau.py
+    cd backend && {{python}} migrate_add_creneau.py && {{python}} migrate_add_image_url.py
 
 # ============================================================================
 # IMAGES

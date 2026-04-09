@@ -22,6 +22,7 @@ class CourseBase(BaseModel):
     actif: bool = True
     badge_new: bool = False
     page_dediee: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class CourseCreate(CourseBase):
@@ -46,6 +47,7 @@ class CourseUpdate(BaseModel):
     actif: Optional[bool] = None
     badge_new: Optional[bool] = None
     page_dediee: Optional[str] = None
+    image_url: Optional[str] = None
 
 
 class CourseResponse(CourseBase):

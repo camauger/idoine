@@ -65,6 +65,23 @@
     return 'Céramique';
   }
 
+  var PLACEHOLDER_GENERIC = '/assets/images/course-placeholder.svg';
+
+  /** Image par défaut selon la discipline (si image_url absent en BD). */
+  function defaultImageForCourse(c) {
+    var d = (c.discipline || '').toLowerCase();
+    var t = (c.type_cours || '').toLowerCase();
+    if (d === 'vitrail') return '/assets/images/vitrail-preview.jpg';
+    if (d === 'mosaique' || d === 'mosaïque') return '/assets/images/mosaique-intensif.jpg';
+    if (t === 'enfants') return '/assets/images/ceramique-preview.jpg';
+    return '/assets/images/ceramique-preview.jpg';
+  }
+
+  function courseCardImageSrc(c) {
+    var custom = (c.image_url != null && String(c.image_url).trim()) ? String(c.image_url).trim() : '';
+    return custom || defaultImageForCourse(c);
+  }
+
   function buildCard(c) {
     var category = (c.discipline || '').toLowerCase() + ' ' + (c.type_cours || '').toLowerCase();
     var full = c.places_restantes === 0;
@@ -127,7 +144,18 @@
       ctaHtml = '<a href="/' + esc(c.page_dediee) + '/" class="btn btn-outline btn-sm">En savoir plus</a> ' + ctaHtml;
     }
 
+    var imgSrc = courseCardImageSrc(c);
+    var imgFallback = defaultImageForCourse(c);
+    var imgGeneric = PLACEHOLDER_GENERIC;
+    var hasCustom = !!(c.image_url != null && String(c.image_url).trim());
+    var onImgErr = hasCustom
+      ? ' onerror="if(!this.dataset._imgfb){this.dataset._imgfb=\'1\';this.src=\'' + imgFallback + '\';}else{this.onerror=null;this.src=\'' + imgGeneric + '\';}"'
+      : ' onerror="this.onerror=null;this.src=\'' + imgGeneric + '\'"';
+
     return '<article class="course-card" data-category="' + esc(category) + '">' +
+      '<div class="course-card-thumb">' +
+        '<img src="' + esc(imgSrc) + '" alt="' + esc(c.nom || 'Cours') + '" loading="lazy" decoding="async" width="640" height="400"' + onImgErr + '>' +
+      '</div>' +
       '<header class="course-card-header">' +
         '<div class="course-badges">' + badges + '</div>' +
         '<span class="' + availClass + '">' + esc(availText) + '</span>' +

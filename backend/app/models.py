@@ -27,6 +27,7 @@ class Course(Base):
     actif = Column(Boolean, default=True, nullable=False)
     badge_new = Column(Boolean, default=False, nullable=False)
     page_dediee = Column(String(255), nullable=True)  # slug of dedicated page if any
+    image_url = Column(String(512), nullable=True)  # ex. /assets/images/... ; sinon placeholder par discipline côté front
 
     inscriptions = relationship("Inscription", back_populates="course", cascade="all, delete-orphan")
 
