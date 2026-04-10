@@ -82,7 +82,7 @@
         hideEmptyNavItems(counts);
       })
       .catch(function() {
-        // En cas d'erreur, ne pas masquer les éléments
+        // Volontairement silencieux : en cas d'échec API, conserver le menu tel quel (ne pas masquer les liens).
       });
   }
 

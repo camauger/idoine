@@ -152,7 +152,7 @@
       ? ' onerror="if(!this.dataset._imgfb){this.dataset._imgfb=\'1\';this.src=\'' + imgFallback + '\';}else{this.onerror=null;this.src=\'' + imgGeneric + '\';}"'
       : ' onerror="this.onerror=null;this.src=\'' + imgGeneric + '\'"';
 
-    return '<article class="course-card" data-category="' + esc(category) + '">' +
+    return '<article class="course-card" data-course-id="' + esc(String(c.id != null ? c.id : '')) + '" data-category="' + esc(category) + '">' +
       '<div class="course-card-thumb">' +
         '<img src="' + esc(imgSrc) + '" alt="' + esc(c.nom || 'Cours') + '" loading="lazy" decoding="async" width="640" height="400"' + onImgErr + '>' +
       '</div>' +

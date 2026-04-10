@@ -20,10 +20,19 @@
 
           if (!titleEl || !availabilityEl) return;
 
-          var title = titleEl.textContent.trim();
-          var course = cours.find(function (c) {
-            return c.nom && c.nom.trim() === title;
-          });
+          var idAttr = card.getAttribute('data-course-id');
+          var course = null;
+          if (idAttr != null && idAttr !== '') {
+            course = cours.find(function (c) {
+              return String(c.id) === idAttr;
+            });
+          }
+          if (!course) {
+            var title = titleEl.textContent.trim();
+            course = cours.find(function (c) {
+              return c.nom && c.nom.trim() === title;
+            });
+          }
 
           if (!course) return;
 

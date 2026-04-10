@@ -1,3 +1,4 @@
+// Point d’entrée global (menu mobile, langue, thème, galerie). Ne pas réintroduire header.js : tout passe par les imports ci-dessous.
 import { initMobileMenu } from "./navigation.js";
 import { initLanguageSwitcher } from "./languageSwitcher.js";
 import { initThemeToggle } from "./themeToggle.js";
