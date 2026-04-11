@@ -15,8 +15,9 @@
 
 # Note : `netlify dev` lance quand même l’initialisation Deno (Edge) côté CLI ; ce site n’a que des
 # fonctions Node dans netlify/functions/. En cas d’erreur « Failed to set up Deno » / spawn EBUSY :
-#   npm run reset-netlify-deno   puis   npx netlify dev
-# Le script supprime ~/.config/netlify/deno-cli et, sous Windows, %APPDATA%\netlify\Config\deno-cli.
+#   npm run reset-netlify-deno   puis   just dev
+#   ou si deno.exe est déjà dans le cache sans version.txt : npm run ensure-netlify-deno-version
+# Le reset supprime ~/.config/netlify/deno-cli et, sous Windows, %APPDATA%\netlify\Config\deno-cli.
 # Autre option : winget install Deno.Land  (https://ntl.fyi/install-deno)
 
 # API cours + inscriptions (Neon) : rewrite /api/* vers la function (path conservé via :splat)

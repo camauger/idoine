@@ -20,13 +20,13 @@ Instructions pour **Claude** (et outils compatibles) travaillant sur ce dépôt.
 
 ## Problème : Netlify CLI « Failed to set up Deno » / `spawn EBUSY` (Windows)
 
-Le CLI Netlify lance Deno pour l’infra Edge ; ce repo n’en a pas besoin pour les functions Node. Erreur complète typique : `Failed to set up Deno for Edge Functions` + `Command failed with EBUSY: …\deno-cli\deno.exe --version` + `spawn EBUSY` (fichier exécutable verrouillé juste après téléchargement — antivirus, **OneDrive** sur `%APPDATA%`, indexation).
+Le CLI Netlify lance Deno pour l’infra Edge ; ce repo n’en a pas besoin pour les functions Node. Erreur **EBUSY** en boucle : sans `version.txt` dans le cache Deno, le CLI **retélécharge** `deno.exe` à chaque fois puis échoue sur `deno --version` juste après extraction. Le script `ensure-netlify-deno-version-file.js` (appelé avant `netlify dev` via `run-netlify-dev-from-root.js`) écrit `version.txt` quand le binaire est déjà présent → le cache est réutilisé.
 
 **À faire :**
 
-1. Lancer depuis la racine : `just dev` / `npm run dev:netlify` (script `run-netlify-dev-from-root.js`).
-2. `npm run reset-netlify-deno` ou `just dev-fix-netlify-deno` — efface `~/.config/netlify/deno-cli` et `%APPDATA%\netlify\Config\deno-cli`.
-3. Si **EBUSY** continue : fermer les terminaux, tuer `deno.exe`, exclure le cache Netlify de l’antivirus ; éventuellement `winget install Deno.Land`.
+1. Lancer depuis la racine : `just dev` / `npm run dev:netlify`.
+2. Après un `reset-netlify-deno` ou un premier échec : `npm run ensure-netlify-deno-version` si besoin, puis relancer `just dev`.
+3. Alternative : `winget install Deno.Land` (Deno global sur le PATH — le bundler l’utilise en priorité et ne retélécharge pas).
 
 **Plan B :** ne pas utiliser `netlify dev` — `npm run dev` + `npm run dev:functions` et `ATELIER_API_URL` vers le port des functions (voir `netlify.toml`).
 

@@ -21,6 +21,10 @@ dev:
 dev-fix-netlify-deno:
     npm run reset-netlify-deno
 
+# Après un premier échec EBUSY (deno.exe présent sans version.txt) : écrire version.txt puis relancer `just dev`
+dev-fix-netlify-deno-version:
+    npm run ensure-netlify-deno-version
+
 # Lancer uniquement le serveur Python (sans fonctions Netlify)
 dev-py:
     {{python}} scripts/dev_server.py
