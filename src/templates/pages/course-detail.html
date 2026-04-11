@@ -18,16 +18,18 @@
     </div>
   </section>
 
-  {# CTA Inscription #}
-  <section class="section section-cta-registration">
+  {# CTA Inscription (masqué par JS si aucune session réservable pour cette page) #}
+  <section class="section section-cta-registration" data-page-slug="{{ page.slug }}">
     <div class="container">
-      <div class="cta-banner">
+      <div class="cta-banner" id="course-cta-banner">
         <div class="cta-content">
           <h2>S'inscrire à ce cours</h2>
           <p>{% if page.cta_text %}{{ page.cta_text }}{% else %}Réservez votre place pour « {{ page.title }} ».{% endif %}</p>
         </div>
         <a href="/inscription?cours={{ (page.inscription_cours | default(page.title)) | urlencode }}" class="btn btn-primary btn-lg">S'inscrire</a>
       </div>
+      <p id="course-cta-message" class="inscription-closed-notice" hidden></p>
     </div>
   </section>
+  <script src="/scripts/courseDetailCta.js"></script>
 {% endblock %}

@@ -21,6 +21,8 @@
   {# Embedded Registration Form #}
   <section class="section inscription-section" id="inscription">
     <div class="container container-narrow">
+      <p id="inscription-unavailable" class="inscription-closed-notice" hidden></p>
+      <div id="inscription-form-wrap">
       <div class="form-card">
         <header class="form-card-header">
           <h2>Inscription - {{ page.title }}</h2>
@@ -201,6 +203,7 @@
             </button>
           </div>
         </form>
+      </div>
       </div>
     </div>
   </section>

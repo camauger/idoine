@@ -6,6 +6,89 @@
   'use strict';
 
   var MAX_PARTICIPANTS = 8;
+  var DIALOG_ID = 'inscription-site-dialog';
+
+  /**
+   * Modale accessible (charte du site) à la place de alert().
+   * @param {{ title: string, message: string }} opts
+   */
+  function showSiteDialog(opts) {
+    var title = (opts && opts.title) || 'Information';
+    var message = (opts && opts.message) || '';
+    var prevActive = document.activeElement;
+
+    var existing = document.getElementById(DIALOG_ID);
+    if (existing) existing.remove();
+
+    var root = document.createElement('div');
+    root.id = DIALOG_ID;
+    root.className = 'site-dialog';
+    root.setAttribute('role', 'dialog');
+    root.setAttribute('aria-modal', 'true');
+    root.setAttribute('aria-labelledby', DIALOG_ID + '-title');
+
+    var backdrop = document.createElement('div');
+    backdrop.className = 'site-dialog__backdrop';
+    backdrop.setAttribute('aria-hidden', 'true');
+
+    var panel = document.createElement('div');
+    panel.className = 'site-dialog__panel';
+
+    var accent = document.createElement('div');
+    accent.className = 'site-dialog__accent';
+    accent.setAttribute('aria-hidden', 'true');
+
+    var h = document.createElement('h2');
+    h.id = DIALOG_ID + '-title';
+    h.className = 'site-dialog__title';
+    h.textContent = title;
+
+    var p = document.createElement('p');
+    p.className = 'site-dialog__message';
+    p.textContent = message;
+
+    var actions = document.createElement('div');
+    actions.className = 'site-dialog__actions';
+
+    var ok = document.createElement('button');
+    ok.type = 'button';
+    ok.className = 'btn btn-primary site-dialog__ok';
+    ok.textContent = 'Compris';
+
+    function close() {
+      root.remove();
+      document.removeEventListener('keydown', onKey);
+      if (prevActive && typeof prevActive.focus === 'function') {
+        try {
+          prevActive.focus();
+        } catch (e) {
+          /* ignore */
+        }
+      }
+    }
+
+    function onKey(ev) {
+      if (ev.key === 'Escape') {
+        ev.preventDefault();
+        close();
+      }
+    }
+
+    backdrop.addEventListener('click', close);
+    ok.addEventListener('click', close);
+
+    actions.appendChild(ok);
+    panel.appendChild(accent);
+    panel.appendChild(h);
+    panel.appendChild(p);
+    panel.appendChild(actions);
+    root.appendChild(backdrop);
+    root.appendChild(panel);
+    document.body.appendChild(root);
+
+    document.addEventListener('keydown', onKey);
+    ok.focus();
+  }
 
   function getForm() {
     return document.getElementById('inscription-form');
@@ -131,23 +214,35 @@
 
     var participants = collectParticipants();
     if (participants.length < 1) {
-      alert('Indiquez au moins une personne à inscrire (nom complet).');
+      showSiteDialog({
+        title: 'Participants',
+        message:
+          'Indiquez au moins une personne à inscrire (nom complet).',
+      });
       return;
     }
     if (participants.length > MAX_PARTICIPANTS) {
-      alert('Maximum ' + MAX_PARTICIPANTS + ' personnes par demande.');
+      showSiteDialog({
+        title: 'Limite atteinte',
+        message:
+          'Maximum ' +
+          MAX_PARTICIPANTS +
+          ' personnes par demande d’inscription.',
+      });
       return;
     }
 
     var places = getPlacesForSelection();
     if (places != null && participants.length > places) {
-      alert(
-        'Il ne reste que ' +
+      showSiteDialog({
+        title: 'Places insuffisantes',
+        message:
+          'Il ne reste que ' +
           places +
           ' place(s) pour ce cours ; vous demandez ' +
           participants.length +
-          ' inscription(s). Réduisez le nombre de personnes ou choisissez un autre cours.'
-      );
+          ' inscription(s). Réduisez le nombre de personnes ou choisissez un autre cours.',
+      });
       return;
     }
 

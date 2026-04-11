@@ -1,13 +1,51 @@
 /**
  * courseDetailForm.js - Formulaire d'inscription pour pages de cours dédiées
- * Charge uniquement les cours liés à la page (via page_dediee)
+ * Charge uniquement les cours liés à la page (via page_dediee), réservables uniquement.
  */
-(function() {
+(function () {
   'use strict';
 
-  var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL != null) 
-    ? (window.ATELIER_API_URL || '') 
-    : '';
+  var API_URL =
+    typeof window !== 'undefined' && window.ATELIER_API_URL != null
+      ? window.ATELIER_API_URL || ''
+      : '';
+
+  function isBookable(c) {
+    if (c.actif === false) return false;
+    var pr = c.places_restantes;
+    if (pr == null) return true;
+    return Number(pr) > 0;
+  }
+
+  function getClosureMessage(linkedAll) {
+    if (!linkedAll.length) {
+      return 'Aucune session n’est associée à cette page pour le moment.';
+    }
+    var activeCourses = linkedAll.filter(function (c) {
+      return c.actif !== false;
+    });
+    if (!activeCourses.length) {
+      return 'Les inscriptions ne sont pas ouvertes pour ce cours.';
+    }
+    var allActiveFull = activeCourses.every(function (c) {
+      var pr = c.places_restantes;
+      return pr != null && Number(pr) === 0;
+    });
+    if (allActiveFull) {
+      return 'Ce cours est complet. Aucune place n’est disponible pour le moment.';
+    }
+    return 'Il n’y a actuellement aucune place disponible pour ce cours.';
+  }
+
+  function applyFormClosedState(message) {
+    var notice = document.getElementById('inscription-unavailable');
+    var wrap = document.getElementById('inscription-form-wrap');
+    if (notice) {
+      notice.textContent = message;
+      notice.hidden = false;
+    }
+    if (wrap) wrap.hidden = true;
+  }
 
   function buildOptionLabel(c) {
     var parts = [];
@@ -17,20 +55,9 @@
     return parts.join(' - ') || c.nom;
   }
 
-  function buildOptionValue(c) {
-    var value = c.nom;
-    if (c.date_debut) {
-      value += ' - ' + c.date_debut;
-    }
-    if (c.jour && c.heure) {
-      value += ' (' + c.jour + ' ' + c.heure + ')';
-    }
-    return value;
-  }
-
   function populateDropdown(selectElement, courses) {
     selectElement.innerHTML = '';
-    
+
     if (!courses || courses.length === 0) {
       var noOption = document.createElement('option');
       noOption.value = '';
@@ -46,7 +73,10 @@
       singleOption.textContent = buildOptionLabel(c0);
       singleOption.selected = true;
       singleOption.setAttribute('data-course-id', c0.id);
-      singleOption.setAttribute('data-places-restantes', String(c0.places_restantes != null ? c0.places_restantes : 0));
+      singleOption.setAttribute(
+        'data-places-restantes',
+        String(c0.places_restantes != null ? c0.places_restantes : 0)
+      );
       selectElement.appendChild(singleOption);
       return;
     }
@@ -56,20 +86,20 @@
     defaultOption.textContent = 'Choisissez une date...';
     selectElement.appendChild(defaultOption);
 
-    courses.forEach(function(c) {
+    courses.forEach(function (c) {
       var option = document.createElement('option');
       option.value = String(c.id);
       option.textContent = buildOptionLabel(c);
       option.setAttribute('data-course-id', c.id);
-      
-      if (c.places_restantes === 0) {
-        option.textContent += ' [COMPLET]';
-        option.disabled = true;
-      } else if (c.places_restantes <= 2) {
+
+      if (c.places_restantes != null && c.places_restantes <= 2) {
         option.textContent += ' [' + c.places_restantes + ' place(s)]';
       }
 
-      option.setAttribute('data-places-restantes', String(c.places_restantes != null ? c.places_restantes : 0));
+      option.setAttribute(
+        'data-places-restantes',
+        String(c.places_restantes != null ? c.places_restantes : 0)
+      );
 
       selectElement.appendChild(option);
     });
@@ -109,26 +139,32 @@
     }
 
     fetch(API_URL + '/api/cours', { cache: 'no-store' })
-      .then(function(r) {
+      .then(function (r) {
         if (!r.ok) throw new Error('API error: ' + r.status);
         return r.json();
       })
-      .then(function(allCourses) {
-        var filteredCourses = allCourses.filter(function(c) {
-          return c.page_dediee === pageSlug && c.actif !== false;
+      .then(function (allCourses) {
+        var linkedAll = (allCourses || []).filter(function (c) {
+          return c.page_dediee === pageSlug;
         });
+        var bookable = linkedAll.filter(isBookable);
 
-        filteredCourses.sort(function(a, b) {
+        if (bookable.length === 0) {
+          applyFormClosedState(getClosureMessage(linkedAll));
+          return;
+        }
+
+        bookable.sort(function (a, b) {
           var dateA = a.date_debut || '';
           var dateB = b.date_debut || '';
           return dateA.localeCompare(dateB);
         });
 
-        populateDropdown(selectElement, filteredCourses);
+        populateDropdown(selectElement, bookable);
         syncCoursHiddenFields();
         selectElement.addEventListener('change', syncCoursHiddenFields);
       })
-      .catch(function(err) {
+      .catch(function (err) {
         console.error('[CourseDetailForm] Erreur:', err);
         showError(selectElement);
       });
