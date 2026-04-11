@@ -1,16 +1,66 @@
+# Netlify - Atelier St-Elme
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+
 [build]
-  command = """
-    npm install -g grunt-cli sass &&
-    npm install &&
-    pip install -r requirements.txt &&
-    grunt build
-  """
+  command = "npm install && python -m pip install -r requirements.txt && npx grunt build"
   publish = "dist"
 
 [build.environment]
   NODE_VERSION = "18"
   PYTHON_VERSION = "3.11"
 
-# Netlify Forms - configure email notifications in Netlify UI
-# Settings > Forms > Form notifications > Add notification > Email notification
-# Recipient: info@atelierstelme.ca
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Note : `netlify dev` lance quand même l’initialisation Deno (Edge) côté CLI ; ce site n’a que des
+# fonctions Node dans netlify/functions/. En cas d’erreur « Failed to set up Deno » / spawn EBUSY :
+#   npm run reset-netlify-deno   puis   just dev
+#   ou si deno.exe est déjà dans le cache sans version.txt : npm run ensure-netlify-deno-version
+# Le reset supprime ~/.config/netlify/deno-cli et, sous Windows, %APPDATA%\netlify\Config\deno-cli.
+# Autre option : winget install Deno.Land  (https://ntl.fyi/install-deno)
+
+# API cours + inscriptions (Neon) : rewrite /api/* vers la function (path conservé via :splat)
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+# Variables d'environnement (Netlify UI > Site settings > Environment variables)
+#
+# PRODUCTION – Pour que les cours s'affichent :
+# 1. Définir DATABASE_URL = URL pooler Neon (Connection string > Pooled dans le dashboard Neon).
+# 2. Ne pas définir ATELIER_API_URL (ou laisser vide) pour que le front utilise /api/* sur le même domaine.
+# 3. Redéployer après avoir ajouté DATABASE_URL.
+#
+# DATABASE_URL (obligatoire pour /api/cours et /api/inscriptions)
+#   → Chaîne de connexion Neon (pooler) : postgresql://user:pass@ep-xxx-pooler.neon.tech/dbname?sslmode=require
+#   → Utilisée par netlify/functions/api.mjs pour /api/cours et /api/inscriptions.
+#
+# ATELIER_API_URL (optionnel en prod)
+#   → Si défini : le front appelle ce backend externe pour cours/inscriptions.
+#   → Si vide ou absent et DATABASE_URL défini : le front appelle /api/* sur le même domaine (Netlify Function).
+#   → Le build injecte cette URL dans les pages ; en prod "même origine" on peut laisser vide.
+
+# Contournement sans netlify dev : build, npm run dev:functions (port 9999), serveur statique sur dist,
+# ATELIER_API_URL=http://localhost:9999/.netlify/functions — voir aussi la note Deno ci-dessus.
+
+# Netlify Forms (formulaire d’inscription)
+# Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email
+# Destinataire : atelierstelme@gmail.com (ou info@atelierstelme.ca)
+#
+# Courriel de confirmation au participant (Resend) — optionnel mais recommandé
+# 1) Compte Resend + domaine vérifié (DNS) : https://resend.com
+# 2) Variables Netlify (Site settings > Environment variables) :
+#    RESEND_API_KEY          → clé API (ex. re_xxx)
+#    CONFIRMATION_EMAIL_FROM → expéditeur autorisé, ex. Ateliers St-Elme <inscription@atelierstelme.ca>
+# Utilisé par : netlify/functions/submission-created.js (formulaire Netlify) et api.mjs (POST /api/inscriptions).
+# Si absentes : l’inscription est quand même enregistrée ; aucun courriel automatique.
+
+# Redirections optionnelles (décommenter si besoin)
+# [[redirects]]
+#   from = "/*"
+#   to = "/index.html"
+#   status = 200
+#   force = true

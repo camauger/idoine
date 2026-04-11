@@ -119,7 +119,7 @@ module.exports = function (grunt) {
       },
     },
 
-    // Serveur de développement
+    // Serveur de développement (keepalive pour rester actif en parallèle avec watch)
     connect: {
       server: {
         options: {
@@ -127,7 +127,16 @@ module.exports = function (grunt) {
           hostname: "localhost",
           base: "dist",
           livereload: true,
+          keepalive: true,
         },
+      },
+    },
+
+    // Exécution parallèle : connect + watch (sinon connect bloque et watch ne démarre pas)
+    concurrent: {
+      dev: {
+        tasks: ["connect", "watch"],
+        options: { logConcurrentOutput: true },
       },
     },
 
@@ -135,8 +144,11 @@ module.exports = function (grunt) {
     watch: {
       options: {
         livereload: true,
-        // Debounce to avoid multiple rebuilds
         debounceDelay: 250,
+        atBegin: true,
+        // Détection fiable sur Windows (sans polling les événements fichier peuvent échouer)
+        usePolling: true,
+        interval: 500,
       },
       styles: {
         files: ["src/styles/**/*.scss"],
@@ -150,14 +162,14 @@ module.exports = function (grunt) {
         files: ["src/assets/fonts/**/*"],
         tasks: ["newer:copy:fonts"],
       },
-      // Watch Markdown content files
+      // Watch Markdown content files (build_html vide dist → on régénère aussi CSS et scripts)
       content: {
         files: [
           "src/locales/**/*.md",
           "src/locales/**/*.yaml",
           "src/locales/**/*.yml",
         ],
-        tasks: ["shell:build_html"],
+        tasks: ["shell:build_html", "sass:dev", "postcss:dev", "copy:scripts"],
       },
       // Watch Jinja2 templates
       templates: {
@@ -165,7 +177,7 @@ module.exports = function (grunt) {
           "src/templates/**/*.html",
           "src/templates/**/*.jinja2",
         ],
-        tasks: ["shell:build_html"],
+        tasks: ["shell:build_html", "sass:dev", "postcss:dev", "copy:scripts"],
       },
       // Watch configuration files
       config: {
@@ -175,7 +187,7 @@ module.exports = function (grunt) {
           "src/data/**/*.yaml",
           "src/data/**/*.yml",
         ],
-        tasks: ["shell:build_html"],
+        tasks: ["shell:build_html", "sass:dev", "postcss:dev", "copy:scripts"],
       },
       // Watch JavaScript files
       scripts: {
@@ -191,8 +203,7 @@ module.exports = function (grunt) {
     "sass:dev",
     "postcss:dev",
     "copy",
-    "connect",
-    "watch",
+    "concurrent:dev",
   ]);
   // Watch only: rebuild CSS and HTML on file changes (no server). Use with dev:py in another terminal.
   grunt.registerTask("watchOnly", [

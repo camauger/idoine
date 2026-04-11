@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin – Atelier St-Elme</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: system-ui, sans-serif; margin: 0; padding: 1rem 1.5rem 2rem; background: #f8f9fa; }
+    .container { max-width: 1400px; margin: 0 auto; }
+    h1 { font-size: 1.35rem; margin: 0 0 1rem; }
+    nav { margin: 0.75rem 0 1rem; }
+    nav a { margin-right: 1rem; color: #0d6efd; text-decoration: none; }
+    nav a:hover { text-decoration: underline; }
+    nav a.active { font-weight: 600; color: #052c65; }
+    .table-wrap {
+      overflow-x: auto;
+      overflow-y: visible;
+      margin-top: 0.75rem;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      border: 1px solid #dee2e6;
+      -webkit-overflow-scrolling: touch;
+    }
+    .table-wrap::-webkit-scrollbar { height: 10px; }
+    .table-wrap::-webkit-scrollbar-track { background: #eee; border-radius: 4px; }
+    .table-wrap::-webkit-scrollbar-thumb { background: #adb5bd; border-radius: 4px; }
+    .table-wrap::-webkit-scrollbar-thumb:hover { background: #868e96; }
+    table { width: 100%; min-width: 1200px; border-collapse: collapse; font-size: 0.85rem; }
+    th, td { border: 1px solid #dee2e6; padding: 0.5rem 0.6rem; text-align: left; white-space: nowrap; }
+    td.cell-wrap { white-space: normal; max-width: 12rem; }
+    th { background: #e9ecef; font-weight: 600; position: sticky; top: 0; z-index: 1; }
+    #courses-table th:first-child,
+    #courses-table td:first-child { position: sticky; left: 0; z-index: 2; background: #fff; box-shadow: 2px 0 4px rgba(0,0,0,0.06); }
+    #courses-table th:first-child { background: #e9ecef; }
+    #courses-table tbody tr:nth-child(even) td:first-child { background: #f8f9fa; }
+    #courses-table tbody tr:hover td:first-child { background: #e9ecef; }
+    td.numeric { text-align: right; }
+    tbody tr:nth-child(even) { background: #f8f9fa; }
+    tbody tr:hover { background: #e9ecef; }
+    .hidden { display: none; }
+    input, button { padding: 0.45rem 0.75rem; margin: 0.2rem; border: 1px solid #ced4da; border-radius: 4px; }
+    button { background: #0d6efd; color: #fff; border-color: #0d6efd; cursor: pointer; }
+    button:hover { background: #0b5ed7; }
+    .error { color: #c00; }
+    .logout { float: right; padding: 0.35rem 0.65rem; font-size: 0.9rem; }
+    .page h2 { font-size: 1.15rem; margin: 0 0 0.5rem; }
+    .page > p { margin: 0 0 0.5rem; }
+    .page > p a { color: #0d6efd; }
+    #inscriptions-table { min-width: 0; }
+    .inscriptions-wrap { overflow-x: auto; margin-top: 0.75rem; background: #fff; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); border: 1px solid #dee2e6; }
+    .actif-cell { white-space: normal; vertical-align: middle; }
+    .actif-label { display: inline-flex; align-items: center; gap: 0.35rem; cursor: pointer; user-select: none; }
+    .actif-pill { display: inline-block; margin-left: 0.35rem; padding: 0.15em 0.5em; font-size: 0.75rem; font-weight: 500; border-radius: 999px; }
+    .actif-pill.on { background: #dcfce7; color: #166534; }
+    .actif-pill.off { background: #fee2e2; color: #991b1b; }
+    .course-row-inactive td:not(:first-child) { color: #6c757d; }
+  </style>
+</head>
+<body>
+  <div class="container">
+  <h1>Admin – Atelier St-Elme</h1>
+
+  <div id="login-section">
+    <form id="login-form">
+      <label>Mot de passe : <input type="password" id="password" name="password" required></label>
+      <button type="submit">Connexion</button>
+    </form>
+    <p id="login-error" class="error hidden"></p>
+  </div>
+
+  <div id="admin-section" class="hidden">
+    <button class="logout" id="logout">Déconnexion</button>
+    <nav>
+      <a href="#" data-page="courses" id="nav-courses">Cours</a>
+      <a href="#" data-page="inscriptions" id="nav-inscriptions">Inscriptions</a>
+    </nav>
+
+    <div id="page-courses" class="page hidden">
+      <h2>Cours</h2>
+      <p><a href="#" id="export-csv">Exporter inscriptions en CSV</a></p>
+      <div class="table-wrap">
+        <table id="courses-table">
+          <thead><tr><th>Id</th><th>Nom</th><th>Discipline</th><th>Type</th><th>Jour</th><th>Créneau</th><th>Heure</th><th>Durée</th><th>Début</th><th>Salle</th><th>Prof</th><th>Prix</th><th>Places max</th><th>Inscrits</th><th>Places restantes</th><th>Visibilité</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+
+    <div id="page-inscriptions" class="page hidden">
+      <h2>Inscriptions</h2>
+      <p><a href="#" id="export-csv-inscriptions">Exporter en CSV</a></p>
+      <div class="inscriptions-wrap">
+        <table id="inscriptions-table">
+          <thead><tr><th>Date</th><th>Cours</th><th>Nom</th><th>Courriel</th><th>Tél</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <script>
+    const API = '';
+    function getToken() { return localStorage.getItem('admin_token'); }
+    function setToken(t) { if (t) localStorage.setItem('admin_token', t); else localStorage.removeItem('admin_token'); }
+
+    function headers() {
+      const t = getToken();
+      return { 'Content-Type': 'application/json', ...(t ? { 'Authorization': 'Bearer ' + t } : {}) };
+    }
+
+    document.getElementById('login-form').onsubmit = async (e) => {
+      e.preventDefault();
+      const p = document.getElementById('password').value;
+      const err = document.getElementById('login-error');
+      try {
+        const r = await fetch(API + '/api/admin/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ password: p }) });
+        const data = await r.json();
+        if (!r.ok) { err.textContent = data.detail || 'Erreur'; err.classList.remove('hidden'); return; }
+        setToken(data.access_token);
+        err.classList.add('hidden');
+        document.getElementById('login-section').classList.add('hidden');
+        document.getElementById('admin-section').classList.remove('hidden');
+        showPage('courses');
+      } catch (e) { err.textContent = e.message; err.classList.remove('hidden'); }
+    };
+
+    document.getElementById('logout').onclick = () => { setToken(null); location.reload(); };
+
+    document.querySelectorAll('nav a[data-page]').forEach(a => {
+      a.onclick = (e) => { e.preventDefault(); showPage(a.dataset.page); };
+    });
+
+    function showPage(name) {
+      document.querySelectorAll('.page').forEach(p => p.classList.add('hidden'));
+      document.querySelectorAll('nav a[data-page]').forEach(a => a.classList.remove('active'));
+      const el = document.getElementById('page-' + name);
+      const navEl = document.getElementById('nav-' + name);
+      if (navEl) navEl.classList.add('active');
+      if (el) { el.classList.remove('hidden'); loadPage(name); }
+    }
+
+    async function loadPage(name) {
+      if (name === 'courses') loadCourses();
+      if (name === 'inscriptions') loadInscriptions();
+    }
+
+    function courseIsActif(c) {
+      return !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
+    }
+
+    async function putCourseActif(courseId, actif) {
+      const row = document.querySelector('#courses-table tr[data-course-id="' + courseId + '"]');
+      const placesMax = row ? (parseInt(row.getAttribute('data-places-max'), 10) || 0) : 0;
+      const res = await fetch(API + '/api/admin/courses/' + courseId, {
+        method: 'PUT',
+        headers: headers(),
+        body: JSON.stringify({ places_max: placesMax, actif: !!actif })
+      });
+      if (res.status === 401) { setToken(null); location.reload(); throw new Error('Session expirée'); }
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        const d = err.detail;
+        const msg = typeof d === 'string' ? d : (Array.isArray(d) ? d.map(x => x.msg || '').filter(Boolean).join(', ') : 'Erreur');
+        throw new Error(msg || 'Erreur');
+      }
+    }
+
+    async function loadCourses() {
+      const r = await fetch(API + '/api/admin/courses', { headers: headers() });
+      if (r.status === 401) { setToken(null); location.reload(); return; }
+      const list = await r.json();
+      const tbody = document.querySelector('#courses-table tbody');
+      tbody.innerHTML = list.map(c => {
+        const empty = (v) => (v === undefined || v === null || v === '') ? '—' : v;
+        const esc = (s) => (s ?? '').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+        const inscrits = Math.max(0, (c.places_max || 0) - (c.places_restantes || 0));
+        const isActif = courseIsActif(c);
+        const rowClass = isActif ? '' : ' course-row-inactive';
+        return `<tr class="${rowClass.trim()}" data-course-id="${c.id}" data-places-max="${c.places_max || 0}">
+        <td>${c.id}</td><td class="cell-wrap">${esc(c.nom)}</td><td>${empty(c.discipline)}</td><td>${empty(c.type_cours)}</td>
+        <td>${empty(c.jour)}</td><td>${empty(c.creneau)}</td><td>${empty(c.heure)}</td>
+        <td class="numeric">${empty(c.duree_semaines)}</td><td>${empty(c.date_debut)}</td><td>${empty(c.salle)}</td>
+        <td>${empty(c.prof)}</td><td>${empty(c.prix)}</td>
+        <td class="numeric">${c.places_max}</td><td class="numeric">${inscrits}</td>
+        <td class="cell-wrap places-edit-cell"><input type="number" min="0" step="1" class="places-restantes-input" data-inscrits="${inscrits}" value="${c.places_restantes != null ? c.places_restantes : 0}" aria-label="Places restantes pour ${esc(c.nom)}" style="width:4rem;padding:0.35rem" />
+        <button type="button" class="btn-save-places">Enregistrer</button></td>
+        <td class="actif-cell"><label class="actif-label"><input type="checkbox" class="course-actif-cb" ${isActif ? 'checked' : ''} aria-label="Cours visible pour ${esc(c.nom)}" /><span>Visible</span></label><span class="actif-pill ${isActif ? 'on' : 'off'}">${isActif ? 'Actif' : 'Masqué'}</span></td>
+      </tr>`;
+      }).join('');
+
+      tbody.querySelectorAll('.course-actif-cb').forEach(cb => {
+        cb.addEventListener('change', async () => {
+          const row = cb.closest('tr');
+          const id = parseInt(row.getAttribute('data-course-id'), 10);
+          const want = cb.checked;
+          const revert = !want;
+          cb.disabled = true;
+          try {
+            await putCourseActif(id, want);
+            await loadCourses();
+          } catch (e) {
+            cb.checked = revert;
+            alert(e.message || 'Impossible de mettre à jour la visibilité du cours.');
+            cb.disabled = false;
+          }
+        });
+      });
+
+      tbody.querySelectorAll('.btn-save-places').forEach(btn => {
+        btn.onclick = async () => {
+          const row = btn.closest('tr');
+          const id = parseInt(row.getAttribute('data-course-id'), 10);
+          const input = row.querySelector('.places-restantes-input');
+          const inscrits = parseInt(input.getAttribute('data-inscrits'), 10) || 0;
+          let restantes = parseInt(input.value, 10);
+          if (isNaN(restantes) || restantes < 0) { alert('Indiquez un nombre de places restantes valide (0 ou plus).'); return; }
+          const placesMax = inscrits + restantes;
+          btn.disabled = true;
+          try {
+            const res = await fetch(API + '/api/admin/courses/' + id, {
+              method: 'PUT',
+              headers: headers(),
+              body: JSON.stringify({ places_max: placesMax })
+            });
+            if (res.status === 401) { setToken(null); location.reload(); return; }
+            if (!res.ok) {
+              const err = await res.json().catch(() => ({}));
+              alert(err.detail || 'Erreur lors de l\'enregistrement');
+              return;
+            }
+            await loadCourses();
+          } catch (e) {
+            alert(e.message || 'Erreur');
+          } finally {
+            btn.disabled = false;
+          }
+        };
+      });
+    }
+
+    async function loadInscriptions() {
+      const r = await fetch(API + '/api/admin/inscriptions', { headers: headers() });
+      if (r.status === 401) { setToken(null); location.reload(); return; }
+      const list = await r.json();
+      const tbody = document.querySelector('#inscriptions-table tbody');
+      tbody.innerHTML = list.map(i => `<tr>
+        <td>${i.created_at ? new Date(i.created_at).toLocaleString('fr-CA') : ''}</td>
+        <td>${i.course_nom || ''}</td><td>${i.nom}</td><td>${i.courriel}</td><td>${i.telephone || ''}</td>
+      </tr>`).join('');
+    }
+
+    async function exportCsv() {
+      const t = getToken();
+      if (!t) return;
+      const r = await fetch(API + '/api/admin/inscriptions/export?format=csv', { headers: { 'Authorization': 'Bearer ' + t } });
+      if (!r.ok) return;
+      const blob = await r.blob();
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'inscriptions.csv';
+      a.click();
+    }
+
+    document.getElementById('export-csv').onclick = (e) => { e.preventDefault(); exportCsv(); };
+    document.getElementById('export-csv-inscriptions').onclick = (e) => { e.preventDefault(); exportCsv(); };
+
+    if (getToken()) {
+      document.getElementById('login-section').classList.add('hidden');
+      document.getElementById('admin-section').classList.remove('hidden');
+      showPage('courses');
+    }
+  </script>
+</body>
+</html>

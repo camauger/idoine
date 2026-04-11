@@ -1,0 +1,1 @@
+module.exports = require('./Users/camauger/OneDrive - Université TÉLUQ/Bureau/sites/atelierstelme/netlify/functions/submission-created.js')

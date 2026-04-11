@@ -1,7 +1,9 @@
 fr:
   about: À propos
   about_title: À propos
+  calendar: Calendrier
   courses: Cours
+  jobs: Offre d'emploi
   article_classifications: "Classements de l'article"
   all_rights_reserved: Tous droits réservés
   article_information: "Informations sur l'article"
@@ -43,6 +45,12 @@ fr:
   main_nav: Navigation principale
   menu: Menu
   nav_label: Menu principal
+  nav_courses_all: Tous les cours
+  nav_courses_ceramique: Céramique
+  nav_courses_vitrail: Vitrail
+  nav_courses_mosaique: Mosaïque
+  nav_courses_intensif: Intensifs
+  nav_courses_enfants: Enfants
   next: Suivant
   next_page: Page suivante
   no_article: "Aucun article à afficher pour le moment."
@@ -125,6 +133,12 @@ en:
   main_nav: Main navigation
   menu: Menu
   nav_label: Main menu
+  nav_courses_all: All courses
+  nav_courses_ceramique: Ceramics
+  nav_courses_vitrail: Stained glass
+  nav_courses_mosaique: Mosaic
+  nav_courses_intensif: Intensives
+  nav_courses_enfants: Children
   next: Next
   next_page: Next page
   no_article: "No articles to display at this time."

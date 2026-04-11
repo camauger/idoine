@@ -21,6 +21,24 @@ export function initMobileMenu() {
   initScrollBehavior();
   initClickOutsideMenu();
   initKeyboardNavigation();
+  initSubmenuMobile();
+}
+
+/**
+ * Sur mobile : clic sur "Cours" (sous-menu) ouvre le sous-menu au lieu de naviguer
+ */
+function initSubmenuMobile() {
+  var trigger = document.querySelector(".nav-link-submenu-trigger");
+  var submenu = document.querySelector(".nav-submenu");
+  if (!trigger || !submenu) return;
+
+  trigger.addEventListener("click", function (e) {
+    if (window.matchMedia("(min-width: 768px)").matches) return;
+    e.preventDefault();
+    var open = trigger.getAttribute("aria-expanded") === "true";
+    trigger.setAttribute("aria-expanded", !open);
+    submenu.classList.toggle("submenu-open", !open);
+  });
 }
 
 /**
@@ -57,15 +75,14 @@ function initScrollBehavior() {
  * Logique de gestion du scroll
  */
 function handleScroll() {
+  if (!header) return;
   const currentScroll = window.pageYOffset;
 
   if (currentScroll > lastScroll) {
-    // Scroll vers le bas
     if (currentScroll > scrollThreshold) {
       header.classList.add("header-hidden");
     }
   } else {
-    // Scroll vers le haut
     header.classList.remove("header-hidden");
     header.classList.add("header-visible");
   }
@@ -78,11 +95,14 @@ function handleScroll() {
  */
 function initClickOutsideMenu() {
   document.addEventListener("click", (event) => {
-    if (
-      !event.target.closest(".main-navigation") &&
-      navMenu?.classList.contains("visible")
-    ) {
+    if (!event.target.closest(".main-navigation") && navMenu?.classList.contains("visible")) {
       closeMenu();
+    }
+    var submenu = document.querySelector(".nav-submenu.submenu-open");
+    if (submenu && !event.target.closest(".nav-item-has-submenu")) {
+      submenu.classList.remove("submenu-open");
+      var t = document.querySelector(".nav-link-submenu-trigger");
+      if (t) t.setAttribute("aria-expanded", "false");
     }
   });
 }
@@ -91,8 +111,8 @@ function initClickOutsideMenu() {
  * Ferme le menu mobile
  */
 function closeMenu() {
-  menuToggle.setAttribute("aria-expanded", "false");
-  navMenu.classList.remove("visible");
+  if (menuToggle) menuToggle.setAttribute("aria-expanded", "false");
+  if (navMenu) navMenu.classList.remove("visible");
   document.body.style.overflow = "";
 }
 

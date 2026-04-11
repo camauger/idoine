@@ -1,56 +1,241 @@
 /**
  * Form Prefill Script - Atelier St-Elme
- * Pré-remplit le formulaire d'inscription à partir des paramètres URL
+ * Charge les cours depuis l'API et pré-remplit le formulaire d'inscription
  */
 
 (function() {
   'use strict';
 
-  document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const coursParam = urlParams.get('cours');
+  var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL != null) 
+    ? (window.ATELIER_API_URL || '') 
+    : '';
 
-    if (!coursParam) return;
+  function esc(s) {
+    if (s === undefined || s === null) return '';
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
-    const selectElement = document.getElementById('cours');
+  /** Aligné sur courseList.sectionKey : intensifs / enfants avant la discipline. */
+  function getSectionKey(c) {
+    var d = (c.discipline || '').toLowerCase();
+    var t = (c.type_cours || '').toLowerCase();
+    if (t === 'intensif') return 'ceramique_intensif';
+    if (t === 'enfants') return 'ceramique_enfants';
+    if (d === 'ceramique' || d === 'céramique') return 'ceramique_regulier';
+    if (d === 'vitrail') return 'vitrail_regulier';
+    if (d === 'mosaique' || d === 'mosaïque') return 'mosaique';
+    return 'autre';
+  }
+
+  var SECTION_LABELS = {
+    ceramique_regulier: 'Céramique - Sessions régulières',
+    ceramique_intensif: 'Ateliers intensifs',
+    ceramique_enfants: 'Céramique - Cours enfants',
+    vitrail_regulier: 'Vitrail - Sessions régulières',
+    mosaique: 'Mosaïque',
+    autre: 'Autres cours'
+  };
+
+  var SECTION_ORDER = [
+    'ceramique_regulier',
+    'ceramique_intensif',
+    'ceramique_enfants',
+    'vitrail_regulier',
+    'mosaique',
+    'autre'
+  ];
+
+  function buildOptionLabel(c) {
+    var parts = [c.nom];
+    var details = [];
+    if (c.date_debut) details.push(c.date_debut);
+    if (c.jour) details.push(c.jour);
+    if (c.heure) details.push(c.heure);
+    if (details.length > 0) {
+      parts.push('(' + details.join(' - ') + ')');
+    }
+    return parts.join(' ');
+  }
+
+  function buildOptionValue(c) {
+    // Include name and date to uniquely identify the course
+    var value = c.nom;
+    if (c.date_debut) {
+      value += ' - ' + c.date_debut;
+    }
+    if (c.jour && c.heure) {
+      value += ' (' + c.jour + ' ' + c.heure + ')';
+    }
+    return value;
+  }
+
+  function populateDropdown(selectElement, courses, preselect) {
+    selectElement.innerHTML = '';
+    
+    var defaultOption = document.createElement('option');
+    defaultOption.value = '';
+    defaultOption.textContent = 'Choisissez un cours...';
+    selectElement.appendChild(defaultOption);
+
+    var bySection = {};
+    SECTION_ORDER.forEach(function(key) { bySection[key] = []; });
+
+    courses.forEach(function(c) {
+      if (!c.actif) return;
+      var key = getSectionKey(c);
+      if (!bySection[key]) bySection[key] = [];
+      bySection[key].push(c);
+    });
+
+    var preselectedIndex = -1;
+    var optionIndex = 1;
+
+    SECTION_ORDER.forEach(function(key) {
+      var list = bySection[key];
+      if (!list || list.length === 0) return;
+
+      var optgroup = document.createElement('optgroup');
+      optgroup.label = SECTION_LABELS[key] || key;
+
+      list.forEach(function(c) {
+        var option = document.createElement('option');
+        var optValue = buildOptionValue(c);
+        // Valeur = id (Netlify + submission-created) ; libellé long pour pré-sélection URL héritée
+        option.value = String(c.id);
+        option.textContent = buildOptionLabel(c);
+        option.setAttribute('data-course-id', c.id);
+        option.setAttribute('data-cours-label', optValue);
+
+        if (c.places_restantes === 0) {
+          option.textContent += ' [COMPLET]';
+          option.disabled = true;
+        }
+
+        option.setAttribute('data-places-restantes', String(c.places_restantes != null ? c.places_restantes : 0));
+
+        optgroup.appendChild(option);
+
+        if (preselect && (
+          c.nom === preselect ||
+          optValue === preselect ||
+          String(c.id) === preselect ||
+          decodeURIComponent(preselect) === optValue
+        )) {
+          preselectedIndex = optionIndex;
+        }
+        optionIndex++;
+      });
+
+      selectElement.appendChild(optgroup);
+    });
+
+    return preselectedIndex;
+  }
+
+  function showError(selectElement) {
+    selectElement.innerHTML = '<option value="">Erreur de chargement...</option>';
+    var errorEl = document.getElementById('cours-error');
+    if (errorEl) errorEl.style.display = 'block';
+  }
+
+  /**
+   * Netlify reçoit name="cours" : libellé lisible (courriel).
+   * name="course_id" : id pour submission-created.js (résolution fiable en base).
+   */
+  function syncCoursHiddenFields() {
+    var sel = document.getElementById('cours');
+    var libelle = document.getElementById('cours-libelle');
+    var idField = document.getElementById('course_id');
+    if (!sel || !libelle || !idField) return;
+    var opt = sel.options[sel.selectedIndex];
+    if (!opt || !opt.value) {
+      libelle.value = '';
+      idField.value = '';
+      return;
+    }
+    idField.value = opt.value;
+    libelle.value = window.normalizeCoursLibelle
+      ? window.normalizeCoursLibelle(opt.textContent)
+      : (opt.textContent || '').trim();
+  }
+
+  function showPrefillNotice(coursName) {
+    var formCard = document.querySelector('.form-card-header');
+    if (formCard) {
+      var notice = document.createElement('div');
+      notice.className = 'prefill-notice';
+      notice.innerHTML = '<strong>Cours sélectionné :</strong> ' + esc(coursName);
+      formCard.appendChild(notice);
+    }
+
+    var formElement = document.getElementById('inscription-form');
+    if (formElement) {
+      setTimeout(function() {
+        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 300);
+    }
+  }
+
+  function init() {
+    var selectElement = document.getElementById('cours');
     if (!selectElement) return;
 
-    // Décoder le paramètre URL
-    const decodedCours = decodeURIComponent(coursParam);
+    var urlParams = new URLSearchParams(window.location.search);
+    var coursParam = urlParams.get('cours');
+    var preselect = coursParam ? decodeURIComponent(coursParam) : null;
 
-    // Chercher l'option correspondante
-    const options = selectElement.options;
-    let found = false;
+    fetch(API_URL + '/api/cours', { cache: 'no-store' })
+      .then(function(r) {
+        if (!r.ok) throw new Error('API error: ' + r.status);
+        return r.json();
+      })
+      .then(function(courses) {
+        if (!courses || !courses.length) {
+          showError(selectElement);
+          return;
+        }
 
-    for (let i = 0; i < options.length; i++) {
-      if (options[i].value === decodedCours) {
-        selectElement.selectedIndex = i;
-        found = true;
-        break;
+        var preselectedIndex = populateDropdown(selectElement, courses, preselect);
+
+        if (preselectedIndex > 0) {
+          selectElement.selectedIndex = preselectedIndex;
+          selectElement.classList.add('prefilled');
+          showPrefillNotice(preselect);
+        }
+        syncCoursHiddenFields();
+        selectElement.addEventListener('change', syncCoursHiddenFields);
+      })
+      .catch(function(err) {
+        console.error('[Inscription] Erreur chargement cours:', err);
+        showError(selectElement);
+      });
+  }
+
+  function attachSubmitGuard() {
+    var form = document.getElementById('inscription-form');
+    if (!form) return;
+    form.addEventListener('submit', function (ev) {
+      if (ev.defaultPrevented) return;
+      syncCoursHiddenFields();
+      var btn = form.querySelector('button[type="submit"]');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Envoi en cours…';
       }
-    }
+    });
+  }
 
-    // Si trouvé, ajouter un indicateur visuel
-    if (found) {
-      // Ajouter une classe pour le style
-      selectElement.classList.add('prefilled');
-
-      // Créer un message de confirmation
-      const formCard = document.querySelector('.form-card-header');
-      if (formCard) {
-        const notice = document.createElement('div');
-        notice.className = 'prefill-notice';
-        notice.innerHTML = '<strong>Cours sélectionné :</strong> ' + decodedCours;
-        formCard.appendChild(notice);
-      }
-
-      // Faire défiler jusqu'au formulaire pour une meilleure UX
-      const formElement = document.getElementById('inscription-form');
-      if (formElement) {
-        setTimeout(function() {
-          formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }, 300);
-      }
-    }
-  });
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+      init();
+      attachSubmitGuard();
+    });
+  } else {
+    init();
+    attachSubmitGuard();
+  }
 })();

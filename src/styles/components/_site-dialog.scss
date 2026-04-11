@@ -1,0 +1,103 @@
+// =============================================================================
+// Modale légère (remplace alert() sur inscription, etc.)
+// =============================================================================
+
+.site-dialog {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-4);
+  animation: site-dialog-fade-in 0.2s ease-out;
+}
+
+@keyframes site-dialog-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.site-dialog__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(45, 42, 38, 0.55);
+  backdrop-filter: blur(3px);
+  cursor: pointer;
+}
+
+.site-dialog__panel {
+  position: relative;
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--spacing-6) var(--spacing-6) var(--spacing-5);
+  background: var(--color-background-alt);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-xl);
+  box-shadow:
+    0 4px 24px rgba(45, 42, 38, 0.12),
+    0 12px 48px rgba(45, 42, 38, 0.08);
+  animation: site-dialog-rise 0.25s ease-out;
+}
+
+@keyframes site-dialog-rise {
+  from {
+    opacity: 0;
+    transform: translateY(0.5rem) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.site-dialog__accent {
+  width: 3rem;
+  height: 3px;
+  margin: 0 0 var(--spacing-4);
+  border-radius: 2px;
+  background: linear-gradient(
+    90deg,
+    var(--color-amber),
+    var(--color-terracotta)
+  );
+}
+
+.site-dialog__title {
+  margin: 0 0 var(--spacing-3);
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  line-height: var(--leading-tight);
+  letter-spacing: var(--tracking-tight);
+}
+
+.site-dialog__message {
+  margin: 0 0 var(--spacing-6);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-relaxed);
+  color: var(--color-text);
+}
+
+.site-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+}
+
+.site-dialog__ok.btn {
+  min-width: 7.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-dialog,
+  .site-dialog__panel {
+    animation: none;
+  }
+}

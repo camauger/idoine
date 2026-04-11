@@ -36,6 +36,17 @@
   padding: var(--spacing-12) 0;
 }
 
+.inscription-closed-notice {
+  max-width: 42rem;
+  margin: 0 auto var(--spacing-8);
+  padding: var(--spacing-6);
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  color: var(--color-kiln-charcoal);
+  text-align: center;
+}
+
 .inscription-layout {
   display: grid;
   gap: var(--spacing-8);

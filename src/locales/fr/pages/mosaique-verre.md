@@ -1,7 +1,7 @@
 ---
 title: Mosaïque de verre
 description: Atelier intensif de mosaïque de verre à l'Atelier St-Elme. Petits morceaux de verre colorés, motifs uniques, matériel inclus. Avec Guy Frève (2026).
-template: pages/course-detail.html
+template: pages/course-detail-form.html
 slug: mosaique-verre
 translation_id: mosaique-verre
 inscription_cours: Mosaïque de verre

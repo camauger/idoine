@@ -1,131 +1,204 @@
 // =============================================================================
 // Courses Page Styles - Atelier St-Elme
 // =============================================================================
+// Layout: 8px grid, clear section rhythm. Contrast: WCAG AA. Hierarchy: H1 > strip > notes > nav > H2 > cards.
 
 // -----------------------------------------------------------------------------
-// Page Hero
+// Hero unique — titre, intro, session, CTA et notes dans un seul bloc
 // -----------------------------------------------------------------------------
 .cours-hero {
   background-color: var(--color-clay-cream);
-  padding: var(--spacing-16) 0 var(--spacing-12);
-  text-align: center;
+  padding: var(--spacing-12) 0;
+}
 
+.cours-hero-inner {
   .page-title {
     font-family: var(--font-display);
-    font-size: var(--text-4xl);
+    font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
     font-weight: 700;
     color: var(--color-kiln-charcoal);
-    margin-bottom: var(--spacing-4);
-
-    @media (min-width: 768px) {
-      font-size: var(--text-5xl);
-    }
+    margin-bottom: var(--spacing-5);
+    line-height: var(--leading-tight);
+    letter-spacing: var(--tracking-tight);
   }
 
   .page-intro {
-    max-width: 42rem;
-    margin: 0 auto;
-    color: var(--color-text-light);
-  }
-}
+    color: var(--color-kiln-charcoal);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--spacing-8);
 
-// -----------------------------------------------------------------------------
-// Session Announcement Banner
-// -----------------------------------------------------------------------------
-.session-banner {
-  background: linear-gradient(135deg, var(--color-amber) 0%, #c99b42 100%);
-  color: var(--color-kiln-charcoal);
-  padding: var(--spacing-6) 0;
-}
-
-.session-banner-content {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-6);
-  text-align: center;
-
-  @media (min-width: 768px) {
-    flex-direction: row;
-    justify-content: space-between;
-    text-align: left;
-  }
-}
-
-.session-info {
-  .session-label {
-    display: inline-block;
-    background-color: rgba(255, 255, 255, 0.25);
-    padding: var(--spacing-1) var(--spacing-3);
-    border-radius: var(--border-radius-full);
-    font-size: var(--text-sm);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: var(--tracking-wide);
-    margin-bottom: var(--spacing-2);
+    p {
+      margin: 0 0 var(--spacing-4);
+      &:last-child { margin-bottom: 0; }
+    }
   }
 
-  .session-details,
-  .session-registration {
-    margin: var(--spacing-1) 0;
+  .cours-hero-meta {
+    padding: var(--spacing-6) 0;
+    margin-bottom: var(--spacing-8);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+
+    .session-label {
+      display: inline-block;
+      background-color: var(--color-terracotta);
+      color: var(--color-warm-white);
+      padding: var(--spacing-2) var(--spacing-4);
+      border-radius: var(--border-radius-full);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: var(--tracking-wide);
+      margin-bottom: var(--spacing-3);
+    }
+
+    .session-details,
+    .session-registration {
+      margin: var(--spacing-2) 0;
+      font-size: var(--text-base);
+      color: var(--color-kiln-charcoal);
+    }
+  }
+
+  .cours-hero-notes {
+    background-color: var(--color-warm-white);
+    border-left: 6px solid var(--color-terracotta);
+    border-radius: var(--border-radius-lg);
+    padding: var(--spacing-6);
+    box-shadow: var(--shadow-sm);
+
+    @media (min-width: 768px) {
+      padding: var(--spacing-8);
+    }
+  }
+
+  .notes-heading {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-kiln-charcoal);
+    margin: 0 0 var(--spacing-4);
+    line-height: var(--leading-tight);
+  }
+
+  .notes-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .notes-list li {
+    position: relative;
+    padding-left: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
     font-size: var(--text-base);
+    color: var(--color-kiln-charcoal);
+    line-height: var(--leading-relaxed);
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.55em;
+      width: 8px;
+      height: 8px;
+      background-color: var(--color-terracotta);
+      border-radius: 50%;
+    }
+
+    &:last-child { margin-bottom: 0; }
+    strong { color: var(--color-kiln-charcoal); }
   }
 }
 
 // -----------------------------------------------------------------------------
-// Filter Bar
+// Filter Bar — touch targets 44px, clear separation
 // -----------------------------------------------------------------------------
 .filter-bar {
   background-color: var(--color-warm-white);
-  border-bottom: 1px solid var(--color-border);
-  padding: var(--spacing-4) 0;
+  border-bottom: 2px solid var(--color-border);
+  padding: var(--spacing-5) 0;
+  top: var(--header-height);
+  z-index: var(--z-sticky);
+  box-shadow: 0 2px 0 rgba(45, 42, 38, 0.04);
 }
 
 .filter-buttons {
   display: flex;
   flex-wrap: wrap;
-  gap: var(--spacing-2);
+  gap: var(--spacing-3);
   justify-content: center;
+  align-items: center;
 
-  @media (min-width: 768px) {
-    gap: var(--spacing-3);
+  @media (max-width: 767px) {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: var(--spacing-2);
+    margin: 0 calc(var(--spacing-4) * -1);
+    padding-left: var(--spacing-4);
+    padding-right: var(--spacing-4);
+
+    &::after {
+      content: '';
+      flex: 0 0 var(--spacing-4);
+      width: var(--spacing-4);
+    }
   }
 }
 
 .filter-btn {
-  background-color: transparent;
-  border: 1px solid var(--color-border);
+  flex-shrink: 0;
+  min-height: 44px;
+  min-width: 44px;
+  padding: var(--spacing-2) var(--spacing-5);
+  background-color: var(--color-warm-white);
+  border: 2px solid var(--color-kiln-charcoal);
   border-radius: var(--border-radius-full);
-  padding: var(--spacing-2) var(--spacing-4);
   font-family: var(--font-body);
   font-size: var(--text-sm);
-  font-weight: 500;
-  color: var(--color-text-light);
+  font-weight: 600;
+  color: var(--color-kiln-charcoal);
   cursor: pointer;
-  transition: all var(--transition-fast);
+  transition: border-color var(--transition-fast), color var(--transition-fast), background-color var(--transition-fast);
+  scroll-snap-align: start;
 
   &:hover {
     border-color: var(--color-terracotta);
     color: var(--color-terracotta);
+    background-color: var(--color-clay-cream);
   }
 
   &.active {
-    background-color: var(--color-terracotta);
-    border-color: var(--color-terracotta);
-    color: white;
+    background-color: var(--color-kiln-charcoal);
+    border-color: var(--color-kiln-charcoal);
+    color: var(--color-warm-white);
   }
 
   &:focus-visible {
     outline: none;
     box-shadow: var(--focus-ring);
+    outline-offset: var(--focus-ring-offset);
   }
 }
 
 // -----------------------------------------------------------------------------
-// Course Sections
+// Course Sections — alternating backgrounds, clear section headers
 // -----------------------------------------------------------------------------
 .courses-section {
-  padding: var(--spacing-12) 0;
+  padding: var(--spacing-16) 0;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+
+  &.visible {
+    opacity: 1;
+  }
+
+  @media (min-width: 768px) {
+    padding: var(--spacing-20) 0;
+  }
 
   &.courses-section-alt {
     background-color: var(--color-clay-cream);
@@ -135,68 +208,94 @@
     background: linear-gradient(
       180deg,
       var(--color-warm-white) 0%,
-      rgba(74, 124, 140, 0.05) 100%
+      rgba(74, 124, 140, 0.06) 100%
     );
   }
 }
 
 .section-header {
   text-align: center;
-  margin-bottom: var(--spacing-10);
+  margin-bottom: var(--spacing-12);
+  max-width: 36rem;
+  margin-left: auto;
+  margin-right: auto;
 
   .section-title {
     font-family: var(--font-display);
-    font-size: var(--text-3xl);
-    font-weight: 600;
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-3xl));
+    font-weight: 700;
     color: var(--color-kiln-charcoal);
-    margin-bottom: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+    line-height: var(--leading-tight);
+    padding-bottom: var(--spacing-3);
+    border-bottom: 4px solid var(--color-terracotta);
+    display: inline-block;
   }
 
   .section-subtitle {
     font-size: var(--text-lg);
-    color: var(--color-text-light);
+    color: var(--color-kiln-charcoal);
+    font-weight: 500;
+    margin: 0;
   }
 }
 
 // -----------------------------------------------------------------------------
-// Course Badge - New
+// Course Badge - New (contrast-safe)
 // -----------------------------------------------------------------------------
 .badge-new {
-  background-color: rgba(212, 168, 83, 0.2);
-  color: #9A7B2C;
+  background-color: rgba(154, 123, 44, 0.25);
+  color: #6b5218;
 }
 
 // -----------------------------------------------------------------------------
-// Availability states
+// Availability states (clear contrast)
 // -----------------------------------------------------------------------------
 .course-availability {
   &.coming-soon {
     &::before {
       background-color: var(--color-stone);
     }
-    color: var(--color-text-light);
+    color: var(--color-kiln-charcoal);
   }
 }
 
 // -----------------------------------------------------------------------------
-// Notes Section
+// Notes Section — high visibility, clear hierarchy
 // -----------------------------------------------------------------------------
 .section-notes {
-  padding: var(--spacing-8) 0;
+  padding: var(--spacing-12) 0;
+  background-color: var(--color-warm-white);
+  border-top: 4px solid var(--color-terracotta);
+  border-bottom: 4px solid var(--color-terracotta);
 }
 
 .notes-card {
   background-color: var(--color-clay-cream);
-  border-left: 4px solid var(--color-terracotta);
+  border-left: 6px solid var(--color-terracotta);
   border-radius: var(--border-radius-lg);
-  padding: var(--spacing-6);
+  padding: var(--spacing-8);
+  box-shadow: var(--shadow-sm);
 
-  h3 {
+  @media (min-width: 768px) {
+    padding: var(--spacing-10);
+  }
+
+  .notes-card-heading {
     font-family: var(--font-display);
-    font-size: var(--text-lg);
-    font-weight: 600;
+    font-size: var(--text-2xl);
+    font-weight: 700;
     color: var(--color-kiln-charcoal);
-    margin-bottom: var(--spacing-4);
+    margin: 0 0 var(--spacing-2);
+    line-height: var(--leading-tight);
+  }
+
+  .notes-card-subtitle {
+    font-family: var(--font-body);
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-terracotta-dark);
+    margin: 0 0 var(--spacing-6);
   }
 
   ul {
@@ -207,19 +306,19 @@
 
   li {
     position: relative;
-    padding-left: var(--spacing-5);
-    margin-bottom: var(--spacing-3);
-    font-size: var(--text-sm);
-    color: var(--color-text-light);
+    padding-left: var(--spacing-6);
+    margin-bottom: var(--spacing-4);
+    font-size: var(--text-base);
+    color: var(--color-kiln-charcoal);
     line-height: var(--leading-relaxed);
 
     &::before {
       content: '';
       position: absolute;
       left: 0;
-      top: 0.5em;
-      width: 6px;
-      height: 6px;
+      top: 0.55em;
+      width: 8px;
+      height: 8px;
       background-color: var(--color-terracotta);
       border-radius: 50%;
     }
@@ -235,10 +334,10 @@
 }
 
 // -----------------------------------------------------------------------------
-// CTA Section
+// CTA Section — strong close
 // -----------------------------------------------------------------------------
 .section-cta-registration {
-  padding: var(--spacing-12) 0;
+  padding: var(--spacing-16) 0;
   background-color: var(--color-deep-brown);
 }
 
@@ -246,7 +345,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-6);
+  gap: var(--spacing-8);
   text-align: center;
 
   @media (min-width: 768px) {
@@ -259,15 +358,17 @@
 .cta-content {
   h2 {
     font-family: var(--font-display);
-    font-size: var(--text-2xl);
-    font-weight: 600;
+    font-size: clamp(var(--text-xl), 3vw, var(--text-2xl));
+    font-weight: 700;
     color: var(--color-warm-white);
-    margin-bottom: var(--spacing-2);
+    margin-bottom: var(--spacing-3);
+    line-height: var(--leading-tight);
   }
 
   p {
-    color: var(--color-stone);
+    color: var(--color-warm-white);
     font-size: var(--text-lg);
+    margin: 0;
   }
 }
 
@@ -308,6 +409,67 @@
 }
 
 // -----------------------------------------------------------------------------
+// Loading & fallback states
+// -----------------------------------------------------------------------------
+.courses-loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-16) var(--spacing-6);
+  gap: var(--spacing-4);
+}
+
+.loading-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid var(--color-clay-light);
+  border-top-color: var(--color-terracotta);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-kiln-charcoal);
+}
+
+#courses-loading {
+  padding: var(--spacing-16) var(--spacing-6);
+  text-align: center;
+  font-size: var(--text-lg);
+  font-weight: 500;
+  color: var(--color-kiln-charcoal);
+}
+
+#courses-fallback {
+  padding: var(--spacing-10) 0;
+
+  p {
+    font-size: var(--text-base);
+    color: var(--color-kiln-charcoal);
+    margin: 0 0 var(--spacing-4);
+
+    a {
+      font-weight: 600;
+      color: var(--color-terracotta);
+      text-underline-offset: 2px;
+
+      &:focus-visible {
+        outline: none;
+        box-shadow: var(--focus-ring);
+        outline-offset: var(--focus-ring-offset);
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
 // Course filtering (JavaScript enhancement)
 // -----------------------------------------------------------------------------
 [data-category] {
@@ -322,5 +484,18 @@
 @media (prefers-reduced-motion: reduce) {
   .filter-btn {
     transition: none;
+  }
+
+  .course-card:hover {
+    transform: none;
+  }
+
+  .loading-spinner {
+    animation: none;
+  }
+
+  .courses-section {
+    transition: none;
+    opacity: 1;
   }
 }

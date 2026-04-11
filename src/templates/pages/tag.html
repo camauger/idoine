@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<main id="main-content" tabindex="-1" role="main">
-  <header class="page-header" role="banner" aria-label="En-tête du tag">
+<div class="page-listing" tabindex="-1">
+  <header class="page-header" aria-label="En-tête du tag">
     <h1>{{ page.title }}</h1>
     <p>{{ page.description }}</p>
   </header>
@@ -35,6 +35,6 @@
       <p>{{ t.no_article }}</p>
     {% endif %}
   </section>
-</main>
+</div>
 {% endblock %}
 

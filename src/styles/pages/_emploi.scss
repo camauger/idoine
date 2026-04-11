@@ -1,0 +1,200 @@
+// =============================================================================
+// Job Posting Page Styles - Atelier St-Elme
+// =============================================================================
+
+.emploi-page {
+  min-height: 60vh;
+}
+
+// -----------------------------------------------------------------------------
+// Hero Section
+// -----------------------------------------------------------------------------
+.emploi-hero {
+  background-color: var(--color-clay-cream);
+  padding: var(--spacing-12) 0;
+
+  .emploi-badge {
+    display: inline-block;
+    background-color: var(--color-terracotta);
+    color: var(--color-warm-white);
+    padding: var(--spacing-2) var(--spacing-4);
+    border-radius: var(--border-radius-full);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .page-title {
+    font-family: var(--font-display);
+    font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+    font-weight: 700;
+    color: var(--color-kiln-charcoal);
+    margin-bottom: var(--spacing-4);
+  }
+
+  .page-intro {
+    color: var(--color-kiln-charcoal);
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--spacing-6);
+  }
+
+  .emploi-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-4);
+
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: var(--spacing-2);
+      color: var(--color-stone-gray);
+      font-size: var(--text-base);
+
+      i {
+        color: var(--color-terracotta);
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Content Section
+// -----------------------------------------------------------------------------
+.emploi-content {
+  padding: var(--spacing-12) 0;
+}
+
+.emploi-section {
+  margin-bottom: var(--spacing-10);
+
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-bottom: var(--spacing-4);
+    padding-bottom: var(--spacing-2);
+    border-bottom: 2px solid var(--color-terracotta);
+  }
+
+  h3 {
+    font-size: var(--text-lg);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-top: var(--spacing-6);
+    margin-bottom: var(--spacing-3);
+  }
+
+  p {
+    color: var(--color-kiln-charcoal);
+    line-height: var(--leading-relaxed);
+    margin-bottom: var(--spacing-4);
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 var(--spacing-4);
+
+    li {
+      position: relative;
+      padding-left: var(--spacing-6);
+      margin-bottom: var(--spacing-3);
+      color: var(--color-kiln-charcoal);
+      line-height: var(--leading-relaxed);
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.6em;
+        width: 8px;
+        height: 8px;
+        background-color: var(--color-terracotta);
+        border-radius: 50%;
+      }
+    }
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Conditions Grid
+// -----------------------------------------------------------------------------
+.conditions-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-4);
+}
+
+.condition-item {
+  background-color: var(--color-clay-cream);
+  padding: var(--spacing-5);
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+
+  .condition-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--color-stone-gray);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .condition-value {
+    display: block;
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-terracotta);
+    margin-bottom: var(--spacing-1);
+  }
+
+  .condition-note {
+    display: block;
+    font-size: var(--text-sm);
+    color: var(--color-stone-gray);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// CTA Section
+// -----------------------------------------------------------------------------
+.emploi-cta {
+  background-color: var(--color-clay-cream);
+  padding: var(--spacing-8);
+  border-radius: var(--border-radius-lg);
+  text-align: center;
+
+  h2 {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  p {
+    margin-bottom: var(--spacing-4);
+  }
+
+  .btn-lg {
+    font-size: var(--text-lg);
+    padding: var(--spacing-4) var(--spacing-8);
+    
+    i {
+      margin-right: var(--spacing-2);
+    }
+  }
+
+  .deadline {
+    margin-top: var(--spacing-6);
+    font-size: var(--text-lg);
+    color: var(--color-kiln-charcoal);
+
+    i {
+      color: var(--color-terracotta);
+      margin-right: var(--spacing-2);
+    }
+  }
+}

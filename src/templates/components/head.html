@@ -18,6 +18,9 @@
   <link rel="icon" type="image/png" href="/assets/images/favicon.png" />
   <link rel="apple-touch-icon" href="/assets/images/favicon.png" />
 
+  <!-- API URL for cours/inscription (from .env ATELIER_API_URL or site_config atelier_api_url) -->
+  <script>window.ATELIER_API_URL = {{ (atelier_api_url | default('', true)) | tojson }};</script>
+
   <!-- Dark mode -->
   <script>
     if (
