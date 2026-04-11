@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
-<main id="main-content" tabindex="-1" role="main">
-  <header class="page-header" role="banner" aria-label="En-tête du mot-clé">
+<div class="page-listing" tabindex="-1">
+  <header class="page-header" aria-label="En-tête du mot-clé">
     <h1>{{ t.keyword_prefix}} {{ keyword }}</h1>
     <p>Articles marqués avec le mot-clé "{{ keyword }}"</p>
   </header>
@@ -33,5 +33,5 @@
       <p>{{t.keyword_no_article}}.</p>
     {% endif %}
   </section>
-</main>
+</div>
 {% endblock %}

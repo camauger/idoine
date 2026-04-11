@@ -175,6 +175,7 @@
   function init() {
     var loadingEl = document.getElementById('courses-loading');
     var fallbackEl = document.getElementById('courses-fallback');
+    if (loadingEl) loadingEl.setAttribute('aria-busy', 'true');
 
     fetch(API_URL + '/api/cours', { cache: 'no-store' })
       .then(function (r) {
@@ -185,7 +186,10 @@
         });
       })
       .then(function (cours) {
-        if (loadingEl) loadingEl.style.display = 'none';
+        if (loadingEl) {
+          loadingEl.style.display = 'none';
+          loadingEl.setAttribute('aria-busy', 'false');
+        }
         if (!cours || !cours.length) {
           if (fallbackEl) fallbackEl.style.display = 'block';
           window.dispatchEvent(new CustomEvent('courses-loaded'));
@@ -227,7 +231,10 @@
         window.dispatchEvent(new CustomEvent('courses-loaded'));
       })
       .catch(function () {
-        if (loadingEl) loadingEl.style.display = 'none';
+        if (loadingEl) {
+          loadingEl.style.display = 'none';
+          loadingEl.setAttribute('aria-busy', 'false');
+        }
         if (fallbackEl) fallbackEl.style.display = 'block';
         window.dispatchEvent(new CustomEvent('courses-loaded'));
       });

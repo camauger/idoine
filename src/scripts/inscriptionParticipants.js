@@ -1,6 +1,6 @@
 /**
  * Inscription multi-personnes : blocs participants, participants_json, validation des places.
- * Charger avant formPrefill.js / courseDetailForm.js pour que le submit intercepte en premier.
+ * Charger après coursLibelle.js ; avant formPrefill.js / courseDetailForm.js (submit intercepté en premier).
  */
 (function () {
   'use strict';
@@ -31,7 +31,9 @@
       return;
     }
     idField.value = opt.value;
-    libelle.value = (opt.textContent || '').replace(/\s*\[COMPLET\]\s*$/i, '').replace(/\s*\[\d+ place\(s\)\]\s*$/i, '').trim();
+    libelle.value = window.normalizeCoursLibelle
+      ? window.normalizeCoursLibelle(opt.textContent)
+      : (opt.textContent || '').trim();
   }
 
   function collectParticipants() {
@@ -53,10 +55,21 @@
     var blocks = list.querySelectorAll('.participant-block');
     var n = blocks.length;
     for (var i = 0; i < n; i++) {
+      blocks[i].setAttribute('data-participant-index', String(i));
       var title = blocks[i].querySelector('.participant-block-title');
       if (title) title.textContent = 'Personne ' + (i + 1);
       var rm = blocks[i].querySelector('.btn-remove-participant');
       if (rm) rm.hidden = n <= 1;
+      var nomInp = blocks[i].querySelector('.participant-nom');
+      var enfantInp = blocks[i].querySelector('.participant-enfant');
+      var nomLbl = blocks[i].querySelector('.participant-nom-label');
+      var enfantLbl = blocks[i].querySelector('.participant-enfant-label');
+      var nomId = 'participant-nom-' + i;
+      var enfantId = 'participant-enfant-' + i;
+      if (nomInp) nomInp.id = nomId;
+      if (enfantInp) enfantInp.id = enfantId;
+      if (nomLbl) nomLbl.setAttribute('for', nomId);
+      if (enfantLbl) enfantLbl.setAttribute('for', enfantId);
     }
   }
 
@@ -69,7 +82,6 @@
       inputs[j].value = '';
       inputs[j].required = false;
     }
-    clone.setAttribute('data-participant-index', String(list.querySelectorAll('.participant-block').length));
     list.appendChild(clone);
     var nomInp = clone.querySelector('.participant-nom');
     if (nomInp) nomInp.required = true;

@@ -19,38 +19,32 @@
       .replace(/"/g, '&quot;');
   }
 
+  /** Aligné sur courseList.sectionKey : intensifs / enfants avant la discipline. */
   function getSectionKey(c) {
     var d = (c.discipline || '').toLowerCase();
     var t = (c.type_cours || '').toLowerCase();
-    if (d === 'ceramique' || d === 'céramique') {
-      if (t === 'intensif') return 'ceramique_intensif';
-      if (t === 'enfants') return 'ceramique_enfants';
-      return 'ceramique_regulier';
-    }
-    if (d === 'vitrail') {
-      if (t === 'intensif') return 'vitrail_intensif';
-      return 'vitrail_regulier';
-    }
+    if (t === 'intensif') return 'ceramique_intensif';
+    if (t === 'enfants') return 'ceramique_enfants';
+    if (d === 'ceramique' || d === 'céramique') return 'ceramique_regulier';
+    if (d === 'vitrail') return 'vitrail_regulier';
     if (d === 'mosaique' || d === 'mosaïque') return 'mosaique';
     return 'autre';
   }
 
   var SECTION_LABELS = {
     ceramique_regulier: 'Céramique - Sessions régulières',
-    ceramique_intensif: 'Céramique - Ateliers intensifs',
+    ceramique_intensif: 'Ateliers intensifs',
     ceramique_enfants: 'Céramique - Cours enfants',
     vitrail_regulier: 'Vitrail - Sessions régulières',
-    vitrail_intensif: 'Vitrail - Ateliers intensifs',
     mosaique: 'Mosaïque',
     autre: 'Autres cours'
   };
 
   var SECTION_ORDER = [
     'ceramique_regulier',
-    'ceramique_intensif', 
+    'ceramique_intensif',
     'ceramique_enfants',
     'vitrail_regulier',
-    'vitrail_intensif',
     'mosaique',
     'autre'
   ];
@@ -164,7 +158,9 @@
       return;
     }
     idField.value = opt.value;
-    libelle.value = (opt.textContent || '').trim();
+    libelle.value = window.normalizeCoursLibelle
+      ? window.normalizeCoursLibelle(opt.textContent)
+      : (opt.textContent || '').trim();
   }
 
   function showPrefillNotice(coursName) {

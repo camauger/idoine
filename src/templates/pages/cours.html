@@ -1,8 +1,8 @@
 {% extends "page.html" %}
 
 {% block content %}
-  {# Hero unique : titre, intro, session, CTA et notes #}
-  <section class="section cours-hero" id="inscription" aria-labelledby="cours-hero-title">
+  {# Hero : infos session ; l’ancre #inscription pointe vers le bandeau d’inscription en bas #}
+  <section class="section cours-hero" id="cours-infos-session" aria-labelledby="cours-hero-title">
     <div class="container container-narrow cours-hero-inner">
       <h1 id="cours-hero-title" class="page-title">{{ page.title }}</h1>
       <div class="page-intro lead">{{ content | safe }}</div>
@@ -27,11 +27,11 @@
     </div>
   </section>
 
-  {# Filter Bar #}
-  <nav class="section filter-bar" id="filtres-cours" aria-label="Accès rapide aux sections de cours" role="tablist">
+  {# Barre de filtres : onglets associés aux panneaux (sections) par aria-controls / aria-labelledby #}
+  <nav class="section filter-bar" id="filtres-cours" aria-label="Accès rapide aux sections de cours">
     <div class="container">
-      <div class="filter-buttons">
-        <button type="button" class="filter-btn active" data-filter="all" role="tab" aria-selected="true" aria-controls="grid-ceramique grid-intensif grid-enfants grid-vitrail grid-mosaique" id="filter-all">Tous les cours</button>
+      <div class="filter-buttons" role="tablist">
+        <button type="button" class="filter-btn active" data-filter="all" role="tab" aria-selected="true" aria-controls="ceramique intensif enfants vitrail mosaique" id="filter-all">Tous les cours</button>
         <button type="button" class="filter-btn" data-filter="ceramique" role="tab" aria-selected="false" aria-controls="ceramique" id="filter-ceramique">Céramique</button>
         <button type="button" class="filter-btn" data-filter="vitrail" role="tab" aria-selected="false" aria-controls="vitrail" id="filter-vitrail">Vitrail</button>
         <button type="button" class="filter-btn" data-filter="mosaique" role="tab" aria-selected="false" aria-controls="mosaique" id="filter-mosaique">Mosaïque</button>
@@ -42,7 +42,7 @@
   </nav>
 
   {# Cours chargés dynamiquement depuis l'API (courseList.js) #}
-  <div id="courses-loading" class="courses-loading-container">
+  <div id="courses-loading" class="courses-loading-container" role="status" aria-live="polite" aria-busy="true">
     <div class="loading-spinner"></div>
     <span class="loading-text">Chargement des cours…</span>
   </div>
@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <section class="section courses-section" id="ceramique" data-discipline="ceramique" style="display:none;">
+  <section class="section courses-section" id="ceramique" data-discipline="ceramique" role="tabpanel" aria-labelledby="filter-ceramique" style="display:none;">
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Céramique - Sessions régulières</h2>
@@ -62,7 +62,7 @@
     </div>
   </section>
 
-  <section class="section courses-section courses-section-alt" id="intensif" style="display:none;">
+  <section class="section courses-section courses-section-alt" id="intensif" role="tabpanel" aria-labelledby="filter-intensif" style="display:none;">
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Ateliers intensifs</h2>
@@ -72,7 +72,7 @@
     </div>
   </section>
 
-  <section class="section courses-section" id="enfants" data-discipline="ceramique" style="display:none;">
+  <section class="section courses-section" id="enfants" data-discipline="ceramique" role="tabpanel" aria-labelledby="filter-enfants" style="display:none;">
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Céramique - Cours enfants</h2>
@@ -82,7 +82,7 @@
     </div>
   </section>
 
-  <section class="section courses-section courses-section-vitrail" id="vitrail" data-discipline="vitrail" style="display:none;">
+  <section class="section courses-section courses-section-vitrail" id="vitrail" data-discipline="vitrail" role="tabpanel" aria-labelledby="filter-vitrail" style="display:none;">
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Vitrail Tiffany</h2>
@@ -92,7 +92,7 @@
     </div>
   </section>
 
-  <section class="section courses-section" id="mosaique" data-discipline="mosaique" style="display:none;">
+  <section class="section courses-section" id="mosaique" data-discipline="mosaique" role="tabpanel" aria-labelledby="filter-mosaique" style="display:none;">
     <div class="container">
       <header class="section-header">
         <h2 class="section-title">Mosaïque</h2>
@@ -102,12 +102,12 @@
     </div>
   </section>
 
-  {# Registration CTA #}
-  <section class="section section-cta-registration">
+  {# Registration CTA — cible de l’ancre #inscription #}
+  <section class="section section-cta-registration" id="inscription" aria-labelledby="cta-inscription-title">
     <div class="container">
       <div class="cta-banner">
         <div class="cta-content">
-          <h2>Prêt à commencer?</h2>
+          <h2 id="cta-inscription-title">Prêt à commencer?</h2>
           <p>Inscrivez-vous dès maintenant pour la {{ page.session_title | default('Session Printemps 2026') }}</p>
         </div>
         <a href="/inscription" class="btn btn-primary btn-lg">S'inscrire</a>

@@ -24,7 +24,7 @@
       <div class="cta-banner">
         <div class="cta-content">
           <h2>S'inscrire à ce cours</h2>
-          <p>Réservez votre place pour l'atelier Mosaïque de verre</p>
+          <p>{% if page.cta_text %}{{ page.cta_text }}{% else %}Réservez votre place pour « {{ page.title }} ».{% endif %}</p>
         </div>
         <a href="/inscription?cours={{ (page.inscription_cours | default(page.title)) | urlencode }}" class="btn btn-primary btn-lg">S'inscrire</a>
       </div>

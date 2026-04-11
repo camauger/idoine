@@ -4,7 +4,7 @@ import { initLanguageSwitcher } from "./languageSwitcher.js";
 import { initThemeToggle } from "./themeToggle.js";
 import { initGallery } from "./gallery.js";
 
-const COURS_SECTION_IDS = ["ceramique", "vitrail", "mosaique", "intensif", "enfants", "filtres-cours"];
+const COURS_SECTION_IDS = ["ceramique", "vitrail", "mosaique", "intensif", "enfants", "inscription"];
 
 function scrollToCoursAnchor() {
   const path = window.location.pathname || "";

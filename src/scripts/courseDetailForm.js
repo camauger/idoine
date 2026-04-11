@@ -93,7 +93,9 @@
       return;
     }
     idField.value = opt.value;
-    libelle.value = (opt.textContent || '').trim();
+    libelle.value = window.normalizeCoursLibelle
+      ? window.normalizeCoursLibelle(opt.textContent)
+      : (opt.textContent || '').trim();
   }
 
   function init() {
