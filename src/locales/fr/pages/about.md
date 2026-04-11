@@ -1,7 +1,7 @@
 ---
 title: À propos
 slug: a-propos
-description: Christian Amauger, auteur et créateur derrière Ludomancien.
+description: Christian Amauger, auteur et créateur derrière idoine.
 template: pages/about.html
 translation_id: about
 ---
