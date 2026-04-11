@@ -6,7 +6,7 @@
     "scripts": {
         "dev": "grunt dev",
         "dev:py": "python scripts/dev_server.py",
-        "dev:netlify": "netlify dev",
+        "dev:netlify": "node scripts/run-netlify-dev-from-root.js",
         "dev:functions": "netlify functions:serve -p 9999",
         "reset-netlify-deno": "node scripts/reset-netlify-deno-cache.js",
         "watch": "grunt watchOnly",

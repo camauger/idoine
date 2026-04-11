@@ -13,9 +13,9 @@ default:
 # DÉVELOPPEMENT
 # ============================================================================
 
-# Lancer le serveur de développement complet (Netlify Dev, CLI versionnée via npx)
+# Lancer le serveur de développement complet (Netlify Dev, CLI versionnée via npx, cwd = racine du repo)
 dev:
-    npx netlify dev
+    node scripts/run-netlify-dev-from-root.js
 
 # Si `just dev` échoue sur Deno / Edge Functions : nettoyer le cache du CLI puis relancer `just dev`
 dev-fix-netlify-deno:
