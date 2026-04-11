@@ -21,12 +21,7 @@ tmp/
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-.Python
-*.egg-info/
-.eggs/
 .pytest_cache/
-.mypy_cache/
 
 # Environnements virtuels (exemple pour Python, à adapter si nécessaire)
 env/
@@ -54,3 +49,6 @@ yarn-error.log*
 
 # Dossier de coverage (tests)
 coverage/
+
+# Local Netlify folder
+.netlify

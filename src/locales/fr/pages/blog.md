@@ -1,8 +1,8 @@
 ---
-title: Tous les articles
-slug: articles
-description: Explorations, jeux de rôle et réflexions publiés sur idoine.
+title: Blog
+description: Mes derniers articles et réflexions
 template: pages/blog.html
+blog_title: "Le Blog"
+blog_description: "Découvrez mes derniers articles"
 translation_id: blog
 ---
-

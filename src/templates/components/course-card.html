@@ -1,0 +1,109 @@
+{#
+  Course Card Component
+
+  Usage:
+  {% include 'components/course-card.html' with {
+    course: {
+      title: 'Tournage adultes',
+      description: 'Apprenez les techniques de base du tournage...',
+      discipline: 'ceramique',  // ceramique | vitrail
+      format: 'regulier',       // regulier | intensif | enfants
+      schedule: 'Mardi 19h-22h',
+      duration: '8 semaines',
+      price: 295,
+      audience: 'Adultes',
+      availability: 'available', // available | filling | full
+      url: '/cours/tournage-adultes'
+    }
+  } %}
+#}
+
+{% set discipline = course.discipline | default('ceramique') %}
+{% set format = course.format | default('regulier') %}
+{% set availability = course.availability | default('available') %}
+
+<article class="course-card">
+  <header class="course-card-header">
+    <div class="course-badges">
+      <span class="course-badge badge-{{ discipline }}">
+        {% if discipline == 'ceramique' %}
+          Céramique
+        {% elif discipline == 'vitrail' %}
+          Vitrail
+        {% else %}
+          {{ discipline }}
+        {% endif %}
+      </span>
+      {% if format == 'intensif' %}
+        <span class="course-badge badge-intensif">Intensif</span>
+      {% elif format == 'enfants' %}
+        <span class="course-badge badge-enfants">Enfants</span>
+      {% endif %}
+    </div>
+
+    <span class="course-availability {{ availability }}">
+      {% if availability == 'available' %}
+        Places disponibles
+      {% elif availability == 'filling' %}
+        Dernières places
+      {% elif availability == 'full' %}
+        Complet
+      {% endif %}
+    </span>
+  </header>
+
+  <div class="course-card-body">
+    <h3 class="course-title">{{ course.title }}</h3>
+
+    {% if course.description %}
+      <p class="course-description">{{ course.description }}</p>
+    {% endif %}
+
+    <div class="course-details">
+      {% if course.schedule %}
+        <div class="course-detail">
+          <span class="detail-label">Horaire</span>
+          <span class="detail-value">{{ course.schedule }}</span>
+        </div>
+      {% endif %}
+
+      {% if course.duration %}
+        <div class="course-detail">
+          <span class="detail-label">Durée</span>
+          <span class="detail-value">{{ course.duration }}</span>
+        </div>
+      {% endif %}
+
+      {% if course.audience %}
+        <div class="course-detail">
+          <span class="detail-label">Public</span>
+          <span class="detail-value">{{ course.audience }}</span>
+        </div>
+      {% endif %}
+
+      {% if course.instructor %}
+        <div class="course-detail">
+          <span class="detail-label">Professeur</span>
+          <span class="detail-value">{{ course.instructor }}</span>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <footer class="course-card-footer">
+    <div class="course-price">
+      <span class="price-amount">{{ course.price }}$</span>
+      <span class="price-note">taxes incluses</span>
+    </div>
+
+    <div class="course-cta">
+      {% if availability != 'full' %}
+        <a href="{{ course.url | default('#inscription') }}" class="btn btn-primary btn-sm">
+          S'inscrire
+        </a>
+      {% else %}
+        <span class="btn btn-outline btn-sm disabled">Complet</span>
+      {% endif %}
+    </div>
+  </footer>
+</article>

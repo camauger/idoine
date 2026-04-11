@@ -1,101 +1,244 @@
-:root {
-  /* Couleurs principales */
-  --color-primary: #2a9d8f;
-  --color-primary-light: #4cc9b0;
-  --color-primary-dark: #237a68;
-  --color-secondary: #e76f51;
-  --color-secondary-dark: #d65a3e;
+// =============================================================================
+// Design System Variables - Atelier St-Elme
+// =============================================================================
+// Warm, organic aesthetic evoking the tactile experience of clay and glass
+// Typography: Fraunces (display) + Source Serif Pro (body)
 
-  /* Couleurs de texte et fond */
-  --color-text: #333333;
-  --color-text-light: #666666; /* Amélioré pour WCAG AA (5.74:1) */
-  --color-background: #fafafa;
-  --color-background-alt: #f5f5f5;
-  --color-border: #e0e0e0;
+:root {
+  // ===========================================================================
+  // COLOR PALETTE
+  // ===========================================================================
+
+  // Primary Colors
+  // ---------------------------------------------------------------------------
+  --color-terracotta: #C2714F;           // Primary accent, CTAs, highlights
+  --color-terracotta-light: #D4896A;     // Hover states
+  --color-terracotta-dark: #A85D3F;      // Active states
+  --color-clay-cream: #F5F0E8;           // Page backgrounds, cards
+  --color-kiln-charcoal: #2D2A26;        // Primary text, headings
+
+  // Secondary Colors
+  // ---------------------------------------------------------------------------
+  --color-sage: #8B9A7D;                 // Secondary accents, vitrail section
+  --color-sage-light: #A3B095;           // Hover states
+  --color-amber: #D4A853;                // Highlights, session announcements
+  --color-amber-light: #E0BB6E;          // Hover states
+  --color-glass-blue: #4A7C8C;           // Links, interactive elements
+  --color-glass-blue-light: #5E94A6;     // Hover states
+
+  // Neutral Tones
+  // ---------------------------------------------------------------------------
+  --color-warm-white: #FDFCFA;           // Alternate backgrounds
+  --color-stone: #9C9589;                // Secondary text, borders
+  --color-stone-light: #B8B3AA;          // Lighter borders
+  --color-deep-brown: #4A3F35;           // Footer, dark sections
+  --color-deep-brown-dark: #3A3129;      // Darker variant
+
+  // Semantic Colors
+  // ---------------------------------------------------------------------------
+  --color-primary: var(--color-terracotta);
+  --color-primary-light: var(--color-terracotta-light);
+  --color-primary-dark: var(--color-terracotta-dark);
+  --color-secondary: var(--color-sage);
+  --color-secondary-dark: var(--color-deep-brown);
+
+  --color-text: var(--color-kiln-charcoal);
+  --color-text-light: var(--color-stone);
+  --color-background: var(--color-clay-cream);
+  --color-background-alt: var(--color-warm-white);
+  --color-border: var(--color-stone-light);
   --color-white: #ffffff;
 
-  /* Polices de caractères */
-  --font-sans: "Montserrat", sans-serif;
-  --font-primary: var(--font-sans);
-  --font-decorative: "Cinzel Decorative", serif;
-  --font-secondary: var(--font-decorative);
+  // Feedback Colors
+  // ---------------------------------------------------------------------------
+  --color-success: #5A7D5A;              // Muted green, matches organic palette
+  --color-error: #B54A3F;                // Warm red
+  --color-warning: var(--color-amber);
+  --color-info: var(--color-glass-blue);
 
-  /* Typography */
-  --text-sm: 1rem;
-  --text-base: 1.2rem;
-  --text-lg: 1.6rem;
-  --text-xl: 2rem;
-  --text-2xl: 2.4rem;
-  --text-3xl: 3rem;
-  --text-4xl: 4rem;
+  // ===========================================================================
+  // TYPOGRAPHY
+  // ===========================================================================
 
-  /* Espacement */
-  --spacing-1: 0.4rem;
-  --spacing-2: 0.8rem;
-  --spacing-3: 1.2rem;
-  --spacing-4: 1.6rem;
-  --spacing-6: 2.4rem;
-  --spacing-8: 3.2rem;
-  --spacing-12: 4.8rem;
+  // Font Families
+  // ---------------------------------------------------------------------------
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Source Serif Pro', Georgia, serif;
+  --font-sans: 'Montserrat', system-ui, sans-serif;  // Fallback for UI elements
 
-  /* Layout */
-  --container-width: 120rem;
-  --post-width: 60rem;
-  /* Bordures et rayons */
-  --border-radius: 0.4rem;
-  --border-radius-lg: 0.8rem;
+  // Semantic font variables
+  --font-primary: var(--font-body);
+  --font-secondary: var(--font-display);
+  --font-decorative: var(--font-display);
 
-  /* Ombres */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.12);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.15);
+  // Type Scale (1.25 ratio - Major Third)
+  // ---------------------------------------------------------------------------
+  --text-xs: 0.75rem;     // 12px
+  --text-sm: 0.875rem;    // 14px
+  --text-base: 1rem;      // 16px
+  --text-lg: 1.25rem;     // 20px
+  --text-xl: 1.5rem;      // 24px
+  --text-2xl: 1.875rem;   // 30px
+  --text-3xl: 2.25rem;    // 36px
+  --text-4xl: 3rem;       // 48px
+  --text-5xl: 3.75rem;    // 60px
 
-  /* Transitions */
-  --transition-fast: 0.3s;
-  --transition-normal: 0.5s;
+  // Line Heights
+  // ---------------------------------------------------------------------------
+  --leading-tight: 1.2;
+  --leading-snug: 1.35;
+  --leading-normal: 1.6;
+  --leading-relaxed: 1.75;
 
-  /* Z-index */
-  --z-nav: 90;
-  --z-modal: 100;
-  --z-overlay: 80;
+  // Letter Spacing
+  // ---------------------------------------------------------------------------
+  --tracking-tight: -0.02em;
+  --tracking-normal: 0;
+  --tracking-wide: 0.02em;
+  --tracking-wider: 0.05em;
 
-  /* Utilitaires pour les dégradés */
-  --gradient-primary: linear-gradient(
-    to right,
-    var(--color-primary),
-    var(--color-primary-light)
+  // ===========================================================================
+  // SPACING (8px base)
+  // ===========================================================================
+  --spacing-1: 0.25rem;   // 4px
+  --spacing-2: 0.5rem;    // 8px
+  --spacing-3: 0.75rem;   // 12px
+  --spacing-4: 1rem;      // 16px
+  --spacing-5: 1.25rem;   // 20px
+  --spacing-6: 1.5rem;    // 24px
+  --spacing-8: 2rem;      // 32px
+  --spacing-10: 2.5rem;   // 40px
+  --spacing-12: 3rem;     // 48px
+  --spacing-16: 4rem;     // 64px
+  --spacing-20: 5rem;     // 80px
+  --spacing-24: 6rem;     // 96px
+
+  // ===========================================================================
+  // LAYOUT
+  // ===========================================================================
+  --container-width: 75rem;              // 1200px max
+  --container-narrow: 60rem;             // 960px for reading
+  --post-width: 45rem;                   // 720px for articles
+  --reading-measure: 65ch;               // Optimal line length
+
+  // ===========================================================================
+  // BORDERS & RADIUS
+  // ===========================================================================
+  --border-radius-sm: 0.25rem;           // 4px - subtle rounding
+  --border-radius: 0.5rem;               // 8px - default
+  --border-radius-lg: 0.75rem;           // 12px - larger elements
+  --border-radius-xl: 1rem;              // 16px - cards, modals
+  --border-radius-full: 9999px;          // Pills, avatars
+
+  // ===========================================================================
+  // SHADOWS (warm-tinted)
+  // ===========================================================================
+  --shadow-sm: 0 1px 2px rgba(74, 63, 53, 0.08);
+  --shadow-md: 0 4px 6px rgba(74, 63, 53, 0.1);
+  --shadow-lg: 0 10px 15px rgba(74, 63, 53, 0.12);
+  --shadow-xl: 0 20px 25px rgba(74, 63, 53, 0.15);
+
+  // Lifted shadow for hover states
+  --shadow-lifted: 0 12px 20px rgba(74, 63, 53, 0.18);
+
+  // ===========================================================================
+  // TRANSITIONS
+  // ===========================================================================
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 350ms ease;
+  --transition-spring: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  // ===========================================================================
+  // Z-INDEX SCALE
+  // ===========================================================================
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-overlay: 30;
+  --z-modal: 40;
+  --z-nav: 50;
+  --z-tooltip: 60;
+
+  // ===========================================================================
+  // COMPONENT-SPECIFIC
+  // ===========================================================================
+
+  // Header
+  --header-height: 4.5rem;
+  --header-bg: var(--color-warm-white);
+
+  // Hero
+  --hero-overlay: linear-gradient(
+    to bottom,
+    rgba(74, 63, 53, 0.4) 0%,
+    rgba(45, 42, 38, 0.7) 100%
   );
-  --gradient-dark: linear-gradient(180deg, rgba(0, 0, 0, 0.2), transparent);
+
+  // Focus ring
+  --focus-ring: 0 0 0 3px rgba(194, 113, 79, 0.4);
+  --focus-ring-offset: 2px;
 }
 
-/* Dark mode */
+// =============================================================================
+// DARK MODE
+// =============================================================================
 [data-theme="dark"] {
-  --color-text: #e0e0e0;
-  --color-text-light: #b8b8b8; /* Amélioré pour WCAG AA (9.5:1) */
-  --color-background: #121212;
-  --color-background-alt: #1e1e1e;
-  --color-border: #2d3748;
+  // Backgrounds - warm brown instead of pure black
+  --color-background: #1E1B18;
+  --color-background-alt: #2A2622;
+  --color-warm-white: #252220;
 
-  /* Ajustement des ombres pour le mode sombre */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.3);
-  --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.4);
+  // Text - warm off-white
+  --color-text: #EDE8E3;
+  --color-text-light: #B8B0A5;
+  --color-kiln-charcoal: #EDE8E3;
 
-  /* Aspects */
-  --primary-bg-color: var(--color-background-alt);
-  --secondary-bg-color: var(--color-border);
-  --white-color: var(--color-white);
-  --primary-text-color: var(--color-text);
-  --secondary-text-color: var(--color-text-light);
-  --box-shadow-color: var(--shadow-md);
-  --hover-box-shadow-color: var(--shadow-lg);
-  --gap: var(--spacing-8);
-  --padding-large: var(--spacing-12) var(--spacing-8);
-  --padding-medium: var(--spacing-6) var(--spacing-8);
-  --border-radius: var(--border-radius-lg);
-  --scale-normal: 0.9;
-  --scale-hover: 1.05;
-  --font-size-large: var(--text-2xl);
-  --font-size-medium: var(--text-base);
-  --line-height: 1.6;
+  // Borders
+  --color-border: #3D3632;
+  --color-stone-light: #4A423A;
+
+  // Cards
+  --color-clay-cream: #2A2622;
+
+  // Adjust accent colors for dark backgrounds
+  --color-terracotta: #D4896A;
+  --color-terracotta-light: #E09E82;
+  --color-terracotta-dark: #C2714F;
+
+  --color-sage: #A3B095;
+  --color-amber: #E0BB6E;
+  --color-glass-blue: #6BA0B2;
+
+  // Shadows - darker
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.25);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.3);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.35);
+  --shadow-lifted: 0 12px 20px rgba(0, 0, 0, 0.4);
+
+  // Header
+  --header-bg: #252220;
+
+  // Hero overlay - darker
+  --hero-overlay: linear-gradient(
+    to bottom,
+    rgba(30, 27, 24, 0.5) 0%,
+    rgba(30, 27, 24, 0.85) 100%
+  );
+
+  // Focus ring - brighter for visibility
+  --focus-ring: 0 0 0 3px rgba(212, 137, 106, 0.5);
+}
+
+// =============================================================================
+// REDUCED MOTION
+// =============================================================================
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --transition-fast: 0.01ms;
+    --transition-normal: 0.01ms;
+    --transition-slow: 0.01ms;
+    --transition-spring: 0.01ms;
+  }
 }

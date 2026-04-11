@@ -1,0 +1,261 @@
+{% extends "page.html" %}
+
+{% block content %}
+  {# Page Header #}
+  <section class="section section-page-hero inscription-hero">
+    <div class="container">
+      <h1 class="page-title">{{ page.title }}</h1>
+      <p class="page-intro lead">{{ content | safe }}</p>
+    </div>
+  </section>
+
+  {# Registration Form Section #}
+  <section class="section inscription-section">
+    <div class="container">
+      <div class="inscription-layout">
+        {# Main Form #}
+        <div class="inscription-form-wrapper">
+          <div class="form-card">
+            <header class="form-card-header">
+              <h2>Demande d'inscription</h2>
+              <p>Session Printemps 2026 - Début des cours le 25 mars</p>
+            </header>
+
+            <form
+                class="form"
+                id="inscription-form"
+                name="inscription"
+                method="POST"
+                data-netlify="true"
+                netlify-honeypot="bot-field"
+                action="/inscription-merci/"
+              >
+              {# Hidden fields for Netlify #}
+              <input type="hidden" name="form-name" value="inscription">
+              <input type="hidden" name="subject" value="Nouvelle demande d'inscription - Ateliers St-Elme">
+              <p class="hidden" style="display:none;">
+                <label>Ne pas remplir si vous êtes humain: <input name="bot-field"></label>
+              </p>
+
+              <input type="hidden" name="participants_json" id="participants_json" value="">
+
+              {# Inscription principale (contact pour le suivi) #}
+              <fieldset class="form-fieldset">
+                <legend>Inscription principale</legend>
+
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="courriel" class="form-label">
+                      Courriel <span class="required">*</span>
+                    </label>
+                    <input
+                      type="email"
+                      id="courriel"
+                      name="courriel"
+                      class="form-input"
+                      placeholder="votre@courriel.com"
+                      required
+                    >
+                  </div>
+
+                  <div class="form-group">
+                    <label for="telephone" class="form-label">
+                      Téléphone <span class="required">*</span>
+                    </label>
+                    <input
+                      type="tel"
+                      id="telephone"
+                      name="telephone"
+                      class="form-input"
+                      placeholder="(418) 123-4567"
+                      pattern="[0-9() +\-]+"
+                      required
+                    >
+                  </div>
+                </div>
+              </fieldset>
+
+              {# Personnes supplémentaires à inscrire (données agrégées dans participants_json à l’envoi) #}
+              <fieldset class="form-fieldset" id="participants-fieldset">
+                <legend>Personnes supplémentaires à inscrire</legend>
+                <p class="form-hint">Ajoutez une ligne par personne. Chaque personne occupe une place dans le cours choisi.</p>
+                <div id="participants-list">
+                  <div class="participant-block" data-participant-index="0">
+                    <div class="participant-block-header">
+                      <span class="participant-block-title">Personne 1</span>
+                      <button type="button" class="btn-remove-participant" hidden aria-label="Retirer cette personne">Retirer</button>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label class="form-label">
+                          Nom complet <span class="required">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-input participant-nom"
+                          placeholder="Prénom et nom"
+                          required
+                          autocomplete="name"
+                        >
+                      </div>
+                      <div class="form-group">
+                        <label class="form-label">
+                          Si inscription pour un enfant
+                          <span class="form-label-optional">(optionnel)</span>
+                        </label>
+                        <input
+                          type="text"
+                          class="form-input participant-enfant"
+                          placeholder="Âge et prénom de l'enfant"
+                        >
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="form-actions form-actions-inline">
+                  <button type="button" id="add-participant" class="btn btn-secondary">
+                    Ajouter une personne
+                  </button>
+                </div>
+              </fieldset>
+
+              {# Course Selection - populated dynamically via formPrefill.js #}
+              <fieldset class="form-fieldset">
+                <legend>Choix du cours</legend>
+
+                <div class="form-group">
+                  <label for="cours" class="form-label">
+                    Titre du cours <span class="required">*</span>
+                  </label>
+                  {# cours = libellé pour les courriels Netlify ; course_id = id pour la fonction submission-created #}
+                  <input type="hidden" name="cours" id="cours-libelle" value="">
+                  <input type="hidden" name="course_id" id="course_id" value="">
+                  <select id="cours" class="form-select" required aria-describedby="cours-error">
+                    <option value="">Chargement des cours...</option>
+                  </select>
+                  <p id="cours-error" class="form-error" style="display: none;">
+                    Impossible de charger la liste des cours. 
+                    <a href="mailto:info@atelierstelme.ca?subject=Inscription">Contactez-nous par courriel</a> pour vous inscrire.
+                  </p>
+                </div>
+
+                <div class="form-group">
+                  <span class="form-label">Êtes-vous membre de l'atelier? <span class="required">*</span></span>
+                  <div class="form-radio-group">
+                    <label class="form-radio">
+                      <input type="radio" name="est_membre" value="oui" class="form-radio-input" required>
+                      <span class="form-radio-label">Oui, je suis membre</span>
+                    </label>
+                    <label class="form-radio">
+                      <input type="radio" name="est_membre" value="non" class="form-radio-input" required>
+                      <span class="form-radio-label">Non, je ne suis pas encore membre</span>
+                    </label>
+                  </div>
+                  <p class="form-hint">La carte de membre (30$ + taxes) est obligatoire pour les cours réguliers adultes.</p>
+                </div>
+              </fieldset>
+
+              {# Additional Information #}
+              <fieldset class="form-fieldset">
+                <legend>Informations complémentaires</legend>
+
+                <div class="form-group">
+                  <label for="message" class="form-label">
+                    Message
+                    <span class="form-label-optional">(optionnel)</span>
+                  </label>
+                  <textarea
+                    id="message"
+                    name="message"
+                    class="form-textarea"
+                    placeholder="Avez-vous des questions? C'est ici l'endroit pour les poser..."
+                    rows="4"
+                  ></textarea>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-check">
+                    <input type="checkbox" name="newsletter" value="oui" class="form-check-input">
+                    <span class="form-check-label">
+                      Oui, j'accepte de recevoir des infolettres occasionnelles sur les activités de l'atelier
+                    </span>
+                  </label>
+                </div>
+              </fieldset>
+
+              {# Submit #}
+              <div class="form-actions">
+                <button type="submit" class="btn btn-primary btn-lg">
+                  Envoyer ma demande d'inscription
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        {# Sidebar Information #}
+        <aside class="inscription-sidebar">
+          <div class="info-card">
+            <h3>Comment ça fonctionne?</h3>
+            <ol class="steps-list">
+              <li>
+                <span class="step-number">1</span>
+                <span class="step-text">Remplissez ce formulaire avec vos informations</span>
+              </li>
+              <li>
+                <span class="step-number">2</span>
+                <span class="step-text">Nous vous contactons par courriel pour confirmer votre place</span>
+              </li>
+              <li>
+                <span class="step-number">3</span>
+                <span class="step-text">Vous effectuez le paiement pour finaliser votre inscription</span>
+              </li>
+            </ol>
+          </div>
+
+          <div class="info-card">
+            <h3>Besoin d'aide?</h3>
+            <p>Contactez-nous directement par courriel ou téléphone :</p>
+            <ul class="contact-list">
+              <li>
+                <strong>Courriel :</strong>
+                <a href="mailto:info@atelierstelme.ca">info@atelierstelme.ca</a>
+              </li>
+              <li>
+                <strong>Téléphone :</strong>
+                <a href="tel:+14186666177">418-666-6177</a> (répondeur)
+              </li>
+            </ul>
+          </div>
+
+          <div class="info-card info-card-note">
+            <h3>Notes importantes</h3>
+            <ul>
+              <li>Carte de membre obligatoire (30$ + taxes) pour les cours réguliers adultes</li>
+              <li>Argile et cuissons en sus pour les cours de céramique</li>
+              <li>Matériel vitrail pour débutants : 55$ + taxes</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  {# Alternative: Email directly #}
+  <section class="section section-email-alt">
+    <div class="container container-narrow">
+      <div class="email-alt-card">
+        <p>
+          <strong>Vous préférez nous écrire directement?</strong>
+          Envoyez un courriel à
+          <a href="mailto:info@atelierstelme.ca?subject=Inscription">info@atelierstelme.ca</a>
+          avec votre nom, téléphone et le titre du cours.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {# Multi-personnes puis pré-remplissage (ordre : intercepte submit avant la garde bouton) #}
+  <script src="/scripts/inscriptionParticipants.js"></script>
+  <script src="/scripts/formPrefill.js"></script>
+{% endblock %}

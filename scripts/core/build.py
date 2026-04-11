@@ -1,11 +1,30 @@
 import argparse
 import logging
+import os
+import re
 import sys
 from pathlib import Path
 
 # Add scripts directory to Python path
 scripts_dir = Path(__file__).parent.parent
 sys.path.insert(0, str(scripts_dir))
+
+
+def _load_atelier_api_url_from_env(base_path: Path) -> str:
+    """Read ATELIER_API_URL from root .env if present."""
+    env_file = base_path / ".env"
+    if not env_file.exists():
+        return ""
+    try:
+        text = env_file.read_text(encoding="utf-8")
+        for line in text.splitlines():
+            m = re.match(r"^\s*ATELIER_API_URL\s*=\s*(.+?)\s*$", line)
+            if m:
+                value = m.group(1).strip().strip("'\"")
+                return value
+    except Exception:
+        pass
+    return ""
 
 from builders.gallery_builder import GalleryBuilder
 from builders.glossary_builder import GlossaryBuilder
@@ -58,6 +77,22 @@ class SiteBuilder:
         self.jinja_env.globals["is_multilingual"] = self.is_multilingual
         self.jinja_env.globals["is_unilingual"] = not self.is_multilingual
 
+        # API URL for cours/inscription (env var > root .env > site_config)
+        atelier_api_url = (
+            os.environ.get("ATELIER_API_URL", "").strip()
+            or _load_atelier_api_url_from_env(self.base_path)
+            or self.site_config.get("atelier_api_url", "")
+        )
+        self.jinja_env.globals["atelier_api_url"] = atelier_api_url
+        if not atelier_api_url:
+            logging.warning(
+                "ATELIER_API_URL non défini : le site appellera /api/cours et /api/inscriptions sur le même domaine. "
+                "En production Netlify, définir DATABASE_URL (Neon pooler) dans Netlify > Environment variables pour que les cours s'affichent."
+            )
+
+        # Check if there are posts for each language
+        self._init_has_posts()
+
         self.static_manager = StaticFileManager(self.src_path, self.dist_path)
 
         ctx = BuildContext(
@@ -80,6 +115,17 @@ class SiteBuilder:
             ctx,
             post_builder=self.post_builder,
         )
+
+    def _init_has_posts(self) -> None:
+        """Check if there are posts for each language and set global."""
+        has_posts = {}
+        for lang in self.site_config.get("languages", []):
+            posts_dir = self.src_path / "locales" / lang / "blog"
+            if not posts_dir.exists():
+                posts_dir = self.src_path / "locales" / lang / "posts"
+            # Check if directory exists and has .md files
+            has_posts[lang] = posts_dir.exists() and any(posts_dir.glob("*.md"))
+        self.jinja_env.globals["has_posts"] = has_posts
 
     def build(self):
         try:

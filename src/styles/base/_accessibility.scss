@@ -1,27 +1,86 @@
+// =============================================================================
+// Accessibility - Atelier St-Elme
+// =============================================================================
+// WCAG 2.1 AA compliant accessibility utilities
+
+// -----------------------------------------------------------------------------
+// Skip link
+// -----------------------------------------------------------------------------
 .skip-link {
   position: absolute;
-  top: -40px;
-  left: 0;
-  padding: 8px;
-  background-color: var(--color-primary);
-  color: white;
-  z-index: 100;
+  top: -100%;
+  left: var(--spacing-4);
+  padding: var(--spacing-3) var(--spacing-6);
+  background-color: var(--color-terracotta);
+  color: var(--color-warm-white);
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 0 0 var(--border-radius) var(--border-radius);
+  z-index: 9999;
+  transition: top var(--transition-fast);
 
   &:focus {
     top: 0;
+    outline: none;
+    box-shadow: var(--focus-ring);
   }
 }
 
+// -----------------------------------------------------------------------------
+// Focus states - Terracotta focus ring
+// -----------------------------------------------------------------------------
 :focus {
-  outline: 3px solid var(--color-primary);
-  outline-offset: 2px;
+  outline: 3px solid var(--color-terracotta);
+  outline-offset: var(--focus-ring-offset);
 }
 
+// Only show focus ring for keyboard navigation
 :focus:not(:focus-visible) {
   outline: none;
 }
 
-/* Support pour prefers-reduced-motion */
+:focus-visible {
+  outline: 3px solid var(--color-terracotta);
+  outline-offset: var(--focus-ring-offset);
+}
+
+// Custom focus ring using box-shadow (for rounded elements)
+.focus-ring:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+// -----------------------------------------------------------------------------
+// Screen reader only
+// -----------------------------------------------------------------------------
+.sr-only,
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// Allow element to be focusable when navigated via keyboard
+.sr-only-focusable:focus,
+.sr-only-focusable:active {
+  position: static;
+  width: auto;
+  height: auto;
+  margin: 0;
+  overflow: visible;
+  clip: auto;
+  white-space: normal;
+}
+
+// -----------------------------------------------------------------------------
+// Reduced motion
+// -----------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -30,5 +89,149 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  // Keep some minimal transitions for UX
+  .btn,
+  a {
+    transition: opacity 0.01ms !important;
+  }
+}
+
+// Smooth scrolling for users who don't prefer reduced motion
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  // Add extra scroll padding for fixed header
+  html:focus-within {
+    scroll-behavior: smooth;
+  }
+}
+
+// Scroll padding for fixed header
+:target {
+  scroll-margin-block-start: calc(var(--header-height) + var(--spacing-4));
+}
+
+// -----------------------------------------------------------------------------
+// High contrast mode support
+// -----------------------------------------------------------------------------
+@media (prefers-contrast: high) {
+  :root {
+    --color-border: var(--color-kiln-charcoal);
+  }
+
+  .btn {
+    border-width: 2px;
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Color blindness considerations
+// -----------------------------------------------------------------------------
+// Using patterns/icons alongside colors for status indicators
+.status-indicator {
+  // Always include text or icon, not just color
+  &::before {
+    margin-right: var(--spacing-2);
+  }
+}
+
+// -----------------------------------------------------------------------------
+// Touch target sizes (44x44px minimum)
+// -----------------------------------------------------------------------------
+button,
+[role="button"],
+input[type="submit"],
+input[type="button"],
+input[type="reset"],
+a {
+  // Ensure minimum touch target size
+  min-height: 44px;
+
+  // For inline links, use padding
+  &:not(.btn):not([class*="card"]):not([class*="nav"]) {
+    // Reset for inline text links
+    min-height: unset;
+  }
+}
+
+// Interactive elements in navigation
+nav a,
+nav button {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+}
+
+// -----------------------------------------------------------------------------
+// Form accessibility
+// -----------------------------------------------------------------------------
+// Ensure labels are associated with inputs
+label {
+  cursor: pointer;
+}
+
+// Error states
+.error,
+[aria-invalid="true"] {
+  border-color: var(--color-error);
+
+  &:focus {
+    outline-color: var(--color-error);
+  }
+}
+
+// Required field indicator
+.required::after {
+  content: " *";
+  color: var(--color-error);
+}
+
+// -----------------------------------------------------------------------------
+// Image accessibility
+// -----------------------------------------------------------------------------
+// Ensure images have proper sizing and don't break layout
+img {
+  max-width: 100%;
+  height: auto;
+
+  // Prevent layout shift
+  &[width][height] {
+    height: auto;
+  }
+}
+
+// Decorative images
+img[alt=""],
+img[role="presentation"] {
+  // These should have empty alt or role="presentation"
+}
+
+// -----------------------------------------------------------------------------
+// Print accessibility
+// -----------------------------------------------------------------------------
+@media print {
+  // Ensure links show their URLs
+  a[href]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.8em;
+    color: #666;
+  }
+
+  // Don't show URL for internal links
+  a[href^="#"]::after,
+  a[href^="/"]::after {
+    content: "";
+  }
+
+  // Hide non-essential elements
+  nav,
+  .skip-link,
+  .theme-toggle,
+  .language-switcher {
+    display: none;
   }
 }

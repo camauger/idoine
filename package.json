@@ -1,17 +1,25 @@
 {
-    "name": "idoine",
+    "name": "atelier-st-elme",
     "version": "1.0.0",
-    "description": "Site web de Christian Amauger",
+    "description": "Site web de Atelier St-Elme",
     "main": "Gruntfile.js",
     "scripts": {
         "dev": "grunt dev",
         "dev:py": "python scripts/dev_server.py",
+        "dev:netlify": "netlify dev",
+        "dev:functions": "netlify functions:serve -p 9999",
+        "reset-netlify-deno": "node scripts/reset-netlify-deno-cache.js",
+        "watch": "grunt watchOnly",
         "build": "grunt sass:prod && python scripts/core/build.py --build",
         "audit": "npm audit --audit-level=moderate || true",
         "audit:fix": "npm audit fix || true"
     },
     "author": "Christian Amauger <christian@amauger.com>",
     "license": "MIT",
+    "dependencies": {
+        "@neondatabase/serverless": "^0.10.0",
+        "jsonwebtoken": "^9.0.3"
+    },
     "devDependencies": {
         "@fontsource/cinzel-decorative": "^5.2.8",
         "@fontsource/montserrat": "^5.2.8",
@@ -20,6 +28,7 @@
         "autoprefixer": "^10.4.20",
         "gray-matter": "^4.0.3",
         "grunt-cli": "^1.5.0",
+        "grunt-concurrent": "^3.0.0",
         "grunt-contrib-clean": "^2.0.0",
         "grunt-contrib-connect": "^5.0.1",
         "grunt-contrib-copy": "^1.0.0",
@@ -32,6 +41,8 @@
         "load-grunt-tasks": "^5.1.0",
         "marked": "^15.0.7",
         "postcss": "^8.5.6",
-        "sass": "^1.69.0"
+        "sass": "^1.69.0",
+        "sharp": "^0.34.5",
+        "netlify-cli": "^23.9.3"
     }
 }

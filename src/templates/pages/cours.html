@@ -1,0 +1,121 @@
+{% extends "page.html" %}
+
+{% block content %}
+  {# Hero unique : titre, intro, session, CTA et notes #}
+  <section class="section cours-hero" id="inscription" aria-labelledby="cours-hero-title">
+    <div class="container container-narrow cours-hero-inner">
+      <h1 id="cours-hero-title" class="page-title">{{ page.title }}</h1>
+      <div class="page-intro lead">{{ content | safe }}</div>
+      <div class="cours-hero-meta">
+        <span class="session-label">{{ page.session_title | default('Session Printemps 2026') }}</span>
+        <p class="session-details">
+          <strong>Début des cours :</strong> {{ page.session_start | default('25 mars') }} &bull;
+          <strong>Durée :</strong> {{ page.session_duration | default('8 à 10 semaines') }}
+        </p>
+        <p class="session-registration">
+          <strong>Inscriptions :</strong> à partir du {{ page.registration_open | default('1er mars') }} via le formulaire en ligne
+        </p>
+      </div>
+      <div class="cours-hero-notes" id="notes-importantes" aria-labelledby="notes-importantes-title">
+        <h2 id="notes-importantes-title" class="notes-heading">À savoir avant de vous inscrire</h2>
+        <ul class="notes-list">
+          <li><strong>Carte de membre obligatoire</strong> (30$ (taxes en sus)) pour les cours réguliers (8 semaines) pour adultes.</li>
+          <li><strong>Cours céramique réguliers :</strong> frais en sus pour l'argile et les cuissons. Argile en vente à l'atelier au coût de 30$ (taxes en sus) pour un sac de 22 lbs.</li>
+          <li><strong>Groupes privés :</strong> possibilité d'organiser des ateliers pour groupes d'amis, famille, team-building. Contactez-nous!</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {# Filter Bar #}
+  <nav class="section filter-bar" id="filtres-cours" aria-label="Accès rapide aux sections de cours" role="tablist">
+    <div class="container">
+      <div class="filter-buttons">
+        <button type="button" class="filter-btn active" data-filter="all" role="tab" aria-selected="true" aria-controls="grid-ceramique grid-intensif grid-enfants grid-vitrail grid-mosaique" id="filter-all">Tous les cours</button>
+        <button type="button" class="filter-btn" data-filter="ceramique" role="tab" aria-selected="false" aria-controls="ceramique" id="filter-ceramique">Céramique</button>
+        <button type="button" class="filter-btn" data-filter="vitrail" role="tab" aria-selected="false" aria-controls="vitrail" id="filter-vitrail">Vitrail</button>
+        <button type="button" class="filter-btn" data-filter="mosaique" role="tab" aria-selected="false" aria-controls="mosaique" id="filter-mosaique">Mosaïque</button>
+        <button type="button" class="filter-btn" data-filter="intensif" role="tab" aria-selected="false" aria-controls="intensif" id="filter-intensif">Intensifs</button>
+        <button type="button" class="filter-btn" data-filter="enfants" role="tab" aria-selected="false" aria-controls="enfants" id="filter-enfants">Enfants</button>
+      </div>
+    </div>
+  </nav>
+
+  {# Cours chargés dynamiquement depuis l'API (courseList.js) #}
+  <div id="courses-loading" class="courses-loading-container">
+    <div class="loading-spinner"></div>
+    <span class="loading-text">Chargement des cours…</span>
+  </div>
+  <div id="courses-fallback" class="section section-notes" style="display:none;">
+    <div class="container container-narrow">
+      <p>Les cours ne sont pas disponibles pour le moment. <a href="/inscription">Utilisez le formulaire d'inscription</a> pour nous indiquer le cours souhaité.</p>
+    </div>
+  </div>
+
+  <section class="section courses-section" id="ceramique" data-discipline="ceramique" style="display:none;">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Céramique - Sessions régulières</h2>
+        <p class="section-subtitle">Cours de 8 semaines pour développer vos compétences</p>
+      </header>
+      <div class="card-grid cols-2" id="grid-ceramique"></div>
+    </div>
+  </section>
+
+  <section class="section courses-section courses-section-alt" id="intensif" style="display:none;">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Ateliers intensifs</h2>
+        <p class="section-subtitle">Découvrez nos disciplines en une journée ou un week-end</p>
+      </header>
+      <div class="card-grid cols-3" id="grid-intensif"></div>
+    </div>
+  </section>
+
+  <section class="section courses-section" id="enfants" data-discipline="ceramique" style="display:none;">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Céramique - Cours enfants</h2>
+        <p class="section-subtitle">Développez la créativité de vos enfants</p>
+      </header>
+      <div class="card-grid cols-2" id="grid-enfants"></div>
+    </div>
+  </section>
+
+  <section class="section courses-section courses-section-vitrail" id="vitrail" data-discipline="vitrail" style="display:none;">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Vitrail Tiffany</h2>
+        <p class="section-subtitle">Apprenez la technique au ruban de cuivre et créez des pièces uniques</p>
+      </header>
+      <div class="card-grid cols-2" id="grid-vitrail"></div>
+    </div>
+  </section>
+
+  <section class="section courses-section" id="mosaique" data-discipline="mosaique" style="display:none;">
+    <div class="container">
+      <header class="section-header">
+        <h2 class="section-title">Mosaïque</h2>
+        <p class="section-subtitle">Ateliers en verre et techniques décoratives</p>
+      </header>
+      <div class="card-grid cols-2" id="grid-mosaique"></div>
+    </div>
+  </section>
+
+  {# Registration CTA #}
+  <section class="section section-cta-registration">
+    <div class="container">
+      <div class="cta-banner">
+        <div class="cta-content">
+          <h2>Prêt à commencer?</h2>
+          <p>Inscrivez-vous dès maintenant pour la {{ page.session_title | default('Session Printemps 2026') }}</p>
+        </div>
+        <a href="/inscription" class="btn btn-primary btn-lg">S'inscrire</a>
+      </div>
+    </div>
+  </section>
+
+  <script src="/scripts/courseList.js"></script>
+  <script src="/scripts/courseFilters.js"></script>
+  <script src="/scripts/courseCounts.js"></script>
+{% endblock %}

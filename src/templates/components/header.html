@@ -1,5 +1,10 @@
 <header role="banner">
   <nav role="navigation" aria-label="{{ t.nav_label }}">
+    <!-- Logo et identité du site -->
+    <a href="{% if is_unilingual %}/{% else %}/{{ page.lang }}{% endif %}" class="site-branding" aria-label="{{ site.title | default('Atelier St-Elme') }}">
+      <img src="/assets/images/logo.png" alt="{{ site.title | default('Atelier St-Elme') }}" class="site-logo">
+    </a>
+
     <!-- Navigation principale -->
     {% include 'components/main-nav.html' %}
 

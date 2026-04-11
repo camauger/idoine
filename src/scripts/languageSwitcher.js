@@ -64,18 +64,22 @@ function initKeyboardNavigation() {
   // Navigation avec les flèches dans le menu
   const langLinks = langMenu.querySelectorAll("a");
 
+  const n = langLinks.length;
+  if (n === 0) return;
+
   langLinks.forEach((link) => {
     link.addEventListener("keydown", (event) => {
       const index = Array.from(langLinks).indexOf(event.target);
+      if (index < 0) return;
 
       switch (event.key) {
         case "ArrowUp":
           event.preventDefault();
-          langLinks[index - 1 || langLinks.length - 1].focus();
+          langLinks[(index - 1 + n) % n].focus();
           break;
         case "ArrowDown":
           event.preventDefault();
-          langLinks[(index + 1) % langLinks.length].focus();
+          langLinks[(index + 1) % n].focus();
           break;
       }
     });

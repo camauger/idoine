@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block content %}
+<main id="main-content" role="main" class="admin-page">
+  <div class="container">
+    
+    <!-- Login Section -->
+    <section id="admin-login" class="admin-section">
+      <div class="admin-login-card">
+        <h1>Administration</h1>
+        <form id="login-form" class="form">
+          <div class="form-group">
+            <label for="password" class="form-label">Mot de passe</label>
+            <input type="password" id="password" name="password" class="form-input" required autocomplete="current-password">
+          </div>
+          <p id="login-error" class="form-error" style="display: none;"></p>
+          <button type="submit" class="btn btn-primary">Connexion</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Dashboard (hidden until logged in) -->
+    <section id="admin-dashboard" class="admin-section" style="display: none;">
+      <header class="admin-header">
+        <h1>Tableau de bord</h1>
+        <button id="logout-btn" class="btn btn-outline btn-sm">Déconnexion</button>
+      </header>
+
+      <!-- Stats -->
+      <div class="admin-stats">
+        <div class="stat-card">
+          <span class="stat-number" id="stat-courses">-</span>
+          <span class="stat-label">Cours actifs</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="stat-inscriptions">-</span>
+          <span class="stat-label">Inscriptions</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="stat-places">-</span>
+          <span class="stat-label">Places restantes</span>
+        </div>
+      </div>
+
+      <!-- Tabs -->
+      <div class="admin-tabs">
+        <button class="admin-tab active" data-tab="courses">Cours</button>
+        <button class="admin-tab" data-tab="inscriptions">Inscriptions</button>
+      </div>
+
+      <!-- Courses Tab -->
+      <div id="tab-courses" class="admin-tab-content active">
+        <div class="admin-toolbar">
+          <h2>Liste des cours</h2>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table" id="courses-table">
+            <thead>
+              <tr>
+                <th>Cours</th>
+                <th>Discipline</th>
+                <th>Jour</th>
+                <th>Horaire</th>
+                <th>Début</th>
+                <th>Places restantes</th>
+                <th>Prix</th>
+                <th>Visibilité</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="8" class="loading">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Inscriptions Tab -->
+      <div id="tab-inscriptions" class="admin-tab-content" style="display: none;">
+        <div class="admin-toolbar">
+          <h2>Inscriptions</h2>
+          <div class="toolbar-actions">
+            <select id="filter-course" class="form-select form-select-sm">
+              <option value="">Tous les cours</option>
+            </select>
+            <button id="export-csv" class="btn btn-outline btn-sm">
+              Exporter CSV
+            </button>
+          </div>
+        </div>
+        <div class="table-responsive">
+          <table class="admin-table" id="inscriptions-table">
+            <thead>
+              <tr>
+                <th>Date d'inscription</th>
+                <th>Nom</th>
+                <th>Courriel</th>
+                <th>Téléphone</th>
+                <th>Cours</th>
+                <th>Début session (cours)</th>
+                <th>Membre</th>
+                <th>Message</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td colspan="8" class="loading">Chargement...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+</main>
+
+<script src="/scripts/admin.js"></script>
+{% endblock %}

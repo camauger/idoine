@@ -1,6 +1,9 @@
 fr:
   about: À propos
   about_title: À propos
+  calendar: Calendrier
+  courses: Cours
+  jobs: Offre d'emploi
   article_classifications: "Classements de l'article"
   all_rights_reserved: Tous droits réservés
   article_information: "Informations sur l'article"
@@ -22,7 +25,7 @@ fr:
   header_actions: Actions d'en-tête
   hero_cta: Voir tous les articles
   home: Accueil
-  home_title: "Jeux de rôle, ressources et créations"
+  home_title: "Atelier de céramique et de vitrail"
   image_download: Télécharger l’image
   image_gallery_title: "Galerie d'images"
   image_meta_description: "Découvrez l’image {image_name} et téléchargez-la en différentes tailles."
@@ -42,6 +45,12 @@ fr:
   main_nav: Navigation principale
   menu: Menu
   nav_label: Menu principal
+  nav_courses_all: Tous les cours
+  nav_courses_ceramique: Céramique
+  nav_courses_vitrail: Vitrail
+  nav_courses_mosaique: Mosaïque
+  nav_courses_intensif: Intensifs
+  nav_courses_enfants: Enfants
   next: Suivant
   next_page: Page suivante
   no_article: "Aucun article à afficher pour le moment."
@@ -68,14 +77,101 @@ fr:
     - "Esprit d’analyse et résolution de problèmes"
   tags: Étiquettes
   toggle_theme: Basculer le thème
-  glossary_title: "Glossaire des jeux de rôle"
-  glossary_description: "Glossaire dédié au jeu de rôle"
+  glossary_title: "Glossaire de la céramique et du vitrail"
+  glossary_description: "Glossaire dédié à la céramique et au vitrail"
   glossary_thumbnail_alt: "Illustration de :"
-  games_section_title: "Mes jeux de rôle"
-  resources_section_title: "Ressources sur le jeu de rôle"
+  games_section_title: "Mes céramiques et vitraux"
+  resources_section_title: "Ressources sur la céramique et le vitrail"
   contact_section_title: "Coordonnées"
   updated_date: "Mis à jour le"
   updated_on: Mis à jour le
   view_all_posts: Voir tous les articles
   written_by: "Écrit par"
 
+en:
+  about: About
+  about_title: About
+  courses: Courses
+  article_classifications: "Article classifications"
+  all_rights_reserved: All rights reserved
+  article_information: "Article information"
+  article_related: "Related articles"
+  back_home: Back to home
+  blog: Articles
+  categories: Categories
+  categories_heading: "Categories"
+  category_link_label: "View articles in category %s"
+  close: Close
+  dark_mode: Dark mode
+  download_large: "Download large image"
+  download_medium: "Download medium image"
+  download_original: "Download original image"
+  download_small: "Download small image"
+  draft: Draft
+  gallery_title: Gallery
+  go_to_page: Go to page
+  header_actions: Header actions
+  hero_cta: View all articles
+  home: Home
+  home_title: "Ceramic and glass workshop"
+  image_download: Download image
+  image_gallery_title: "Image gallery"
+  image_meta_description: "Discover the image {image_name} and download it in various sizes."
+  image_og_title: "Image preview: {image_name}"
+  image_page: View image page
+  image_preview: Image preview
+  image_page_title: "Image preview"
+  keyword_link_label: "View all articles with this keyword"
+  keyword_no_article: No articles found for this keyword.
+  keyword_prefix: "Keyword: "
+  keywords: Keywords
+  keywords_heading: "Keywords"
+  language: Language
+  latest_posts: Latest articles
+  learn_more: Learn more
+  light_mode: Light mode
+  main_nav: Main navigation
+  menu: Menu
+  nav_label: Main menu
+  nav_courses_all: All courses
+  nav_courses_ceramique: Ceramics
+  nav_courses_vitrail: Stained glass
+  nav_courses_mosaique: Mosaic
+  nav_courses_intensif: Intensives
+  nav_courses_enfants: Children
+  next: Next
+  next_page: Next page
+  no_article: "No articles to display at this time."
+  no_article_category: No articles in this category.
+  no_image_found: No image found.
+  number_of_images: "Number of images:"
+  post_featured: "Featured article"
+  post_footer: Article footer
+  post_header: Article header
+  posts_list: Articles list
+  previous: Previous
+  previous_page: Previous page
+  read_more: Read more
+  recent_posts: Recent articles
+  related_posts: Related articles
+  search: Search
+  search_placeholder: Search articles...
+  skip_to_content: Skip to main content
+  social_links: Social networks
+  soft_skills: "Soft skills"
+  soft_skills_list:
+    - "Communication and teamwork"
+    - "Agile project management"
+    - "Analytical thinking and problem solving"
+  tags: Tags
+  toggle_theme: Toggle theme
+  glossary_title: "Role-playing games glossary"
+  glossary_description: "Glossary dedicated to role-playing games"
+  glossary_thumbnail_alt: "Illustration of:"
+  games_section_title: "My role-playing games"
+  resources_section_title: "Role-playing resources"
+  contact_section_title: "Contact"
+  updated_date: "Updated on"
+  updated_on: Updated on
+  view_all_posts: View all articles
+  written_by: "Written by"
