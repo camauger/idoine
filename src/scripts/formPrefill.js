@@ -49,6 +49,19 @@
     'autre'
   ];
 
+  /** Aligné sur courseList.matiereCeramiqueRegulier (inscription = choix du créneau précis). */
+  function getMatiereKey(c) {
+    var slug = (c.slug || '').toLowerCase();
+    var nom = (c.nom || '').toLowerCase();
+    var s = slug + ' ' + nom;
+    if (/tournage/.test(s)) return 'tournage';
+    if (/façonnage|faconnage/.test(s)) return 'faconnage';
+    return 'autre';
+  }
+
+  var MATIERE_ORDER = ['tournage', 'faconnage', 'autre'];
+  var MATIERE_LABELS = { tournage: 'Tournage', faconnage: 'Façonnage', autre: 'Autres' };
+
   function buildOptionLabel(c) {
     var parts = [c.nom];
     var details = [];
@@ -94,17 +107,13 @@
     var preselectedIndex = -1;
     var optionIndex = 1;
 
-    SECTION_ORDER.forEach(function(key) {
-      var list = bySection[key];
-      if (!list || list.length === 0) return;
-
+    function appendOptions(list, optgroupLabel) {
       var optgroup = document.createElement('optgroup');
-      optgroup.label = SECTION_LABELS[key] || key;
+      optgroup.label = optgroupLabel;
 
-      list.forEach(function(c) {
+      list.forEach(function (c) {
         var option = document.createElement('option');
         var optValue = buildOptionValue(c);
-        // Valeur = id (Netlify + submission-created) ; libellé long pour pré-sélection URL héritée
         option.value = String(c.id);
         option.textContent = buildOptionLabel(c);
         option.setAttribute('data-course-id', c.id);
@@ -131,6 +140,29 @@
       });
 
       selectElement.appendChild(optgroup);
+    }
+
+    SECTION_ORDER.forEach(function (key) {
+      var list = bySection[key];
+      if (!list || list.length === 0) return;
+
+      if (key === 'ceramique_regulier') {
+        var byM = { tournage: [], faconnage: [], autre: [] };
+        list.forEach(function (c) {
+          var mk = getMatiereKey(c);
+          if (!byM[mk]) byM[mk] = [];
+          byM[mk].push(c);
+        });
+        MATIERE_ORDER.forEach(function (mk) {
+          var sub = byM[mk];
+          if (!sub || !sub.length) return;
+          var label = (SECTION_LABELS[key] || '') + ' — ' + (MATIERE_LABELS[mk] || mk);
+          appendOptions(sub, label);
+        });
+        return;
+      }
+
+      appendOptions(list, SECTION_LABELS[key] || key);
     });
 
     return preselectedIndex;

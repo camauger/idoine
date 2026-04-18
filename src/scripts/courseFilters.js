@@ -28,8 +28,17 @@
     SECTION_IDS.forEach(function(id) {
       var section = document.getElementById(id);
       if (section) {
-        var grid = section.querySelector('.card-grid');
-        result[id] = grid && grid.children.length > 0;
+        var grids = section.querySelectorAll('.card-grid');
+        var any = false;
+        if (grids.length) {
+          grids.forEach(function (g) {
+            if (g.children.length > 0) any = true;
+          });
+        } else {
+          var grid = section.querySelector('.card-grid');
+          any = !!(grid && grid.children.length > 0);
+        }
+        result[id] = any;
       } else {
         result[id] = false;
       }

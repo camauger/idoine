@@ -18,6 +18,15 @@
     </div>
   </section>
 
+  {# Créneaux offerts (API page_dediee) #}
+  <section class="section course-sessions-section" id="creneaux-cours" aria-labelledby="course-sessions-heading" hidden>
+    <div class="container container-narrow">
+      <h2 id="course-sessions-heading" class="course-sessions-heading">Créneaux et disponibilités</h2>
+      <p class="course-sessions-lead">Choisissez ensuite la date et l’horaire qui vous conviennent dans le formulaire d’inscription.</p>
+      <div id="course-sessions-summary" class="course-sessions-summary" data-page-slug="{{ page.slug }}"></div>
+    </div>
+  </section>
+
   {# Embedded Registration Form #}
   <section class="section inscription-section" id="inscription">
     <div class="container container-narrow">
@@ -210,5 +219,6 @@
 
   <script src="/scripts/coursLibelle.js"></script>
   <script src="/scripts/inscriptionParticipants.js"></script>
+  <script src="/scripts/courseDetailSessions.js"></script>
   <script src="/scripts/courseDetailForm.js"></script>
 {% endblock %}

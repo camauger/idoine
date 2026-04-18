@@ -409,6 +409,102 @@
 }
 
 // -----------------------------------------------------------------------------
+// Céramique : sous-sections par matière (tournage / façonnage)
+// -----------------------------------------------------------------------------
+.matiere-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-12);
+}
+
+.matiere-group {
+  &[style*='display: none'] {
+    display: none !important;
+  }
+}
+
+.matiere-title {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-xl), 3vw, var(--text-2xl));
+  font-weight: 700;
+  color: var(--color-kiln-charcoal);
+  margin: 0 0 var(--spacing-2);
+  padding-bottom: var(--spacing-2);
+  border-bottom: 2px solid rgba(200, 120, 80, 0.35);
+}
+
+.matiere-intro {
+  font-size: var(--text-base);
+  color: var(--color-kiln-charcoal);
+  margin: 0 0 var(--spacing-6);
+  line-height: var(--leading-relaxed);
+  max-width: 40rem;
+}
+
+// -----------------------------------------------------------------------------
+// Fiches cours : tableau des créneaux (page_dediee)
+// -----------------------------------------------------------------------------
+.course-sessions-section {
+  padding: var(--spacing-10) 0;
+  background-color: var(--color-clay-cream);
+
+  &[hidden] {
+    display: none !important;
+  }
+}
+
+.course-sessions-heading {
+  font-family: var(--font-display);
+  font-size: clamp(var(--text-xl), 3vw, var(--text-2xl));
+  font-weight: 700;
+  color: var(--color-kiln-charcoal);
+  margin: 0 0 var(--spacing-3);
+}
+
+.course-sessions-lead {
+  font-size: var(--text-base);
+  color: var(--color-kiln-charcoal);
+  margin: 0 0 var(--spacing-6);
+  line-height: var(--leading-relaxed);
+}
+
+.course-sessions-table-wrap {
+  overflow-x: auto;
+  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border);
+  background: var(--color-warm-white);
+}
+
+.course-sessions-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+
+  th,
+  td {
+    padding: var(--spacing-3) var(--spacing-4);
+    text-align: left;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  th {
+    font-weight: 700;
+    background: rgba(45, 42, 38, 0.04);
+  }
+
+  tbody tr:last-child td {
+    border-bottom: none;
+  }
+}
+
+.course-sessions-note {
+  font-size: var(--text-sm);
+  color: var(--color-kiln-charcoal);
+  margin: var(--spacing-4) 0 0;
+  line-height: var(--leading-relaxed);
+}
+
+// -----------------------------------------------------------------------------
 // Loading & fallback states
 // -----------------------------------------------------------------------------
 .courses-loading-container {

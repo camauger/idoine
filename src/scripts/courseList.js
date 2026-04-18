@@ -7,7 +7,9 @@
   var API_URL = (typeof window !== 'undefined' && window.ATELIER_API_URL != null) ? (window.ATELIER_API_URL || '') : '';
 
   var GRID_IDS = {
-    ceramique_regulier: 'grid-ceramique',
+    ceramique_tournage: 'grid-ceramique-tournage',
+    ceramique_faconnage: 'grid-ceramique-faconnage',
+    ceramique_autre: 'grid-ceramique-autre',
     ceramique_intensif: 'grid-intensif',
     ceramique_enfants: 'grid-enfants',
     vitrail: 'grid-vitrail',
@@ -33,22 +35,44 @@
     return d;
   }
 
+  /**
+   * Matière pour les céramiques régulières (tournage / façonnage / autres), dérivée du slug et du nom.
+   */
+  function matiereCeramiqueRegulier(c) {
+    var slug = (c.slug || '').toLowerCase();
+    var nom = (c.nom || '').toLowerCase();
+    var s = slug + ' ' + nom;
+    if (/tournage/.test(s)) return 'ceramique_tournage';
+    if (/façonnage|faconnage/.test(s)) return 'ceramique_faconnage';
+    return 'ceramique_autre';
+  }
+
   function sectionKey(c) {
     var d = (c.discipline || '').toLowerCase();
     var t = (c.type_cours || '').toLowerCase();
-    
-    // All intensifs go to the intensif section, regardless of discipline
+
     if (t === 'intensif') return 'ceramique_intensif';
-    
-    // Enfants courses
     if (t === 'enfants') return 'ceramique_enfants';
-    
-    // Regular courses by discipline
-    if (d === 'ceramique' || d === 'céramique') return 'ceramique_regulier';
     if (d === 'vitrail') return 'vitrail';
     if (d === 'mosaique' || d === 'mosaïque') return 'mosaique';
-    
-    return 'ceramique_regulier';
+    if (d === 'ceramique' || d === 'céramique') return matiereCeramiqueRegulier(c);
+
+    return 'ceramique_autre';
+  }
+
+  function creneauLabel(raw) {
+    if (raw == null || raw === '') return '';
+    var x = String(raw).toLowerCase();
+    if (x === 'matin') return 'Matin';
+    if (x.indexOf('après') !== -1 || x === 'apres-midi' || x === 'apres-midi') return 'Après-midi';
+    if (x === 'soir') return 'Soir';
+    return String(raw);
+  }
+
+  function capitalizeDay(j) {
+    if (!j) return '';
+    var s = String(j).trim();
+    return s.charAt(0).toUpperCase() + s.slice(1);
   }
 
   function badgeClass(discipline) {
@@ -88,21 +112,19 @@
     var availClass = full ? 'course-availability full' : 'course-availability available';
     var availText = full ? 'Complet' : (c.places_restantes === 1 ? '1 place restante' : c.places_restantes + ' places restantes');
 
-    // Jour + heure uniquement (AM/PM/SOIR déjà compris dans l'heure)
-    var horaireParts = [c.jour, c.heure].filter(Boolean);
-    var horaire = horaireParts.length ? horaireParts.join(' – ') : '';
-
     var badges = '<span class="course-badge ' + badgeClass(c.discipline) + '">' + esc(labelDiscipline(c.discipline)) + '</span>';
     if ((c.type_cours || '').toLowerCase() === 'intensif') badges += ' <span class="course-badge badge-intensif">Intensif</span>';
     if ((c.type_cours || '').toLowerCase() === 'enfants') badges += ' <span class="course-badge badge-enfants">Enfants</span>';
     if (c.badge_new) badges += ' <span class="course-badge badge-new">Nouveau</span>';
 
     var details = '';
-    if (horaire) details += '<div class="course-detail"><span class="detail-label">Horaire</span><span class="detail-value">' + esc(horaire) + '</span></div>';
+    if (c.jour) details += '<div class="course-detail"><span class="detail-label">Jour</span><span class="detail-value">' + esc(capitalizeDay(c.jour)) + '</span></div>';
+    if (c.creneau) details += '<div class="course-detail"><span class="detail-label">Période</span><span class="detail-value">' + esc(creneauLabel(c.creneau)) + '</span></div>';
+    if (c.heure) details += '<div class="course-detail"><span class="detail-label">Heure</span><span class="detail-value">' + esc(c.heure) + '</span></div>';
     if (c.date_debut) details += '<div class="course-detail"><span class="detail-label">Début</span><span class="detail-value">' + esc(c.date_debut) + '</span></div>';
     if (c.duree_semaines) details += '<div class="course-detail"><span class="detail-label">Durée</span><span class="detail-value">' + esc(c.duree_semaines) + ' semaines</span></div>';
     if (c.prof) details += '<div class="course-detail"><span class="detail-label">Professeur</span><span class="detail-value">' + esc(c.prof) + '</span></div>';
-    if (!horaire && !c.date_debut && !c.duree_semaines && !c.prof) details += '<div class="course-detail"><span class="detail-label">Places</span><span class="detail-value">' + (c.places_max || 0) + ' max.</span></div>';
+    if (!c.jour && !c.creneau && !c.heure && !c.date_debut && !c.duree_semaines && !c.prof) details += '<div class="course-detail"><span class="detail-label">Places</span><span class="detail-value">' + (c.places_max || 0) + ' max.</span></div>';
 
     var rawDesc = enrichCardDescription(c);
     var desc = rawDesc ? esc(rawDesc) : 'Cours à l\'Atelier St-Elme. Inscription via le formulaire en ligne.';
@@ -203,29 +225,54 @@
           if (bySection[key]) bySection[key].push(c);
         });
 
+        var CERAMIQUE_KEYS = ['ceramique_tournage', 'ceramique_faconnage', 'ceramique_autre'];
         var visibleDelay = 0;
+
         Object.keys(GRID_IDS).forEach(function (key) {
           var gridId = GRID_IDS[key];
           var grid = document.getElementById(gridId);
-          var section = grid && grid.closest('section');
           var list = bySection[key] || [];
-          if (grid) {
-            grid.innerHTML = list.map(buildCard).join('');
-            if (section) {
-              if (list.length) {
-                section.style.display = '';
-                (function(s, d) {
-                  setTimeout(function() {
-                    s.classList.add('visible');
-                  }, d);
-                })(section, visibleDelay);
-                visibleDelay += 100;
-              } else {
-                section.style.display = 'none';
-              }
-            }
+          if (!grid) return;
+
+          grid.innerHTML = list.map(buildCard).join('');
+
+          var matiereGroup = grid.closest('.matiere-group');
+          if (matiereGroup) {
+            matiereGroup.style.display = list.length ? '' : 'none';
+            return;
+          }
+
+          var section = grid.closest('section');
+          if (!section) return;
+          if (list.length) {
+            section.style.display = '';
+            (function (s, d) {
+              setTimeout(function () {
+                s.classList.add('visible');
+              }, d);
+            })(section, visibleDelay);
+            visibleDelay += 100;
+          } else {
+            section.style.display = 'none';
           }
         });
+
+        var ceramiqueSection = document.getElementById('ceramique');
+        if (ceramiqueSection) {
+          var hasCeramique = CERAMIQUE_KEYS.some(function (k) {
+            return (bySection[k] || []).length > 0;
+          });
+          if (hasCeramique) {
+            ceramiqueSection.style.display = '';
+            (function (s, d) {
+              setTimeout(function () {
+                s.classList.add('visible');
+              }, d);
+            })(ceramiqueSection, visibleDelay);
+          } else {
+            ceramiqueSection.style.display = 'none';
+          }
+        }
 
         if (fallbackEl) fallbackEl.style.display = 'none';
         window.dispatchEvent(new CustomEvent('courses-loaded'));

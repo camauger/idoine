@@ -18,6 +18,15 @@
     </div>
   </section>
 
+  {# Créneaux offerts (API page_dediee) — masqué si aucune session liée #}
+  <section class="section course-sessions-section" id="creneaux-cours" aria-labelledby="course-sessions-heading" hidden>
+    <div class="container container-narrow">
+      <h2 id="course-sessions-heading" class="course-sessions-heading">Créneaux et disponibilités</h2>
+      <p class="course-sessions-lead">Jours et périodes proposés pour cette activité. L’inscription reste liée à un créneau précis.</p>
+      <div id="course-sessions-summary" class="course-sessions-summary" data-page-slug="{{ page.slug }}"></div>
+    </div>
+  </section>
+
   {# CTA Inscription (masqué par JS si aucune session réservable pour cette page) #}
   <section class="section section-cta-registration" data-page-slug="{{ page.slug }}">
     <div class="container">
@@ -31,5 +40,6 @@
       <p id="course-cta-message" class="inscription-closed-notice" hidden></p>
     </div>
   </section>
+  <script src="/scripts/courseDetailSessions.js"></script>
   <script src="/scripts/courseDetailCta.js"></script>
 {% endblock %}
