@@ -163,6 +163,41 @@
       });
   }
 
+  /** Tri : regroupe par groupe_slug, puis par créneau. */
+  function sortCoursesForAdmin(list) {
+    return list.slice().sort(function(a, b) {
+      var ga = (a.groupe_slug != null && String(a.groupe_slug).trim()) ? String(a.groupe_slug).trim() : '';
+      var gb = (b.groupe_slug != null && String(b.groupe_slug).trim()) ? String(b.groupe_slug).trim() : '';
+      if (ga !== gb) {
+        if (!ga && !gb) {
+          var cmpNom = (a.nom || '').localeCompare(b.nom || '', 'fr');
+          return cmpNom !== 0 ? cmpNom : (a.id - b.id);
+        }
+        if (!ga) return 1;
+        if (!gb) return -1;
+        return ga.localeCompare(gb);
+      }
+      var ja = (a.jour || '') + (a.creneau || '') + (a.heure || '');
+      var jb = (b.jour || '') + (b.creneau || '') + (b.heure || '');
+      var cj = ja.localeCompare(jb, 'fr');
+      return cj !== 0 ? cj : (a.id - b.id);
+    });
+  }
+
+  function formatCreneau(c) {
+    var parts = [];
+    if (c.jour) parts.push(String(c.jour).trim());
+    if (c.creneau) parts.push(String(c.creneau).trim());
+    if (c.heure) parts.push(String(c.heure).trim());
+    return parts.length ? parts.join(' · ') : '—';
+  }
+
+  function truncate(str, max) {
+    var s = String(str || '');
+    if (s.length <= max) return s;
+    return s.slice(0, max - 1) + '…';
+  }
+
   function loadInscriptions(courseId) {
     var url = API_URL + '/api/admin/inscriptions';
     if (courseId) url += '?course_id=' + courseId;
@@ -182,29 +217,41 @@
   function renderCourses() {
     var tbody = document.querySelector('#courses-table tbody');
     if (!courses.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty">Aucun cours</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="10" class="empty">Aucun cours</td></tr>';
       return;
     }
 
-    tbody.innerHTML = courses.map(function(c) {
+    var sorted = sortCoursesForAdmin(courses);
+    tbody.innerHTML = sorted.map(function(c, idx) {
       var isActif = !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
       var statusClass = isActif ? 'status-active' : 'status-inactive';
       var inscrits = Math.max(0, (c.places_max || 0) - (c.places_restantes || 0));
       var placesClass = c.places_restantes === 0 ? 'places-full' : (c.places_restantes <= 2 ? 'places-low' : '');
       var rowMuted = isActif ? '' : ' course-row-inactive';
+      var gs = (c.groupe_slug != null && String(c.groupe_slug).trim()) ? String(c.groupe_slug).trim() : '';
+      var prev = idx > 0 ? sorted[idx - 1] : null;
+      var prevGs = prev && prev.groupe_slug != null ? String(prev.groupe_slug).trim() : '';
+      var isGroupStart = gs && gs !== prevGs;
+      var trClass = (rowMuted + (gs ? ' course-row-grouped' : '') + (isGroupStart ? ' course-row-group-start' : '')).trim();
 
-      return '<tr class="' + rowMuted.trim() + '" data-course-id="' + c.id + '" data-places-max="' + (c.places_max || 0) + '">' +
+      var groupeCell = gs
+        ? '<code class="admin-groupe-slug" title="' + esc(gs) + '">' + esc(truncate(gs, 28)) + '</code>'
+        : '<span class="admin-cell-muted">—</span>';
+      var slugCell = '<code class="admin-course-slug" title="' + esc(c.slug || '') + '">' + esc(truncate(c.slug || '—', 36)) + '</code>';
+
+      return '<tr class="' + trClass + '" data-course-id="' + c.id + '" data-places-max="' + (c.places_max || 0) + '">' +
         '<td class="course-name">' + esc(c.nom) + '</td>' +
+        '<td class="cell-groupe">' + groupeCell + '</td>' +
+        '<td class="cell-slug">' + slugCell + '</td>' +
         '<td><span class="badge badge-' + esc(c.discipline) + '">' + esc(c.discipline) + '</span></td>' +
-        '<td>' + esc(c.jour || '-') + '</td>' +
-        '<td>' + esc(c.heure || '-') + '</td>' +
+        '<td class="cell-creneau">' + esc(formatCreneau(c)) + '</td>' +
         '<td>' + esc(c.date_debut || '-') + '</td>' +
         '<td class="places-cell ' + placesClass + '">' +
-          '<div class="places-edit" title="Places restantes = capacité − inscriptions. Modifier ajuste la capacité du cours.">' +
+          '<div class="places-edit" title="Places restantes = capacité − inscriptions. Modifier ajuste la capacité de ce créneau.">' +
             '<input type="number" class="form-input places-input" min="0" step="1" ' +
               'data-inscrits="' + inscrits + '" ' +
               'value="' + (c.places_restantes != null ? c.places_restantes : 0) + '" ' +
-              'aria-label="Places restantes pour ' + esc(c.nom) + '" />' +
+              'aria-label="Places restantes pour le créneau #' + c.id + ' (' + esc(c.nom) + ')" />' +
             '<span class="places-inscrits-hint">' + inscrits + ' insc.</span>' +
             '<button type="button" class="btn btn-outline btn-sm btn-save-places">Enregistrer</button>' +
           '</div>' +
@@ -212,10 +259,20 @@
         '<td>' + esc(c.prix || '-') + '</td>' +
         '<td class="actif-cell">' +
           '<label class="actif-label">' +
-            '<input type="checkbox" class="course-actif-cb" ' + (isActif ? 'checked' : '') + ' aria-label="Cours visible sur le site pour ' + esc(c.nom) + '" />' +
+            '<input type="checkbox" class="course-actif-cb" ' + (isActif ? 'checked' : '') + ' aria-label="Créneau #' + c.id + ' visible sur le site" />' +
             '<span>Visible</span>' +
           '</label>' +
           '<span class="status ' + statusClass + ' actif-pill">' + (isActif ? 'Actif' : 'Masqué') + '</span>' +
+        '</td>' +
+        '<td class="cell-actions">' +
+          '<button type="button" class="btn btn-outline btn-sm btn-edit-course" ' +
+            'aria-label="Modifier le créneau #' + c.id + '">' +
+            'Éditer' +
+          '</button>' +
+          '<button type="button" class="btn btn-outline btn-sm btn-delete-course" ' +
+            'aria-label="Supprimer le créneau #' + c.id + '">' +
+            'Supprimer' +
+          '</button>' +
         '</td>' +
       '</tr>';
     }).join('');
@@ -288,6 +345,72 @@
             alert(err.message || 'Impossible de mettre à jour la visibilité du cours.');
             cb.disabled = false;
           });
+      });
+    });
+
+    tbody.querySelectorAll('.btn-delete-course').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var row = btn.closest('tr');
+        var id = parseInt(row.getAttribute('data-course-id'), 10);
+        var nameCell = row.querySelector('.course-name');
+        var label = nameCell ? nameCell.textContent.trim() : ('#' + id);
+        if (!confirm(
+          'Supprimer le créneau « ' + label + ' » (id ' + id + ') ?\n\n' +
+          'Les inscriptions liées à ce créneau seront définitivement supprimées.'
+        )) {
+          return;
+        }
+        btn.disabled = true;
+        fetch(API_URL + '/api/admin/courses/' + id, {
+          method: 'DELETE',
+          headers: authHeaders()
+        })
+          .then(function(r) {
+            if (r.status === 401) { clearToken(); showLogin(); throw new Error('Session expirée'); }
+            if (r.status === 404) {
+              return Promise.reject(new Error('Ce créneau n’existe plus.'));
+            }
+            if (!r.ok) {
+              return r.json().then(
+                function(j) {
+                  var d = j && j.detail;
+                  var msg = typeof d === 'string' ? d : (Array.isArray(d) ? d.map(function(x) { return x.msg || ''; }).filter(Boolean).join(', ') : '');
+                  return Promise.reject(new Error(msg || 'Erreur'));
+                },
+                function() {
+                  return Promise.reject(new Error('Erreur HTTP ' + r.status));
+                }
+              );
+            }
+            return r.json();
+          })
+          .then(function() {
+            courses = courses.filter(function(c) { return c.id !== id; });
+            renderCourses();
+            populateCourseFilter();
+            return loadInscriptions();
+          })
+          .catch(function(err) {
+            alert(err.message || 'Impossible de supprimer ce créneau.');
+          })
+          .finally(function() {
+            btn.disabled = false;
+          });
+      });
+    });
+
+    tbody.querySelectorAll('.btn-edit-course').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var row = btn.closest('tr');
+        var id = parseInt(row.getAttribute('data-course-id'), 10);
+        var c = courses.find(function(x) { return x.id === id; });
+        if (!c) return;
+        resetAddCourseForm();
+        setAddCourseMode('edit', c);
+        var dlg = document.getElementById('dialog-add-course');
+        if (dlg && typeof dlg.showModal === 'function') {
+          dlg.showModal();
+        }
       });
     });
   }
@@ -373,26 +496,47 @@
   }
 
   function updateStats() {
-    var activeCourses = courses.filter(function(c) {
+    var activeRows = courses.filter(function(c) {
       return !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
-    }).length;
-    var totalPlaces = courses
-      .filter(function(c) {
-        return !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
-      })
-      .reduce(function(sum, c) { return sum + (c.places_restantes || 0); }, 0);
-    
-    document.getElementById('stat-courses').textContent = activeCourses;
+    });
+    var logicalKeys = {};
+    activeRows.forEach(function(c) {
+      var g = (c.groupe_slug != null && String(c.groupe_slug).trim()) ? String(c.groupe_slug).trim() : '';
+      var key = g ? 'g:' + g : 'id:' + c.id;
+      logicalKeys[key] = true;
+    });
+    var logicalCount = Object.keys(logicalKeys).length;
+    var totalPlaces = activeRows.reduce(function(sum, c) { return sum + (c.places_restantes || 0); }, 0);
+
+    document.getElementById('stat-courses').textContent = logicalCount;
+    var subEl = document.getElementById('stat-course-lines');
+    if (subEl) {
+      if (!activeRows.length) {
+        subEl.textContent = '';
+      } else if (activeRows.length > logicalCount) {
+        subEl.textContent = activeRows.length + ' lignes créneau, regroupées en ' + logicalCount + ' carte(s) sur la page Cours';
+      } else {
+        subEl.textContent = activeRows.length + ' ligne' + (activeRows.length > 1 ? 's' : '') + ' au catalogue';
+      }
+    }
     document.getElementById('stat-inscriptions').textContent = inscriptions.length;
     document.getElementById('stat-places').textContent = totalPlaces;
   }
 
   function populateCourseFilter() {
     filterCourse.innerHTML = '<option value="">Tous les cours</option>';
-    courses.forEach(function(c) {
+    var sorted = sortCoursesForAdmin(courses);
+    sorted.forEach(function(c) {
       var opt = document.createElement('option');
       opt.value = c.id;
-      opt.textContent = c.nom;
+      var g = (c.groupe_slug != null && String(c.groupe_slug).trim()) ? String(c.groupe_slug).trim() : '';
+      var creneau = formatCreneau(c);
+      var label = c.nom;
+      if (creneau !== '—') label += ' — ' + creneau;
+      else if (c.slug) label += ' — ' + c.slug;
+      else label += ' — #' + c.id;
+      if (g) opt.setAttribute('title', 'Groupe : ' + g + ' · slug : ' + (c.slug || ''));
+      opt.textContent = label;
       filterCourse.appendChild(opt);
     });
   }
@@ -402,6 +546,349 @@
     var courseId = this.value;
     loadInscriptions(courseId || null);
   });
+
+  // Ajouter un cours (dialog + POST /api/admin/courses)
+  var dialogAddCourse = document.getElementById('dialog-add-course');
+  var formAddCourse = document.getElementById('form-add-course');
+  var btnAddCourse = document.getElementById('btn-add-course');
+  var btnCancelAddCourse = document.getElementById('btn-cancel-add-course');
+  var btnSlugFromNom = document.getElementById('btn-slug-from-nom');
+  var addCourseError = document.getElementById('add-course-error');
+
+  function slugifyFromNom(s) {
+    if (!s) return '';
+    return s
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/\u0300-\u036f/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 200);
+  }
+
+  function showAddCourseError(msg) {
+    if (!addCourseError) return;
+    if (msg) {
+      addCourseError.textContent = msg;
+      addCourseError.hidden = false;
+    } else {
+      addCourseError.textContent = '';
+      addCourseError.hidden = true;
+    }
+  }
+
+  function fillCourseFormFromCourse(c) {
+    function setVal(id, v) {
+      var el = document.getElementById(id);
+      if (el) el.value = v != null && v !== undefined ? String(v) : '';
+    }
+    setVal('add-course-nom', c.nom);
+    setVal('add-course-slug', c.slug);
+    var disc = document.getElementById('add-course-discipline');
+    if (disc) disc.value = c.discipline || 'ceramique';
+    var typ = document.getElementById('add-course-type');
+    if (typ) typ.value = c.type_cours || 'regulier';
+    setVal('add-course-jour', c.jour);
+    setVal('add-course-creneau', c.creneau);
+    setVal('add-course-heure', c.heure);
+    setVal('add-course-duree', c.duree_semaines != null ? c.duree_semaines : '');
+    setVal('add-course-debut', c.date_debut);
+    setVal('add-course-places', c.places_max != null ? c.places_max : 6);
+    setVal('add-course-prix', c.prix);
+    setVal('add-course-prof', c.prof);
+    setVal('add-course-salle', c.salle);
+    var desc = document.getElementById('add-course-desc');
+    if (desc) desc.value = c.description != null ? String(c.description) : '';
+    setVal('add-course-page', c.page_dediee);
+    setVal('add-course-image', c.image_url);
+    setVal('add-course-groupe', c.groupe_slug);
+    var act = document.getElementById('add-course-actif');
+    if (act) {
+      act.checked = !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
+    }
+    var bn = document.getElementById('add-course-badge-new');
+    if (bn) {
+      bn.checked = !!(c.badge_new === true || c.badge_new === 'true' || c.badge_new === 1 || c.badge_new === 't');
+    }
+  }
+
+  function setAddCourseMode(mode, c) {
+    var editId = document.getElementById('edit-course-id');
+    var titleEl = document.getElementById('dialog-add-course-title');
+    var hintEl = document.getElementById('add-course-dialog-hint');
+    var submitBtn = document.getElementById('btn-submit-add-course');
+    var multiBlock = document.querySelector('.add-course-creneaux-block');
+    if (mode === 'edit' && c) {
+      if (editId) editId.value = String(c.id);
+      if (titleEl) titleEl.textContent = 'Modifier le cours';
+      if (hintEl) {
+        hintEl.hidden = false;
+        hintEl.textContent =
+          'Vous modifiez ce créneau uniquement (ligne n° ' +
+          c.id +
+          '). Les autres créneaux du même groupe ne sont pas modifiés ici.';
+      }
+      if (submitBtn) submitBtn.textContent = 'Enregistrer';
+      if (multiBlock) multiBlock.setAttribute('hidden', '');
+      fillCourseFormFromCourse(c);
+    } else {
+      if (editId) editId.value = '';
+      if (titleEl) titleEl.textContent = 'Nouveau cours';
+      if (hintEl) {
+        hintEl.hidden = true;
+        hintEl.textContent = '';
+      }
+      if (submitBtn) submitBtn.textContent = 'Créer le cours';
+      if (multiBlock) multiBlock.removeAttribute('hidden');
+    }
+  }
+
+  function resetAddCourseForm() {
+    if (!formAddCourse) return;
+    formAddCourse.reset();
+    var pl = document.getElementById('add-course-places');
+    if (pl) pl.value = '6';
+    var act = document.getElementById('add-course-actif');
+    if (act) act.checked = true;
+    var extra = document.getElementById('add-course-creneaux-extra');
+    if (extra) extra.innerHTML = '';
+    showAddCourseError('');
+    setAddCourseMode('create');
+  }
+
+  var btnAddCreneauSlot = document.getElementById('btn-add-creneau-slot');
+  var tplCreneauRow = document.getElementById('tpl-creneau-row');
+  var creneauxExtra = document.getElementById('add-course-creneaux-extra');
+
+  if (btnAddCreneauSlot && tplCreneauRow && creneauxExtra) {
+    btnAddCreneauSlot.addEventListener('click', function() {
+      var node = tplCreneauRow.content.cloneNode(true);
+      creneauxExtra.appendChild(node);
+    });
+    creneauxExtra.addEventListener('click', function(e) {
+      var rm = e.target && e.target.closest && e.target.closest('.btn-remove-creneau');
+      if (!rm) return;
+      var row = rm.closest('.creneau-extra-row');
+      if (row) row.remove();
+    });
+  }
+
+  if (btnAddCourse && dialogAddCourse) {
+    btnAddCourse.addEventListener('click', function() {
+      resetAddCourseForm();
+      if (typeof dialogAddCourse.showModal === 'function') {
+        dialogAddCourse.showModal();
+      }
+    });
+  }
+
+  if (btnCancelAddCourse && dialogAddCourse) {
+    btnCancelAddCourse.addEventListener('click', function() {
+      resetAddCourseForm();
+      if (typeof dialogAddCourse.close === 'function') {
+        dialogAddCourse.close();
+      }
+    });
+  }
+
+  if (btnSlugFromNom) {
+    btnSlugFromNom.addEventListener('click', function() {
+      var nomEl = document.getElementById('add-course-nom');
+      var slugEl = document.getElementById('add-course-slug');
+      if (nomEl && slugEl) slugEl.value = slugifyFromNom(nomEl.value);
+    });
+  }
+
+  if (formAddCourse) {
+    formAddCourse.addEventListener('submit', function(e) {
+      e.preventDefault();
+      showAddCourseError('');
+
+      var nom = document.getElementById('add-course-nom');
+      var slug = document.getElementById('add-course-slug');
+      var placesEl = document.getElementById('add-course-places');
+      var dureeEl = document.getElementById('add-course-duree');
+      if (!nom || !slug || !placesEl) return;
+
+      var nomT = nom.value.trim();
+      var slugT = slug.value.trim().toLowerCase();
+      if (!nomT || !slugT) {
+        showAddCourseError('Le nom et le slug sont obligatoires.');
+        return;
+      }
+
+      var dureeRaw = dureeEl ? dureeEl.value.trim() : '';
+      var duree_semaines = null;
+      if (dureeRaw !== '') {
+        duree_semaines = parseInt(dureeRaw, 10);
+        if (Number.isNaN(duree_semaines) || duree_semaines < 0) {
+          showAddCourseError('Durée (semaines) : nombre entier positif ou vide.');
+          return;
+        }
+      }
+
+      var placesMax = parseInt(placesEl.value, 10);
+      if (Number.isNaN(placesMax) || placesMax < 0) {
+        showAddCourseError('Places max : nombre entier ≥ 0.');
+        return;
+      }
+
+      function optStr(id) {
+        var el = document.getElementById(id);
+        if (!el) return null;
+        var t = String(el.value || '').trim();
+        return t === '' ? null : t;
+      }
+
+      function optStrEl(el) {
+        if (!el) return null;
+        var t = String(el.value || '').trim();
+        return t === '' ? null : t;
+      }
+
+      var payload = {
+        nom: nomT,
+        slug: slugT,
+        discipline: document.getElementById('add-course-discipline').value,
+        type_cours: document.getElementById('add-course-type').value,
+        jour: optStr('add-course-jour'),
+        creneau: optStr('add-course-creneau'),
+        heure: optStr('add-course-heure'),
+        duree_semaines: duree_semaines,
+        date_debut: optStr('add-course-debut'),
+        places_max: placesMax,
+        prix: optStr('add-course-prix'),
+        prof: optStr('add-course-prof'),
+        salle: optStr('add-course-salle'),
+        description: optStr('add-course-desc'),
+        page_dediee: optStr('add-course-page'),
+        image_url: optStr('add-course-image'),
+        actif: document.getElementById('add-course-actif') ? document.getElementById('add-course-actif').checked : true,
+        badge_new: document.getElementById('add-course-badge-new') ? document.getElementById('add-course-badge-new').checked : false,
+        groupe_slug: optStr('add-course-groupe')
+      };
+
+      var extraWrap = document.getElementById('add-course-creneaux-extra');
+      var extraRows = extraWrap ? extraWrap.querySelectorAll('.creneau-extra-row') : [];
+      var editIdEl = document.getElementById('edit-course-id');
+      var editId = editIdEl && editIdEl.value && String(editIdEl.value).trim()
+        ? parseInt(editIdEl.value, 10)
+        : null;
+
+      if (editId) {
+        if (extraRows.length > 0) {
+          showAddCourseError('En mode édition, retirez les créneaux supplémentaires du formulaire ou annulez.');
+          return;
+        }
+        var submitBtnEdit = document.getElementById('btn-submit-add-course');
+        if (submitBtnEdit) submitBtnEdit.disabled = true;
+        fetch(API_URL + '/api/admin/courses/' + editId, {
+          method: 'PUT',
+          headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+          body: JSON.stringify(payload)
+        })
+          .then(function(r) {
+            if (r.status === 401) {
+              clearToken();
+              showLogin();
+              throw new Error('Session expirée');
+            }
+            return r.json().then(function(j) {
+              if (!r.ok) {
+                var d = j && j.detail;
+                var msg = typeof d === 'string' ? d : (Array.isArray(d) ? d.map(function(x) { return x.msg || ''; }).filter(Boolean).join(', ') : 'Erreur');
+                throw new Error(msg || 'Erreur');
+              }
+              return j;
+            });
+          })
+          .then(function() {
+            if (dialogAddCourse && typeof dialogAddCourse.close === 'function') {
+              dialogAddCourse.close();
+            }
+            resetAddCourseForm();
+            return loadCourses();
+          })
+          .catch(function(err) {
+            showAddCourseError(err.message || 'Impossible d\'enregistrer le cours.');
+          })
+          .finally(function() {
+            if (submitBtnEdit) submitBtnEdit.disabled = false;
+          });
+        return;
+      }
+
+      if (extraRows.length > 0) {
+        var creneaux = [
+          {
+            jour: optStr('add-course-jour'),
+            creneau: optStr('add-course-creneau'),
+            heure: optStr('add-course-heure'),
+            places_max: placesMax,
+            date_debut: optStr('add-course-debut')
+          }
+        ];
+        for (var ei = 0; ei < extraRows.length; ei++) {
+          var row = extraRows[ei];
+          var pmExtra = parseInt(row.querySelector('.creneau-places').value, 10);
+          if (Number.isNaN(pmExtra) || pmExtra < 0) {
+            showAddCourseError('Places max : nombre entier ≥ 0 pour chaque créneau supplémentaire.');
+            return;
+          }
+          creneaux.push({
+            jour: optStrEl(row.querySelector('.creneau-jour')),
+            creneau: optStrEl(row.querySelector('.creneau-creneau')),
+            heure: optStrEl(row.querySelector('.creneau-heure')),
+            places_max: pmExtra,
+            date_debut: optStrEl(row.querySelector('.creneau-date-debut'))
+          });
+        }
+        payload.creneaux = creneaux;
+        delete payload.jour;
+        delete payload.creneau;
+        delete payload.heure;
+        delete payload.date_debut;
+        delete payload.places_max;
+      }
+
+      var submitBtn = document.getElementById('btn-submit-add-course');
+      if (submitBtn) submitBtn.disabled = true;
+
+      fetch(API_URL + '/api/admin/courses', {
+        method: 'POST',
+        headers: Object.assign({ 'Content-Type': 'application/json' }, authHeaders()),
+        body: JSON.stringify(payload)
+      })
+        .then(function(r) {
+          if (r.status === 401) {
+            clearToken();
+            showLogin();
+            throw new Error('Session expirée');
+          }
+          return r.json().then(function(j) {
+            if (!r.ok) {
+              var d = j && j.detail;
+              var msg = typeof d === 'string' ? d : (Array.isArray(d) ? d.map(function(x) { return x.msg || ''; }).filter(Boolean).join(', ') : 'Erreur');
+              throw new Error(msg || 'Erreur');
+            }
+            return j;
+          });
+        })
+        .then(function() {
+          if (dialogAddCourse && typeof dialogAddCourse.close === 'function') {
+            dialogAddCourse.close();
+          }
+          resetAddCourseForm();
+          return loadCourses();
+        })
+        .catch(function(err) {
+          showAddCourseError(err.message || 'Impossible de créer le cours.');
+        })
+        .finally(function() {
+          if (submitBtn) submitBtn.disabled = false;
+        });
+    });
+  }
 
   // Export CSV
   exportCsvBtn.addEventListener('click', function() {

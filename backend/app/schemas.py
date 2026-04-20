@@ -23,6 +23,7 @@ class CourseBase(BaseModel):
     badge_new: bool = False
     page_dediee: Optional[str] = None
     image_url: Optional[str] = None
+    groupe_slug: Optional[str] = None
 
 
 class CourseCreate(CourseBase):
@@ -48,6 +49,7 @@ class CourseUpdate(BaseModel):
     badge_new: Optional[bool] = None
     page_dediee: Optional[str] = None
     image_url: Optional[str] = None
+    groupe_slug: Optional[str] = None
 
 
 class CourseResponse(CourseBase):

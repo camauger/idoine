@@ -106,6 +106,152 @@
     return custom || defaultImageForCourse(c);
   }
 
+  /** Trie les lignes d’un même groupe (jour / période / heure). */
+  function sortSlots(a, b) {
+    var ja = (a.jour || '') + ' ' + (a.creneau || '') + ' ' + (a.heure || '');
+    var jb = (b.jour || '') + ' ' + (b.creneau || '') + ' ' + (b.heure || '');
+    return ja.localeCompare(jb, 'fr');
+  }
+
+  /**
+   * Regroupe les lignes API par groupe_slug ; les cours sans groupe restent seuls.
+   * @returns {Array<{ kind: 'one', c: object } | { kind: 'group', slots: object[] }>}
+   */
+  function expandCoursesForDisplay(cours) {
+    var byGroup = {};
+    var singles = [];
+    (cours || []).forEach(function (c) {
+      var g = (c.groupe_slug != null && String(c.groupe_slug).trim()) ? String(c.groupe_slug).trim() : '';
+      if (!g) {
+        singles.push({ kind: 'one', c: c });
+      } else {
+        if (!byGroup[g]) byGroup[g] = [];
+        byGroup[g].push(c);
+      }
+    });
+    var out = [];
+    singles.forEach(function (x) { out.push(x); });
+    Object.keys(byGroup).forEach(function (g) {
+      var arr = byGroup[g].slice().sort(sortSlots);
+      if (arr.length === 1) out.push({ kind: 'one', c: arr[0] });
+      else out.push({ kind: 'group', slots: arr });
+    });
+    return out;
+  }
+
+  /** Carte unique avec plusieurs créneaux (inscription par ligne). */
+  function buildGroupedCard(slots) {
+    var c0 = slots[0];
+    var category = (c0.discipline || '').toLowerCase() + ' ' + (c0.type_cours || '').toLowerCase();
+    var sumPlaces = 0;
+    slots.forEach(function (s) {
+      sumPlaces += Math.max(0, s.places_restantes | 0);
+    });
+    var allFull = slots.every(function (s) { return (s.places_restantes | 0) === 0; });
+    var availClass = allFull ? 'course-availability full' : 'course-availability available';
+    var availText = allFull
+      ? 'Complet'
+      : (sumPlaces === 1 ? '1 place au total' : sumPlaces + ' places au total');
+
+    var badges = '<span class="course-badge ' + badgeClass(c0.discipline) + '">' + esc(labelDiscipline(c0.discipline)) + '</span>';
+    if ((c0.type_cours || '').toLowerCase() === 'intensif') badges += ' <span class="course-badge badge-intensif">Intensif</span>';
+    if ((c0.type_cours || '').toLowerCase() === 'enfants') badges += ' <span class="course-badge badge-enfants">Enfants</span>';
+    if (c0.badge_new) badges += ' <span class="course-badge badge-new">Nouveau</span>';
+    badges += ' <span class="course-badge badge-multi-slot">Plusieurs créneaux</span>';
+
+    var rawDesc = enrichCardDescription(c0);
+    var desc = rawDesc ? esc(rawDesc) : 'Cours à l\'Atelier St-Elme. Inscription via le formulaire en ligne.';
+    var prix = (c0.prix || '').trim();
+    var prixStr = prix.toLowerCase();
+    var amount = prix;
+    var taxLine = '';
+    if (prix) {
+      var idx = prix.indexOf(' (');
+      if (idx !== -1) {
+        amount = prix.slice(0, idx).trim();
+        taxLine = prix.slice(idx).trim();
+      } else {
+        idx = prix.indexOf(' non taxable');
+        if (idx !== -1) {
+          amount = prix.slice(0, idx).trim();
+          taxLine = '(non taxable)';
+        } else if (!/non taxable|taxes incluses|taxes en sus|incluses/.test(prixStr)) {
+          taxLine = '+ taxes';
+        }
+      }
+    }
+    var prixHtml = '';
+    if (prix) {
+      prixHtml = '<span class="price-amount">' + esc(amount) + '</span>';
+      if (taxLine) prixHtml += '<span class="price-tax-line">' + esc(taxLine) + '</span>';
+    } else {
+      prixHtml = '<span class="price-note">Sur demande</span>';
+    }
+
+    var slotsHtml = slots.map(function (s) {
+      var full = (s.places_restantes | 0) === 0;
+      var slotAvailClass = full ? 'course-slot-availability course-availability full' : 'course-slot-availability course-availability available';
+      var slotAvailText = full ? 'Complet' : ((s.places_restantes | 0) === 1 ? '1 place' : (s.places_restantes + ' places'));
+      var metaParts = [];
+      if (s.jour) metaParts.push(esc(capitalizeDay(s.jour)));
+      if (s.creneau) metaParts.push(esc(creneauLabel(s.creneau)));
+      if (s.heure) metaParts.push(esc(s.heure));
+      if (s.date_debut) metaParts.push(esc(s.date_debut));
+      var meta = metaParts.join(' · ');
+      var ctaSlot;
+      if (full) {
+        ctaSlot = '<span class="btn btn-outline btn-sm disabled">Complet</span>';
+      } else {
+        var inscUrl =
+          '/inscription?course_id=' +
+          encodeURIComponent(String(s.id != null ? s.id : '')) +
+          '&cours=' +
+          encodeURIComponent(s.nom || '');
+        ctaSlot = '<a href="' + inscUrl + '" class="btn btn-primary btn-sm">S\'inscrire</a>';
+      }
+      return '<li class="course-slot-line" data-course-id="' + esc(String(s.id != null ? s.id : '')) + '">' +
+        '<div class="course-slot-line-main">' +
+          '<span class="course-slot-meta">' + meta + '</span>' +
+          '<span class="' + slotAvailClass + '">' + esc(slotAvailText) + '</span>' +
+        '</div>' +
+        '<div class="course-slot-line-cta">' + ctaSlot + '</div>' +
+      '</li>';
+    }).join('');
+
+    var topCtaHtml = '';
+    if (c0.page_dediee) {
+      topCtaHtml = '<a href="/' + esc(c0.page_dediee) + '/" class="btn btn-outline btn-sm">En savoir plus</a>';
+    }
+
+    var imgSrc = courseCardImageSrc(c0);
+    var imgFallback = defaultImageForCourse(c0);
+    var imgGeneric = PLACEHOLDER_GENERIC;
+    var hasCustom = !!(c0.image_url != null && String(c0.image_url).trim());
+    var onImgErr = hasCustom
+      ? ' onerror="if(!this.dataset._imgfb){this.dataset._imgfb=\'1\';this.src=\'' + imgFallback + '\';}else{this.onerror=null;this.src=\'' + imgGeneric + '\';}"'
+      : ' onerror="this.onerror=null;this.src=\'' + imgGeneric + '\'"';
+
+    return '<article class="course-card course-card-grouped" data-category="' + esc(category) + '">' +
+      '<div class="course-card-thumb">' +
+        '<img src="' + esc(imgSrc) + '" alt="' + esc(c0.nom || 'Cours') + '" loading="lazy" decoding="async" width="640" height="400"' + onImgErr + '>' +
+      '</div>' +
+      '<header class="course-card-header">' +
+        '<div class="course-badges">' + badges + '</div>' +
+        '<span class="' + availClass + '">' + esc(availText) + '</span>' +
+      '</header>' +
+      '<div class="course-card-body">' +
+        '<h3 class="course-title">' + esc(c0.nom) + '</h3>' +
+        '<p class="course-description">' + desc + '</p>' +
+        '<p class="course-slots-intro">Créneaux et inscription :</p>' +
+        '<ul class="course-slots-list">' + slotsHtml + '</ul>' +
+      '</div>' +
+      '<footer class="course-card-footer">' +
+        '<div class="course-price">' + prixHtml + '</div>' +
+        '<div class="course-cta">' + topCtaHtml + '</div>' +
+      '</footer>' +
+    '</article>';
+  }
+
   function buildCard(c) {
     var category = (c.discipline || '').toLowerCase() + ' ' + (c.type_cours || '').toLowerCase();
     var full = c.places_restantes === 0;
@@ -159,7 +305,11 @@
     if (full) {
       ctaHtml = '<span class="btn btn-outline btn-sm disabled">Complet</span>';
     } else {
-      var inscUrl = '/inscription?cours=' + encodeURIComponent(c.nom || '');
+      var inscUrl =
+        '/inscription?course_id=' +
+        encodeURIComponent(String(c.id != null ? c.id : '')) +
+        '&cours=' +
+        encodeURIComponent(c.nom || '');
       ctaHtml = '<a href="' + inscUrl + '" class="btn btn-primary btn-sm">S\'inscrire</a>';
     }
     if (c.page_dediee) {
@@ -220,9 +370,11 @@
 
         var bySection = {};
         Object.keys(GRID_IDS).forEach(function (k) { bySection[k] = []; });
-        cours.forEach(function (c) {
-          var key = sectionKey(c);
-          if (bySection[key]) bySection[key].push(c);
+        var expanded = expandCoursesForDisplay(cours);
+        expanded.forEach(function (item) {
+          var c0 = item.kind === 'one' ? item.c : item.slots[0];
+          var key = sectionKey(c0);
+          if (bySection[key]) bySection[key].push(item);
         });
 
         var CERAMIQUE_KEYS = ['ceramique_tournage', 'ceramique_faconnage', 'ceramique_autre'];
@@ -234,7 +386,9 @@
           var list = bySection[key] || [];
           if (!grid) return;
 
-          grid.innerHTML = list.map(buildCard).join('');
+          grid.innerHTML = list.map(function (item) {
+            return item.kind === 'group' ? buildGroupedCard(item.slots) : buildCard(item.c);
+          }).join('');
 
           var matiereGroup = grid.closest('.matiere-group');
           if (matiereGroup) {

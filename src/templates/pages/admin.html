@@ -28,9 +28,10 @@
 
       <!-- Stats -->
       <div class="admin-stats">
-        <div class="stat-card">
+        <div class="stat-card stat-card-with-sublabel">
           <span class="stat-number" id="stat-courses">-</span>
-          <span class="stat-label">Cours actifs</span>
+          <span class="stat-label">Cours actifs <span class="stat-label-hint" title="Un même cours à plusieurs créneaux compte pour un seul cours affiché sur le site.">(logiques)</span></span>
+          <span class="stat-sublabel" id="stat-course-lines" aria-live="polite"></span>
         </div>
         <div class="stat-card">
           <span class="stat-number" id="stat-inscriptions">-</span>
@@ -50,25 +51,171 @@
 
       <!-- Courses Tab -->
       <div id="tab-courses" class="admin-tab-content active">
-        <div class="admin-toolbar">
-          <h2>Liste des cours</h2>
+        <div class="admin-toolbar admin-toolbar-courses">
+          <div>
+            <h2>Liste des cours</h2>
+            <p class="admin-toolbar-hint">Chaque <strong>ligne</strong> est un créneau (identifiant API). Les lignes avec le même <strong>groupe</strong> apparaissent comme une seule carte sur la page Cours.</p>
+          </div>
+          <button type="button" id="btn-add-course" class="btn btn-primary btn-sm">Ajouter un cours</button>
         </div>
+
+        <dialog id="dialog-add-course" class="admin-add-course-dialog" aria-labelledby="dialog-add-course-title">
+          <form id="form-add-course" novalidate>
+            <input type="hidden" id="edit-course-id" value="">
+            <h3 id="dialog-add-course-title">Nouveau cours</h3>
+            <p id="add-course-dialog-hint" class="form-hint add-course-dialog-hint" role="note" hidden></p>
+            <p id="add-course-error" class="form-error" role="alert" hidden></p>
+            <div class="form-grid-2">
+              <div class="form-group">
+                <label for="add-course-nom" class="form-label">Nom du cours <span class="required">*</span></label>
+                <input type="text" id="add-course-nom" class="form-input" required maxlength="255" autocomplete="off">
+              </div>
+              <div class="form-group">
+                <label for="add-course-slug" class="form-label">Slug de base <span class="required">*</span></label>
+                <input type="text" id="add-course-slug" class="form-input" required maxlength="255" autocomplete="off" placeholder="ex. tournage-lundi-soir">
+                <button type="button" id="btn-slug-from-nom" class="btn btn-outline btn-sm form-hint-btn">Générer depuis le titre</button>
+                <p class="form-hint form-hint-tight">Avec plusieurs créneaux, l’API crée des slugs dérivés (<code>votre-slug-0</code>, <code>votre-slug-1</code>, …).</p>
+              </div>
+              <div class="form-group">
+                <label for="add-course-discipline" class="form-label">Discipline <span class="required">*</span></label>
+                <select id="add-course-discipline" class="form-select" required>
+                  <option value="ceramique">Céramique</option>
+                  <option value="vitrail">Vitrail</option>
+                  <option value="mosaique">Mosaïque</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="add-course-type" class="form-label">Type <span class="required">*</span></label>
+                <select id="add-course-type" class="form-select" required>
+                  <option value="regulier">Régulier</option>
+                  <option value="intensif">Intensif</option>
+                  <option value="enfants">Enfants</option>
+                </select>
+              </div>
+              <div class="form-group form-grid-full">
+                <h4 class="form-section-title">Créneau 1 <span class="form-section-title-note">(ou seul créneau)</span></h4>
+              </div>
+              <div class="form-group">
+                <label for="add-course-jour" class="form-label">Jour</label>
+                <input type="text" id="add-course-jour" class="form-input" placeholder="ex. lundi" maxlength="50">
+              </div>
+              <div class="form-group">
+                <label for="add-course-creneau" class="form-label">Période (créneau)</label>
+                <input type="text" id="add-course-creneau" class="form-input" placeholder="matin, après-midi, soir" maxlength="50">
+              </div>
+              <div class="form-group">
+                <label for="add-course-heure" class="form-label">Heure</label>
+                <input type="text" id="add-course-heure" class="form-input" placeholder="ex. 18h-21h" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="add-course-duree" class="form-label">Durée (semaines)</label>
+                <input type="number" id="add-course-duree" class="form-input" min="0" step="1" placeholder="">
+              </div>
+              <div class="form-group">
+                <label for="add-course-debut" class="form-label">Date de début (affichage)</label>
+                <input type="text" id="add-course-debut" class="form-input" placeholder="ex. 25 mars" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="add-course-places" class="form-label">Places max <span class="required">*</span></label>
+                <input type="number" id="add-course-places" class="form-input" required min="0" step="1" value="6">
+              </div>
+              <div class="form-group">
+                <label for="add-course-prix" class="form-label">Prix</label>
+                <input type="text" id="add-course-prix" class="form-input" placeholder="ex. 280$ (taxes en sus)" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="add-course-prof" class="form-label">Professeur</label>
+                <input type="text" id="add-course-prof" class="form-input" maxlength="100">
+              </div>
+              <div class="form-group">
+                <label for="add-course-salle" class="form-label">Salle</label>
+                <input type="text" id="add-course-salle" class="form-input" maxlength="100">
+              </div>
+              <div class="form-group form-grid-full">
+                <label for="add-course-desc" class="form-label">Description</label>
+                <textarea id="add-course-desc" class="form-textarea" rows="3" placeholder="Texte court pour la carte cours"></textarea>
+              </div>
+              <div class="form-group">
+                <label for="add-course-page" class="form-label">Page dédiée (slug)</label>
+                <input type="text" id="add-course-page" class="form-input" placeholder="ex. vitrail-intensif-niveau-1" maxlength="255">
+              </div>
+              <div class="form-group">
+                <label for="add-course-image" class="form-label">Image (URL)</label>
+                <input type="text" id="add-course-image" class="form-input" placeholder="/assets/images/..." maxlength="512">
+              </div>
+              <div class="form-group form-grid-full">
+                <label for="add-course-groupe" class="form-label">Identifiant de groupe (optionnel)</label>
+                <input type="text" id="add-course-groupe" class="form-input" maxlength="255" placeholder="ex. grp-mon-cours-abc123" autocomplete="off">
+                <p class="form-hint form-hint-tight">Pour regrouper plusieurs créneaux sur une même carte (création à un seul créneau). Laisser vide sinon.</p>
+              </div>
+              <div class="form-group form-grid-full add-course-creneaux-block">
+                <p class="form-hint">Pour <strong>plusieurs jours ou périodes</strong> pour le même cours, cliquez sur « Ajouter un autre créneau » puis remplissez chaque ligne (places par créneau). La page cours affichera une seule carte avec tous les créneaux.</p>
+                <button type="button" id="btn-add-creneau-slot" class="btn btn-outline btn-sm">Ajouter un autre créneau</button>
+                <div id="add-course-creneaux-extra" class="creneaux-extra" aria-live="polite"></div>
+              </div>
+            </div>
+            <div class="form-row-checkboxes">
+              <label class="form-check">
+                <input type="checkbox" id="add-course-actif" class="form-check-input" checked>
+                <span class="form-check-label">Visible sur le site (actif)</span>
+              </label>
+              <label class="form-check">
+                <input type="checkbox" id="add-course-badge-new" class="form-check-input">
+                <span class="form-check-label">Badge « Nouveau »</span>
+              </label>
+            </div>
+            <div class="form-actions form-actions-dialog">
+              <button type="button" id="btn-cancel-add-course" class="btn btn-outline">Annuler</button>
+              <button type="submit" id="btn-submit-add-course" class="btn btn-primary">Créer le cours</button>
+            </div>
+          </form>
+          <template id="tpl-creneau-row">
+            <div class="creneau-extra-row form-grid-2">
+              <div class="form-group">
+                <label class="form-label">Jour</label>
+                <input type="text" class="form-input creneau-jour" maxlength="50" autocomplete="off" placeholder="ex. mardi">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Période</label>
+                <input type="text" class="form-input creneau-creneau" maxlength="50" placeholder="matin, soir…">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Heure</label>
+                <input type="text" class="form-input creneau-heure" maxlength="100" placeholder="ex. 18h-21h">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Places max <span class="required">*</span></label>
+                <input type="number" class="form-input creneau-places" required min="0" step="1" value="6">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Date début (affichage)</label>
+                <input type="text" class="form-input creneau-date-debut" maxlength="100" placeholder="optionnel">
+              </div>
+              <div class="form-group form-actions-inline">
+                <button type="button" class="btn btn-outline btn-sm btn-remove-creneau">Retirer ce créneau</button>
+              </div>
+            </div>
+          </template>
+        </dialog>
+
         <div class="table-responsive">
           <table class="admin-table" id="courses-table">
             <thead>
               <tr>
                 <th>Cours</th>
+                <th>Groupe</th>
+                <th>Slug</th>
                 <th>Discipline</th>
-                <th>Jour</th>
-                <th>Horaire</th>
+                <th>Créneau</th>
                 <th>Début</th>
                 <th>Places restantes</th>
                 <th>Prix</th>
                 <th>Visibilité</th>
+                <th class="cell-actions">Actions</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td colspan="8" class="loading">Chargement...</td></tr>
+              <tr><td colspan="10" class="loading">Chargement...</td></tr>
             </tbody>
           </table>
         </div>

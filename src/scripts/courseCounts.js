@@ -14,11 +14,56 @@
       .then(function (cours) {
         cards.forEach(function (card) {
           var titleEl = card.querySelector('.course-title');
+          if (!titleEl) return;
+
+          if (card.classList.contains('course-card-grouped')) {
+            var availabilityEl = card.querySelector('.course-card-header .course-availability');
+            var slotLines = card.querySelectorAll('.course-slot-line[data-course-id]');
+            var sumRestantes = 0;
+            slotLines.forEach(function (line) {
+              var idAttr = line.getAttribute('data-course-id');
+              var course = idAttr ? cours.find(function (c) { return String(c.id) === idAttr; }) : null;
+              var slotAvail = line.querySelector('.course-slot-availability');
+              var signupLink = line.querySelector('a[href*="inscription"]');
+              if (!course || !slotAvail) return;
+              var restantes = course.places_restantes;
+              sumRestantes += Math.max(0, restantes | 0);
+              if (restantes === 0) {
+                slotAvail.textContent = 'Complet';
+                slotAvail.className = 'course-slot-availability course-availability full';
+                if (signupLink && signupLink.parentNode) {
+                  var span = document.createElement('span');
+                  span.className = 'btn btn-outline btn-sm disabled';
+                  span.textContent = 'Complet';
+                  signupLink.parentNode.replaceChild(span, signupLink);
+                }
+              } else {
+                slotAvail.className = 'course-slot-availability course-availability available';
+                slotAvail.textContent = restantes === 1 ? '1 place' : restantes + ' places';
+              }
+            });
+            if (availabilityEl) {
+              var allFull = slotLines.length > 0 && Array.prototype.every.call(slotLines, function (line) {
+                var idAttr = line.getAttribute('data-course-id');
+                var course = idAttr ? cours.find(function (c) { return String(c.id) === idAttr; }) : null;
+                return course && (course.places_restantes | 0) === 0;
+              });
+              if (allFull) {
+                availabilityEl.textContent = 'Complet';
+                availabilityEl.className = 'course-availability full';
+              } else {
+                availabilityEl.className = 'course-availability available';
+                availabilityEl.textContent = sumRestantes === 1 ? '1 place au total' : sumRestantes + ' places au total';
+              }
+            }
+            return;
+          }
+
           var availabilityEl = card.querySelector('.course-availability');
           var btnWrap = card.querySelector('.course-cta, .course-card-footer');
           var signupLink = btnWrap ? btnWrap.querySelector('a[href*="inscription"]') : null;
 
-          if (!titleEl || !availabilityEl) return;
+          if (!availabilityEl) return;
 
           var idAttr = card.getAttribute('data-course-id');
           var course = null;

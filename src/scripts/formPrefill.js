@@ -128,11 +128,12 @@
 
         optgroup.appendChild(option);
 
+        // course_id en priorité si plusieurs créneaux partagent le même nom
         if (preselect && (
-          c.nom === preselect ||
-          optValue === preselect ||
           String(c.id) === preselect ||
-          decodeURIComponent(preselect) === optValue
+          optValue === preselect ||
+          decodeURIComponent(preselect) === optValue ||
+          c.nom === preselect
         )) {
           preselectedIndex = optionIndex;
         }
@@ -217,8 +218,9 @@
     if (!selectElement) return;
 
     var urlParams = new URLSearchParams(window.location.search);
+    var courseIdParam = urlParams.get('course_id');
     var coursParam = urlParams.get('cours');
-    var preselect = coursParam ? decodeURIComponent(coursParam) : null;
+    var preselect = courseIdParam || (coursParam ? decodeURIComponent(coursParam) : null);
 
     fetch(API_URL + '/api/cours', { cache: 'no-store' })
       .then(function(r) {
@@ -236,7 +238,12 @@
         if (preselectedIndex > 0) {
           selectElement.selectedIndex = preselectedIndex;
           selectElement.classList.add('prefilled');
-          showPrefillNotice(preselect);
+          var noticeLabel = preselect;
+          var optSel = selectElement.options[selectElement.selectedIndex];
+          if (optSel && optSel.textContent) {
+            noticeLabel = optSel.textContent.replace(/\s*\[COMPLET\]\s*$/i, '').trim();
+          }
+          showPrefillNotice(noticeLabel);
         }
         syncCoursHiddenFields();
         selectElement.addEventListener('change', syncCoursHiddenFields);

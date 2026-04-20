@@ -161,6 +161,19 @@
         });
 
         populateDropdown(selectElement, bookable);
+
+        var urlParams = new URLSearchParams(window.location.search);
+        var cid = urlParams.get('course_id');
+        if (cid && /^\d+$/.test(String(cid).trim())) {
+          var want = String(cid).trim();
+          for (var oi = 0; oi < selectElement.options.length; oi++) {
+            if (selectElement.options[oi].value === want) {
+              selectElement.selectedIndex = oi;
+              break;
+            }
+          }
+        }
+
         syncCoursHiddenFields();
         selectElement.addEventListener('change', syncCoursHiddenFields);
       })

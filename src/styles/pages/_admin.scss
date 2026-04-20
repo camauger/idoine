@@ -80,6 +80,24 @@
     color: var(--color-gray-600);
     margin-top: var(--spacing-1);
   }
+
+  &.stat-card-with-sublabel {
+    align-items: center;
+  }
+
+  .stat-sublabel {
+    display: block;
+    font-size: var(--text-xs);
+    color: var(--color-gray-500);
+    margin-top: var(--spacing-2);
+    line-height: var(--leading-snug);
+    max-width: 16rem;
+  }
+
+  .stat-label-hint {
+    font-weight: 400;
+    color: var(--color-gray-500);
+  }
 }
 
 // Tabs
@@ -140,6 +158,22 @@
   }
 }
 
+.admin-toolbar-courses {
+  align-items: flex-start;
+
+  h2 {
+    margin-bottom: var(--spacing-2);
+  }
+}
+
+.admin-toolbar-hint {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--color-gray-600);
+  line-height: var(--leading-relaxed);
+  max-width: 42rem;
+}
+
 // Table
 .table-responsive {
   overflow-x: auto;
@@ -176,7 +210,61 @@
 
   .course-name {
     font-weight: 500;
-    max-width: 250px;
+    max-width: 220px;
+  }
+
+  .cell-actions {
+    white-space: nowrap;
+    width: 1%;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  .btn-delete-course {
+    border-color: var(--color-error);
+    color: var(--color-error);
+
+    &:hover:not(:disabled) {
+      background: rgba(181, 74, 63, 0.08);
+    }
+  }
+
+  tr.course-row-grouped td:first-child {
+    border-left: 3px solid var(--color-terracotta, #c45c3e);
+  }
+
+  tr.course-row-group-start td {
+    border-top: 2px solid var(--color-gray-300);
+  }
+
+  .cell-groupe,
+  .cell-slug {
+    font-size: var(--text-xs);
+    vertical-align: top;
+  }
+
+  .admin-groupe-slug,
+  .admin-course-slug {
+    display: inline-block;
+    max-width: 11rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: var(--text-xs);
+    padding: 0.15em 0.35em;
+    background: var(--color-gray-100);
+    border-radius: var(--radius-sm, 4px);
+  }
+
+  .admin-cell-muted {
+    color: var(--color-gray-400);
+  }
+
+  .cell-creneau {
+    max-width: 14rem;
+    white-space: normal;
   }
 
   a {
@@ -379,6 +467,119 @@
     white-space: pre-wrap;
     line-height: 1.6;
   }
+}
+
+// Dialog — ajout de cours
+.admin-add-course-dialog {
+  border: none;
+  border-radius: var(--radius-lg);
+  padding: 0;
+  max-width: 720px;
+  width: calc(100% - 2rem);
+  max-height: calc(100vh - 2rem);
+  overflow-y: auto;
+  box-shadow: var(--shadow-xl);
+
+  &::backdrop {
+    background: rgba(0, 0, 0, 0.45);
+  }
+
+  h3 {
+    margin: 0 0 var(--spacing-4);
+    font-size: var(--text-xl);
+  }
+
+  .add-course-dialog-hint {
+    margin: calc(-1 * var(--spacing-2)) 0 var(--spacing-4);
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+  }
+
+  #form-add-course {
+    padding: var(--spacing-6);
+  }
+}
+
+.form-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-4);
+
+  .form-grid-full {
+    grid-column: 1 / -1;
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-hint-btn {
+  margin-top: var(--spacing-2);
+}
+
+.form-section-title {
+  margin: 0 0 var(--spacing-1);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-gray-800);
+}
+
+.form-section-title-note {
+  font-weight: 400;
+  color: var(--color-gray-500);
+}
+
+.form-hint-tight {
+  margin-top: var(--spacing-2);
+  margin-bottom: 0;
+  font-size: var(--text-xs);
+}
+
+.form-row-checkboxes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
+  margin: var(--spacing-4) 0;
+}
+
+.form-actions-dialog {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-3);
+  margin-top: var(--spacing-6);
+  padding-top: var(--spacing-4);
+  border-top: 1px solid var(--color-gray-200);
+}
+
+.add-course-creneaux-block {
+  margin-top: var(--spacing-2);
+
+  .form-hint {
+    margin-bottom: var(--spacing-3);
+    font-size: var(--text-sm);
+    line-height: var(--leading-relaxed);
+  }
+}
+
+.creneaux-extra {
+  margin-top: var(--spacing-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-4);
+}
+
+.creneau-extra-row {
+  padding: var(--spacing-4);
+  border: 1px solid var(--color-gray-200);
+  border-radius: var(--radius-md);
+  background: var(--color-gray-50);
+}
+
+.form-actions-inline {
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
 }
 
 // Form select small
