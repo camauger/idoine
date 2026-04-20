@@ -217,7 +217,7 @@
   function renderCourses() {
     var tbody = document.querySelector('#courses-table tbody');
     if (!courses.length) {
-      tbody.innerHTML = '<tr><td colspan="10" class="empty">Aucun cours</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="8" class="empty">Aucun cours</td></tr>';
       return;
     }
 
@@ -234,15 +234,8 @@
       var isGroupStart = gs && gs !== prevGs;
       var trClass = (rowMuted + (gs ? ' course-row-grouped' : '') + (isGroupStart ? ' course-row-group-start' : '')).trim();
 
-      var groupeCell = gs
-        ? '<code class="admin-groupe-slug" title="' + esc(gs) + '">' + esc(truncate(gs, 28)) + '</code>'
-        : '<span class="admin-cell-muted">—</span>';
-      var slugCell = '<code class="admin-course-slug" title="' + esc(c.slug || '') + '">' + esc(truncate(c.slug || '—', 36)) + '</code>';
-
       return '<tr class="' + trClass + '" data-course-id="' + c.id + '" data-places-max="' + (c.places_max || 0) + '">' +
         '<td class="course-name">' + esc(c.nom) + '</td>' +
-        '<td class="cell-groupe">' + groupeCell + '</td>' +
-        '<td class="cell-slug">' + slugCell + '</td>' +
         '<td><span class="badge badge-' + esc(c.discipline) + '">' + esc(c.discipline) + '</span></td>' +
         '<td class="cell-creneau">' + esc(formatCreneau(c)) + '</td>' +
         '<td>' + esc(c.date_debut || '-') + '</td>' +
@@ -260,9 +253,8 @@
         '<td class="actif-cell">' +
           '<label class="actif-label">' +
             '<input type="checkbox" class="course-actif-cb" ' + (isActif ? 'checked' : '') + ' aria-label="Créneau #' + c.id + ' visible sur le site" />' +
-            '<span>Visible</span>' +
+            '<span class="visually-hidden">Visible sur le site</span>' +
           '</label>' +
-          '<span class="status ' + statusClass + ' actif-pill">' + (isActif ? 'Actif' : 'Masqué') + '</span>' +
         '</td>' +
         '<td class="cell-actions">' +
           '<button type="button" class="btn btn-outline btn-sm btn-edit-course" ' +
