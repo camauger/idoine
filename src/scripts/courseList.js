@@ -241,7 +241,10 @@
       '</header>' +
       '<div class="course-card-body">' +
         '<h3 class="course-title">' + esc(c0.nom) + '</h3>' +
-        '<p class="course-description">' + desc + '</p>' +
+        '<div class="course-description-wrap">' +
+          '<p class="course-description">' + desc + '</p>' +
+          '<button type="button" class="course-description-toggle" hidden aria-expanded="false">Lire la suite</button>' +
+        '</div>' +
         '<p class="course-slots-intro">Créneaux et inscription :</p>' +
         '<ul class="course-slots-list">' + slotsHtml + '</ul>' +
       '</div>' +
@@ -334,7 +337,10 @@
       '</header>' +
       '<div class="course-card-body">' +
         '<h3 class="course-title">' + esc(c.nom) + '</h3>' +
-        '<p class="course-description">' + desc + '</p>' +
+        '<div class="course-description-wrap">' +
+          '<p class="course-description">' + desc + '</p>' +
+          '<button type="button" class="course-description-toggle" hidden aria-expanded="false">Lire la suite</button>' +
+        '</div>' +
         '<div class="course-details">' + details + '</div>' +
       '</div>' +
       '<footer class="course-card-footer">' +
@@ -343,6 +349,32 @@
       '</footer>' +
     '</article>';
   }
+
+  /** Affiche le bouton « Lire la suite » uniquement si la description déborde. */
+  function revealDescriptionToggles(root) {
+    var wraps = (root || document).querySelectorAll('.course-description-wrap');
+    wraps.forEach(function (wrap) {
+      var p = wrap.querySelector('.course-description');
+      var btn = wrap.querySelector('.course-description-toggle');
+      if (!p || !btn) return;
+      if (p.classList.contains('is-expanded')) return;
+      var overflow = p.scrollHeight - p.clientHeight > 1;
+      btn.hidden = !overflow;
+    });
+  }
+
+  /** Délégation : ouvre/ferme la description. */
+  document.addEventListener('click', function (ev) {
+    var btn = ev.target.closest && ev.target.closest('.course-description-toggle');
+    if (!btn) return;
+    var wrap = btn.closest('.course-description-wrap');
+    if (!wrap) return;
+    var p = wrap.querySelector('.course-description');
+    if (!p) return;
+    var expanded = p.classList.toggle('is-expanded');
+    btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    btn.textContent = expanded ? 'Réduire' : 'Lire la suite';
+  });
 
   function init() {
     var loadingEl = document.getElementById('courses-loading');
@@ -429,6 +461,14 @@
         }
 
         if (fallbackEl) fallbackEl.style.display = 'none';
+        revealDescriptionToggles();
+        var resizeTimer = 0;
+        window.addEventListener('resize', function () {
+          if (resizeTimer) cancelAnimationFrame(resizeTimer);
+          resizeTimer = requestAnimationFrame(function () {
+            revealDescriptionToggles();
+          });
+        });
         window.dispatchEvent(new CustomEvent('courses-loaded'));
       })
       .catch(function () {

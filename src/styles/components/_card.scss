@@ -268,6 +268,12 @@
   line-height: var(--leading-snug);
 }
 
+.course-description-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-1);
+}
+
 .course-description {
   font-size: var(--text-base);
   color: var(--color-kiln-charcoal);
@@ -278,6 +284,38 @@
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+
+  &.is-expanded {
+    display: block;
+    -webkit-line-clamp: unset;
+    overflow: visible;
+  }
+}
+
+.course-description-toggle {
+  align-self: flex-start;
+  background: none;
+  border: 0;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-primary);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+
+  &:hover,
+  &:focus-visible {
+    color: var(--color-primary-dark, var(--color-primary));
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
 }
 
 // Course details grid — labels secondary, values primary

@@ -89,6 +89,44 @@
       "salle": null,
       "description": "Mosaïque de verre, matériel inclus.",
       "page_dediee": "mosaique-verre"
+    },
+    {
+      "nom": "Pot pincé : l'argile prend forme entre vos mains",
+      "slug": "pot-pince-23-mai",
+      "discipline": "ceramique",
+      "type_cours": "intensif",
+      "jour": "samedi",
+      "heure": "13h30-16h30",
+      "duree_semaines": null,
+      "date_debut": "23 mai",
+      "places_max": 8,
+      "prix": "43$",
+      "taxes": "inclus",
+      "statut": "actif",
+      "prof": null,
+      "salle": null,
+      "description": "Apprivoisez l'argile entre vos doigts. Repartez avec une pièce unique faite à la main.",
+      "page_dediee": null,
+      "badge_new": true
+    },
+    {
+      "nom": "Atelier Duo : Parenthèse créative parent-enfant",
+      "slug": "atelier-duo-parenthese-creative-6-juin",
+      "discipline": "ceramique",
+      "type_cours": "intensif",
+      "jour": "samedi",
+      "heure": "13h30-16h30",
+      "duree_semaines": null,
+      "date_debut": "6 juin",
+      "places_max": 4,
+      "prix": "70$ par duo",
+      "taxes": "inclus",
+      "statut": "actif",
+      "prof": null,
+      "salle": null,
+      "description": "Activité parent-enfant : façonnez ensemble un bol animal et un colifichet pour vos petits trésors (1 parent + 1 enfant par duo).",
+      "page_dediee": null,
+      "badge_new": true
     }
   ]
 }
