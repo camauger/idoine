@@ -40,18 +40,23 @@
   }
 }
 
-/// Focus ring for keyboard navigation
-/// @param {Color} $color - Focus ring color (default: primary)
-/// @param {Length} $offset - Outline offset (default: 2px)
-@mixin focus-ring($color: var(--color-accent), $offset: 2px) {
-  &:focus {
-    outline: none;
-  }
-
+/// Focus ring for keyboard navigation. The `:focus:not(:focus-visible)`
+/// reset lives in _accessibility.scss, so this mixin only handles the
+/// keyboard-focus state.
+/// @param {Color} $color  - Focus ring color
+/// @param {Length} $width  - Outline width
+/// @param {Length} $offset - Outline offset
+/// @param {Length} $radius - Outline border-radius
+@mixin focus-ring(
+  $color: var(--color-accent),
+  $width: 2px,
+  $offset: 2px,
+  $radius: var(--border-radius-sm)
+) {
   &:focus-visible {
-    outline: 3px solid $color;
+    outline: $width solid $color;
     outline-offset: $offset;
-    border-radius: var(--border-radius-sm);
+    border-radius: $radius;
   }
 }
 

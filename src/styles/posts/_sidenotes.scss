@@ -4,6 +4,8 @@
 // Displays notes in the margin on wide screens, collapses to inline
 // expandable footnotes on mobile.
 
+@use "../base/utils" as *;
+
 // -----------------------------------------------------------------------------
 // Sidenote Container
 // -----------------------------------------------------------------------------
@@ -31,11 +33,7 @@
     color: var(--color-accent-light);
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-    border-radius: 2px;
-  }
+  @include focus-ring($radius: 2px);
 
   // Hide on wide screens where sidenotes are visible
   @media (min-width: 1200px) {

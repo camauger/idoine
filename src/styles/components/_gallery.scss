@@ -2,6 +2,8 @@
 // Gallery Styles
 // =============================================================================
 
+@use "../base/utils" as *;
+
 // Main gallery page
 .gallery {
   max-width: 1400px;
@@ -53,14 +55,7 @@
       text-decoration: none;
       color: inherit;
 
-      &:focus {
-        outline: none;
-      }
-
-      &:focus-visible {
-        outline: 3px solid var(--color-accent);
-        outline-offset: 2px;
-      }
+      @include focus-ring($width: 3px, $radius: var(--border-radius));
     }
 
     figure {
@@ -259,10 +254,7 @@
           transform: translateX(4px);
         }
 
-        &:focus-visible {
-          outline: 3px solid var(--color-accent);
-          outline-offset: 2px;
-        }
+        @include focus-ring($width: 3px, $radius: var(--border-radius));
       }
     }
   }

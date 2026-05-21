@@ -2,6 +2,8 @@
 // Footer
 // =============================================================================
 
+@use "../base/utils" as *;
+
 body > footer {
   background-color: var(--color-background-alt);
   padding: var(--spacing-6) var(--spacing-4);
@@ -91,10 +93,7 @@ body > footer {
     transform: translateY(-2px);
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-  }
+  @include focus-ring($radius: var(--border-radius));
 
   svg,
   i {

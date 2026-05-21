@@ -4,6 +4,8 @@
 // Implements a modular type scale (1.25 ratio) with consistent line-heights
 // and optimal measure for readability. Uses serif for long-form content.
 
+@use "utils" as *;
+
 body {
   font-family: var(--font-ui);
   font-size: var(--text-base);
@@ -136,11 +138,7 @@ a {
     color: var(--color-accent-subtle);
   }
 
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 3px;
-    border-radius: 2px;
-  }
+  @include focus-ring($offset: 3px, $radius: 2px);
 }
 
 // =============================================================================

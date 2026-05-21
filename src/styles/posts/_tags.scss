@@ -1,4 +1,4 @@
-
+@use "../base/utils" as *;
 
 @mixin hover-effect {
   transition: all var(--transition-fast) ease-in-out;
@@ -6,14 +6,6 @@
     transform: translateY(-2px);
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
       0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  }
-}
-
-@mixin focus-visible {
-  &:focus-visible {
-    outline: 2px solid var(--color-accent);
-    outline-offset: 2px;
-    border-radius: 2px;
   }
 }
 
@@ -73,7 +65,7 @@
   font-weight: 500;
   transition: all var(--transition-fast) ease-in-out;
 
-  @include focus-visible;
+  @include focus-ring($radius: 2px);
 
   &:hover {
     background-color: var(--color-accent);

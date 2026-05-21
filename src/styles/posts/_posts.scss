@@ -52,11 +52,7 @@
           color: var(--color-accent);
         }
 
-        &:focus-visible {
-          outline: 2px solid var(--color-accent);
-          outline-offset: 2px;
-          border-radius: var(--border-radius-sm);
-        }
+        @include focus-ring();
       }
 
       .post-meta {
@@ -106,11 +102,7 @@
           }
         }
 
-        &:focus-visible {
-          outline: 2px solid var(--color-accent);
-          outline-offset: 2px;
-          border-radius: var(--border-radius-sm);
-        }
+        @include focus-ring();
       }
     }
   }
