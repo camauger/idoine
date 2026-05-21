@@ -12,7 +12,7 @@
   padding: var(--spacing-2) var(--spacing-4);
   border: 2px solid transparent;
   border-radius: var(--border-radius);
-  font-family: var(--font-primary);
+  font-family: var(--font-ui);
   font-size: var(--text-base);
   font-weight: 600;
   text-decoration: none;
@@ -244,12 +244,6 @@
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: var(--border-radius-full);
-    animation: btn-spin 0.6s linear infinite;
-  }
-}
-
-@keyframes btn-spin {
-  to {
-    transform: rotate(360deg);
+    animation: spin 0.6s linear infinite;
   }
 }

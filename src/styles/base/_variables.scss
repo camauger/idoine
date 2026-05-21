@@ -28,12 +28,14 @@
   --color-accent-dark: #9a7b1c;       /* Darker gold */
   --color-accent-subtle: #8b7355;     /* Muted bronze for secondary */
 
-  /* Legacy compatibility */
-  --color-primary: var(--color-accent);
-  --color-primary-light: var(--color-accent-light);
-  --color-primary-dark: var(--color-accent-dark);
-  --color-secondary: #b85c38;         /* Warm terracotta */
+  /* Secondary palette (terracotta) */
+  --color-secondary: #b85c38;
   --color-secondary-dark: #8f4528;
+
+  /* Semantic state colors */
+  --color-warning: #f59e0b;
+  --color-success: var(--color-accent);
+  --color-danger: var(--color-secondary);
 
   /* Borders and dividers */
   --color-border: #3d3730;
@@ -55,10 +57,6 @@
   --font-body: var(--font-serif);     /* Articles use serif */
   --font-ui: var(--font-sans);        /* UI elements use sans */
   --font-heading: var(--font-decorative);
-
-  /* Legacy compatibility */
-  --font-primary: var(--font-sans);
-  --font-secondary: var(--font-decorative);
 
   /* Fluid type scale (1.25 ratio - Major Third) */
   --text-xs: clamp(0.75rem, 0.72rem + 0.15vw, 0.8125rem);

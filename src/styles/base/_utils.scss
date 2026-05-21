@@ -43,7 +43,7 @@
 /// Focus ring for keyboard navigation
 /// @param {Color} $color - Focus ring color (default: primary)
 /// @param {Length} $offset - Outline offset (default: 2px)
-@mixin focus-ring($color: var(--color-primary), $offset: 2px) {
+@mixin focus-ring($color: var(--color-accent), $offset: 2px) {
   &:focus {
     outline: none;
   }
@@ -128,7 +128,7 @@
     overflow: visible;
     clip: auto;
     white-space: normal;
-    background: var(--color-primary);
+    background: var(--color-accent);
     color: var(--color-white);
     border-radius: var(--border-radius);
     z-index: var(--z-toast);
@@ -263,7 +263,7 @@
 // =============================================================================
 
 .text-primary {
-  color: var(--color-primary);
+  color: var(--color-accent);
 }
 
 .text-secondary {
@@ -275,7 +275,7 @@
 }
 
 .bg-primary {
-  background-color: var(--color-primary);
+  background-color: var(--color-accent);
 }
 
 .bg-secondary {

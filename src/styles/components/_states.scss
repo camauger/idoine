@@ -13,7 +13,7 @@
   background-color: var(--color-background-alt);
   border-radius: var(--border-radius);
 
-  // Shimmer animation
+  // Shimmer animation — dark theme is the default, lighter shimmer
   &::after {
     content: "";
     position: absolute;
@@ -21,20 +21,19 @@
     background: linear-gradient(
       90deg,
       transparent 0%,
-      rgba(255, 255, 255, 0.4) 50%,
+      rgba(255, 255, 255, 0.1) 50%,
       transparent 100%
     );
     transform: translateX(-100%);
     animation: skeleton-shimmer 1.5s ease-in-out infinite;
   }
 
-  // Dark mode adjustment
-  [data-theme="dark"] & {
+  [data-theme="light"] & {
     &::after {
       background: linear-gradient(
         90deg,
         transparent 0%,
-        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0.4) 50%,
         transparent 100%
       );
     }
@@ -203,26 +202,18 @@
   border-width: 4px;
 }
 
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
+// `@keyframes spin` lives in base/_animations.scss
 
-// Loading overlay
+// Loading overlay — dark default, lighter override
 .loading-overlay {
   position: absolute;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: color-mix(in srgb, var(--color-background) 80%, transparent);
   backdrop-filter: blur(2px);
   z-index: var(--z-overlay);
-
-  [data-theme="dark"] & {
-    background-color: rgba(18, 18, 18, 0.8);
-  }
 }
 
 // =============================================================================
@@ -288,7 +279,7 @@
   }
 
   &.toast-success {
-    border-left: 4px solid var(--color-primary);
+    border-left: 4px solid var(--color-accent);
   }
 
   &.toast-error {
@@ -296,7 +287,7 @@
   }
 
   &.toast-warning {
-    border-left: 4px solid #f59e0b;
+    border-left: 4px solid var(--color-warning);
   }
 }
 

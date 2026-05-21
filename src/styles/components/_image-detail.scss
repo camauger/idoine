@@ -5,7 +5,7 @@
 
   h1 {
     font-size: 2.2rem;
-    color: var(--color-primary, #2b6cb0);
+    color: var(--color-accent);
     margin-bottom: 1.5rem;
   }
 
@@ -38,7 +38,7 @@
 
     h2 {
       font-size: 1.5rem;
-      color: var(--color-primary, #2b6cb0);
+      color: var(--color-accent);
       margin-bottom: 1rem;
     }
 
@@ -56,7 +56,7 @@
           display: inline-flex;
           align-items: center;
           padding: 0.5rem 1rem;
-          background-color: var(--color-primary, #2b6cb0);
+          background-color: var(--color-accent);
           color: #fff;
           border-radius: 8px;
           font-size: 0.9rem;
@@ -64,7 +64,7 @@
           transition: background-color 0.3s ease;
 
           &:hover {
-            background-color: darken(#2b6cb0, 10%);
+            background-color: var(--color-accent-dark);
           }
         }
       }
@@ -78,12 +78,12 @@
     a {
       font-size: 1rem;
       text-decoration: none;
-      color: var(--color-primary, #2b6cb0);
+      color: var(--color-accent);
       font-weight: bold;
       transition: color 0.3s ease;
 
       &:hover {
-        color: darken(#2b6cb0, 15%);
+        color: var(--color-accent-dark);
       }
     }
   }

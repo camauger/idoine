@@ -60,7 +60,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--spacing-1);
-    color: var(--color-primary);
+    color: var(--color-accent);
     text-decoration: none;
     font-weight: 600;
     transition: color var(--transition-fast) var(--ease-out);
@@ -71,7 +71,7 @@
     }
 
     &:hover {
-      color: var(--color-primary-dark);
+      color: var(--color-accent-dark);
 
       &::after {
         transform: translateX(4px);
@@ -132,7 +132,7 @@
 
   .btn {
     background-color: var(--color-white);
-    color: var(--color-primary);
+    color: var(--color-accent);
 
     &:hover {
       background-color: var(--color-background);

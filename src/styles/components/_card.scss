@@ -37,12 +37,12 @@
   // ==========================================================================
 
   &--primary {
-    border-color: var(--color-primary);
+    border-color: var(--color-accent);
 
     &:hover {
       box-shadow:
         var(--shadow-md),
-        0 0 0 1px var(--color-primary);
+        0 0 0 1px var(--color-accent);
     }
   }
 
