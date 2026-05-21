@@ -3,6 +3,13 @@
 // =============================================================================
 // Flexible card component with consistent interactive states.
 
+@mixin card-outline($color) {
+  border-color: $color;
+  &:hover {
+    box-shadow: var(--shadow-md), 0 0 0 1px $color;
+  }
+}
+
 .card {
   position: relative;
   display: flex;
@@ -37,23 +44,11 @@
   // ==========================================================================
 
   &--primary {
-    border-color: var(--color-accent);
-
-    &:hover {
-      box-shadow:
-        var(--shadow-md),
-        0 0 0 1px var(--color-accent);
-    }
+    @include card-outline(var(--color-accent));
   }
 
   &--secondary {
-    border-color: var(--color-secondary);
-
-    &:hover {
-      box-shadow:
-        var(--shadow-md),
-        0 0 0 1px var(--color-secondary);
-    }
+    @include card-outline(var(--color-secondary));
   }
 
   &--elevated {
