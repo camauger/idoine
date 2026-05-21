@@ -5,8 +5,48 @@
 
 @use "../base/utils" as *;
 
+// Color skin for a button variant. All hover/active overrides default to
+// the base values, so callers only need to pass what actually changes.
+@mixin button-variant(
+  $bg,
+  $border,
+  $color,
+  $hover-bg: $bg,
+  $hover-border: $border,
+  $hover-color: $color,
+  $active-bg: $bg,
+  $active-border: $border
+) {
+  background-color: $bg;
+  border-color: $border;
+  color: $color;
+
+  &:hover {
+    background-color: $hover-bg;
+    border-color: $hover-border;
+    color: $hover-color;
+  }
+
+  &:active {
+    background-color: $active-bg;
+    border-color: $active-border;
+  }
+}
+
+// Opt-in lift effect. Variants that want a press animation include this;
+// .btn-link omits it instead of having to undo it.
+@mixin button-lift {
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+  }
+  &:active {
+    transform: translateY(0) scale(0.98);
+    box-shadow: var(--shadow-sm);
+  }
+}
+
 .btn {
-  // Base styles
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -23,7 +63,6 @@
   cursor: pointer;
   user-select: none;
 
-  // Transitions
   transition:
     transform var(--transition-fast) var(--ease-out),
     box-shadow var(--transition-fast) var(--ease-out),
@@ -31,21 +70,8 @@
     border-color var(--transition-fast) var(--ease-out),
     color var(--transition-fast) var(--ease-out);
 
-  // Hover state
-  &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-md);
-  }
-
-  // Active/pressed state
-  &:active {
-    transform: translateY(0) scale(0.98);
-    box-shadow: var(--shadow-sm);
-  }
-
   @include focus-ring($width: 3px, $radius: var(--border-radius));
 
-  // Disabled state
   &:disabled,
   &.disabled {
     opacity: 0.5;
@@ -53,10 +79,7 @@
     pointer-events: none;
   }
 
-  // ==========================================================================
   // Sizes
-  // ==========================================================================
-
   &.btn-sm,
   &.small {
     padding: var(--spacing-1) var(--spacing-2);
@@ -71,10 +94,7 @@
     border-radius: var(--border-radius-lg);
   }
 
-  // ==========================================================================
   // Icon support
-  // ==========================================================================
-
   i,
   svg,
   .icon {
@@ -90,105 +110,91 @@
 }
 
 // =============================================================================
-// Button Variants
+// Variants
 // =============================================================================
 
 .btn-primary {
-  background-color: var(--color-accent);
-  border-color: var(--color-accent);
-  color: var(--color-background);
-
-  &:hover {
-    background-color: var(--color-accent-light);
-    border-color: var(--color-accent-light);
-    color: var(--color-background);
-  }
-
-  &:active {
-    background-color: var(--color-accent-dark);
-  }
+  @include button-variant(
+    $bg: var(--color-accent),
+    $border: var(--color-accent),
+    $color: var(--color-background),
+    $hover-bg: var(--color-accent-light),
+    $hover-border: var(--color-accent-light),
+    $active-bg: var(--color-accent-dark),
+    $active-border: var(--color-accent-dark)
+  );
+  @include button-lift;
 }
 
 .btn-secondary {
-  background-color: var(--color-secondary);
-  border-color: var(--color-secondary);
-  color: var(--color-white);
-
-  &:hover {
-    background-color: var(--color-secondary-dark);
-    border-color: var(--color-secondary-dark);
-    color: var(--color-white);
-  }
-
-  &:active {
-    background-color: var(--color-secondary-dark);
-  }
+  @include button-variant(
+    $bg: var(--color-secondary),
+    $border: var(--color-secondary),
+    $color: var(--color-white),
+    $hover-bg: var(--color-secondary-dark),
+    $hover-border: var(--color-secondary-dark),
+    $active-bg: var(--color-secondary-dark),
+    $active-border: var(--color-secondary-dark)
+  );
+  @include button-lift;
 }
 
 .btn-outline {
-  background-color: transparent;
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-
-  &:hover {
-    background-color: var(--color-accent);
-    border-color: var(--color-accent);
-    color: var(--color-background);
-  }
-
-  &:active {
-    background-color: var(--color-accent-dark);
-    border-color: var(--color-accent-dark);
-  }
+  @include button-variant(
+    $bg: transparent,
+    $border: var(--color-accent),
+    $color: var(--color-accent),
+    $hover-bg: var(--color-accent),
+    $hover-border: var(--color-accent),
+    $hover-color: var(--color-background),
+    $active-bg: var(--color-accent-dark),
+    $active-border: var(--color-accent-dark)
+  );
+  @include button-lift;
 }
 
 .btn-outline-secondary {
-  background-color: transparent;
-  border-color: var(--color-secondary);
-  color: var(--color-secondary);
-
-  &:hover {
-    background-color: var(--color-secondary);
-    border-color: var(--color-secondary);
-    color: var(--color-white);
-  }
-
-  &:active {
-    background-color: var(--color-secondary-dark);
-    border-color: var(--color-secondary-dark);
-  }
+  @include button-variant(
+    $bg: transparent,
+    $border: var(--color-secondary),
+    $color: var(--color-secondary),
+    $hover-bg: var(--color-secondary),
+    $hover-border: var(--color-secondary),
+    $hover-color: var(--color-white),
+    $active-bg: var(--color-secondary-dark),
+    $active-border: var(--color-secondary-dark)
+  );
+  @include button-lift;
 }
 
 .btn-ghost {
-  background-color: transparent;
-  border-color: transparent;
-  color: var(--color-text);
-
-  &:hover {
-    background-color: var(--color-background-alt);
-    color: var(--color-accent);
-  }
-
-  &:active {
-    background-color: var(--color-border);
-  }
+  @include button-variant(
+    $bg: transparent,
+    $border: transparent,
+    $color: var(--color-text),
+    $hover-bg: var(--color-background-alt),
+    $hover-color: var(--color-accent),
+    $active-bg: var(--color-border)
+  );
+  @include button-lift;
 }
 
+// .btn-link intentionally skips button-lift — no transform, no shadow.
 .btn-link {
-  background-color: transparent;
-  border-color: transparent;
-  color: var(--color-accent);
+  @include button-variant(
+    $bg: transparent,
+    $border: transparent,
+    $color: var(--color-accent),
+    $hover-bg: transparent,
+    $hover-border: transparent,
+    $hover-color: var(--color-accent-light),
+    $active-bg: transparent,
+    $active-border: transparent
+  );
   padding-inline: 0;
 
   &:hover {
-    color: var(--color-accent-light);
     text-decoration: underline;
-    transform: none;
-    box-shadow: none;
-  }
-
-  &:active {
-    transform: none;
   }
 }
 
