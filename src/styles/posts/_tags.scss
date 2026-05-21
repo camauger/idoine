@@ -57,7 +57,9 @@
   border-radius: var(--border-radius);
   font-size: 0.875rem;
   font-weight: 500;
-  transition: all var(--transition-fast) ease-in-out;
+  transition:
+    background-color var(--transition-fast) ease-in-out,
+    color var(--transition-fast) ease-in-out;
 
   @include focus-ring($radius: 2px);
 

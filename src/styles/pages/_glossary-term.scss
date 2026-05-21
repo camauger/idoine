@@ -36,7 +36,7 @@ article.glossary-term {
         padding: 0.5rem 1rem;
         border-radius: 5px;
         background-color: var(--color-accent);
-        transition: all var(--transition-fast) ease-in-out;
+        transition: background-color var(--transition-fast) ease-in-out;
         a {
           color: white;
           text-decoration: none;
