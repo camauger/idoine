@@ -18,11 +18,10 @@
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition:
-      transform var(--transition-normal) var(--ease-out),
-      box-shadow var(--transition-normal) var(--ease-out);
 
-    &:hover,
+    @include interactive-card;
+
+    // Mirror the hover effect on keyboard focus
     &:focus-within {
       transform: translateY(-4px);
       box-shadow: var(--shadow-lg);

@@ -24,7 +24,9 @@
   }
 }
 
-/// Interactive card with shadow enhancement on hover
+/// Interactive card with shadow enhancement on hover.
+/// Sets the transition and the hover effect only — callers layer
+/// any additional hover/focus rules on top.
 @mixin interactive-card {
   transition:
     transform var(--transition-normal) var(--ease-out),
@@ -33,10 +35,6 @@
   &:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
-  }
-
-  &:active {
-    transform: translateY(-2px);
   }
 }
 
