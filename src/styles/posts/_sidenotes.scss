@@ -3,6 +3,14 @@
 // =============================================================================
 // Displays notes in the margin on wide screens, collapses to inline
 // expandable footnotes on mobile.
+//
+// STATUS — forward-looking. The expected markup is
+//   <sup class="sidenote-ref"><button class="sidenote-toggle" ...></button></sup>
+//   <aside class="sidenote" data-sidenote-number="N">…</aside>
+// No Markdown extension or Python post-processor emits this yet, so the
+// rules below currently match nothing in production. To activate, add a
+// Markdown directive (e.g. ^[content]) and have scripts/utils/utils.py
+// transform it to the above HTML with a 1-based counter per article.
 
 @use "../base/utils" as *;
 
@@ -85,14 +93,6 @@
     &.in-view {
       animation-play-state: running;
     }
-  }
-
-  // Sidenote number
-  &::before {
-    content: attr(data-sidenote-number);
-    font-weight: 600;
-    color: var(--color-accent);
-    margin-right: 0.5em;
   }
 
   p {
