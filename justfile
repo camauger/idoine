@@ -21,16 +21,25 @@ default:
 # Installation
 # =============================================================================
 
-# Installation complète (Python + Node)
+# Installation complète (Python + Node). Idempotent — n'écrase pas un
+# venv sain. Si le venv est cassé (ex: changement de version de Python),
+# lance `just reset-venv` d'abord.
 install:
-    {{python}} -m venv {{venv}}
+    if (-not (Test-Path {{venv}})) { {{python}} -m venv {{venv}} }
     {{venv}}/Scripts/pip install -r requirements.txt
     npm install
-    @echo "✓ Installation terminée"
+    @Write-Host "OK Installation terminee"
+
+# Recréer le venv from scratch (utile après upgrade de Python)
+reset-venv:
+    if (Test-Path {{venv}}) { Remove-Item -Recurse -Force {{venv}} }
+    {{python}} -m venv {{venv}}
+    {{venv}}/Scripts/pip install -r requirements.txt
+    @Write-Host "OK Venv recree"
 
 # Installer uniquement les dépendances Python
 install-py:
-    pip install -r requirements.txt
+    {{venv}}/Scripts/pip install -r requirements.txt
 
 # Installer uniquement les dépendances Node
 install-node:
