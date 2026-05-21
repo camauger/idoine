@@ -1,21 +1,18 @@
 /**
  * header.js - Gestion des interactions du header
- * Ce script gère toutes les interactions dynamiques du header, incluant :
- * - Le menu mobile (hamburger)
- * - Le sélecteur de langue
- * - Le toggle du thème sombre/clair
- * - L'animation du header au scroll
+ * - Menu mobile (hamburger)
+ * - Sélecteur de langue
+ * - Animation du header au scroll
+ * Le toggle du thème est géré par themeToggle.js.
  */
 
 class HeaderController {
   constructor() {
-    // Éléments du DOM
     this.header = document.querySelector("header");
     this.menuToggle = document.querySelector(".menu-toggle");
     this.navMenu = document.querySelector(".nav-menu");
     this.langToggle = document.querySelector(".lang-toggle");
     this.langMenu = document.querySelector(".lang-menu");
-    this.themeToggle = document.querySelector(".theme-toggle");
 
     // État
     this.lastScroll = 0;
@@ -32,7 +29,6 @@ class HeaderController {
   init() {
     this.initMenuToggle();
     this.initLangSwitcher();
-    this.initThemeToggle();
     this.initScrollBehavior();
     this.initClickOutside();
     this.initKeyboardNavigation();
@@ -80,18 +76,6 @@ class HeaderController {
         this.menuToggle.click();
       }
     });
-  }
-
-  /**
-   * Gestion du thème sombre/clair
-   * Note: Theme initialization is handled by themeToggle.js (imported in main.js)
-   * and the inline script in head.html. This method is kept for backwards
-   * compatibility but does nothing if themeToggle.js is loaded.
-   */
-  initThemeToggle() {
-    // Theme initialization and toggle handling is now managed by themeToggle.js
-    // This prevents duplicate event listeners and conflicting initialization logic.
-    // The inline script in head.html sets the initial theme to prevent FOUC.
   }
 
   /**
@@ -212,21 +196,6 @@ class HeaderController {
   }
 }
 
-// Initialiser le contrôleur une fois que le DOM est chargé
 document.addEventListener("DOMContentLoaded", () => {
   new HeaderController();
 });
-
-/**
- * Utilitaire pour détecter le support des animations CSS
- * Permet de désactiver les animations si nécessaire
- */
-function supportsAnimation() {
-  const element = document.createElement("div");
-  return element.style.animationName !== undefined;
-}
-
-// Si les animations ne sont pas supportées, ajouter une classe au body
-if (!supportsAnimation()) {
-  document.body.classList.add("no-animations");
-}

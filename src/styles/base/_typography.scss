@@ -347,7 +347,7 @@ i {
 }
 
 mark {
-  background-color: rgba(201, 162, 39, 0.2);
+  background-color: color-mix(in srgb, var(--color-accent) 20%, transparent);
   padding: 0.125em 0.25em;
   border-radius: var(--border-radius-sm);
 }

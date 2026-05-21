@@ -65,7 +65,7 @@
 
     &.visible {
       display: block;
-      animation: sidenote-fade-in var(--transition-normal) var(--ease-out);
+      animation: fadeInDown var(--transition-normal) var(--ease-out);
     }
   }
 
@@ -139,17 +139,9 @@
 // -----------------------------------------------------------------------------
 // Animations
 // -----------------------------------------------------------------------------
-@keyframes sidenote-fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
+// `fadeInDown` lives in base/_animations.scss. `sidenote-slide-in` is kept
+// local because it's a subtle 10px slide — `slideInRight` in _animations.scss
+// is a full-viewport slide and would be too aggressive here.
 @keyframes sidenote-slide-in {
   from {
     opacity: 0;

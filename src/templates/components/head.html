@@ -6,10 +6,10 @@
   <meta name="keywords" content="{{ site.keywords }}" />
   <title>{{ page.title }} - {{ site.title }}</title>
 
-  <!-- Preload critical fonts for better performance -->
+  <!-- Preload only the body/UI fonts on the critical path; the decorative
+       display font is lazy and loaded via @font-face. -->
   <link rel="preload" href="/assets/fonts/source-serif-4/source-serif-4-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/montserrat/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/assets/fonts/cinzel-decorative/cinzel-decorative-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Styles (includes self-hosted fonts and Font Awesome) -->
   <link rel="stylesheet" href="/styles/main.css" />

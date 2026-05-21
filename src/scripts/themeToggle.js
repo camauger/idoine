@@ -1,74 +1,37 @@
-// themeToggle.js
 let themeToggle;
+let transitionTimer = null;
 
-/**
- * Initialise le toggle du thème
- */
 export function initThemeToggle() {
-  // Récupération de l'élément
   themeToggle = document.querySelector(".theme-toggle");
-
   if (!themeToggle) return;
 
-  // Initialisation du thème
-  initializeTheme();
-
-  // Event listener
+  // The inline script in head.html already set the initial theme to avoid
+  // FOUC. We just attach the click handler and the system-preference watcher.
   themeToggle.addEventListener("click", toggleTheme);
-
-  // Observer les changements de préférence système
   watchSystemThemeChanges();
 }
 
-/**
- * Initialise le thème au chargement
- * Dark mode is the default for this scholarly reading experience
- */
-function initializeTheme() {
-  // Récupérer le thème sauvegardé, sinon utiliser dark par défaut
-  const savedTheme = localStorage.getItem("theme");
-  const initialTheme = savedTheme || "dark";
-
-  // Appliquer le thème initial
-  applyTheme(initialTheme);
-}
-
-/**
- * Toggle entre les thèmes sombre et clair
- */
 function toggleTheme() {
   const currentTheme = document.documentElement.getAttribute("data-theme");
-  const newTheme = currentTheme === "dark" ? "light" : "dark";
-
-  applyTheme(newTheme);
+  applyTheme(currentTheme === "dark" ? "light" : "dark");
 }
 
-/**
- * Applique un thème donné
- * @param {string} theme - Le thème à appliquer ('dark' ou 'light')
- */
 function applyTheme(theme) {
-  // Ajouter la classe de transition
   document.documentElement.classList.add("theme-transition");
-
-  // Appliquer le thème
   document.documentElement.setAttribute("data-theme", theme);
   localStorage.setItem("theme", theme);
 
-  // Retirer la classe de transition après l'animation
-  setTimeout(() => {
+  // Clear any pending removal so rapid toggles don't stack timers.
+  if (transitionTimer !== null) clearTimeout(transitionTimer);
+  transitionTimer = setTimeout(() => {
     document.documentElement.classList.remove("theme-transition");
+    transitionTimer = null;
   }, 300);
 }
 
-/**
- * Observe les changements de préférence système
- */
 function watchSystemThemeChanges() {
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-
   mediaQuery.addEventListener("change", (e) => {
-    // Ne mettre à jour que si aucun thème n'est explicitement défini
     if (!localStorage.getItem("theme")) {
       applyTheme(e.matches ? "dark" : "light");
     }
