@@ -20,6 +20,7 @@ import subprocess
 import sys
 import threading
 import time
+from functools import partial
 from pathlib import Path
 from typing import Callable, List, Optional, Set
 
@@ -54,7 +55,10 @@ class LiveReloadHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         # Inject live reload script into HTML responses
-        if self.inject_reload and self.path.endswith((".html", "/")):
+        path_only = self.path.split("?", 1)[0]
+        if self.inject_reload and (
+            path_only.endswith((".html", "/")) or path_only == ""
+        ):
             return self._serve_with_reload()
         return super().do_GET()
 
@@ -119,8 +123,12 @@ class LiveReloadHandler(http.server.SimpleHTTPRequestHandler):
 
     def log_message(self, format, *args):
         # Suppress default logging, use our logger
-        if "/__reload_check" not in args[0]:
-            logger.debug(f"{self.address_string()} - {format % args}")
+        message = format % args if args else format
+        if "/__reload_check" in message or getattr(self, "path", "").startswith(
+            "/__reload_check"
+        ):
+            return
+        logger.debug(f"{self.address_string()} - {message}")
 
 
 class ReloadCheckHandler(LiveReloadHandler):
@@ -248,6 +256,11 @@ class FileWatcher:
 
                 self._file_times = new_times
 
+                # First scan only establishes baseline (avoid rebuild on startup)
+                if not self._file_times:
+                    self._file_times = new_times
+                    continue
+
                 # Trigger callback with debounce
                 if changed:
                     now = time.time()
@@ -307,22 +320,42 @@ class DevServer:
                 cwd=str(self.src_path.parent),
             )
 
-            if result.returncode == 0:
-                logger.info("✅ Rebuild complete")
-                # Signal live reload
-                ReloadCheckHandler.last_build_time = time.time()
-            else:
+            if result.returncode != 0:
                 logger.error(f"❌ Build failed:\n{result.stderr}")
+                return
+
+            if result.stderr and "Erreur durant la construction" in result.stderr:
+                logger.error(f"❌ Build failed:\n{result.stderr}")
+                return
+
+            if not (self.dist_path / "index.html").is_file():
+                logger.error(
+                    "❌ Build finished but dist/index.html is missing. "
+                    "Check build output above."
+                )
+                if result.stderr:
+                    logger.error(result.stderr)
+                return
+
+            logger.info("✅ Rebuild complete")
+            ReloadCheckHandler.last_build_time = time.time()
 
         except Exception as e:
             logger.error(f"❌ Build error: {e}")
 
+    def _dist_is_built(self) -> bool:
+        """True when dist contains a built homepage."""
+        return (self.dist_path / "index.html").is_file()
+
     def start(self):
         """Start the development server."""
-        # Ensure dist directory exists
-        if not self.dist_path.exists():
+        # Build before serving (empty dist dir still exists and would be skipped otherwise)
+        if not self._dist_is_built():
             logger.info("Running initial build...")
             self._rebuild()
+            if not self._dist_is_built():
+                logger.error("Cannot start dev server without a successful build.")
+                return
 
         # Set up file watcher
         if self.auto_reload:
@@ -342,17 +375,18 @@ class DevServer:
             )
             self._watcher.start()
 
-        # Set up HTTP server
-        os.chdir(self.dist_path)
-
-        handler = ReloadCheckHandler
-        handler.extensions_map.update(
+        # Set up HTTP server (serve dist via directory=, not chdir — avoids locking dist on Windows during rebuild)
+        ReloadCheckHandler.extensions_map.update(
             {
                 ".js": "application/javascript",
                 ".css": "text/css",
                 ".svg": "image/svg+xml",
                 ".woff2": "font/woff2",
             }
+        )
+        handler = partial(
+            ReloadCheckHandler,
+            directory=str(self.dist_path.resolve()),
         )
 
         # Allow reuse of address
