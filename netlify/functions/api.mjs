@@ -15,8 +15,8 @@ import {
 } from "./lib/sendInscriptionConfirmation.mjs";
 import crypto from "node:crypto";
 
-const SECRET_KEY = process.env.SECRET_KEY || "change-me-in-production";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "admin";
+const SECRET_KEY = process.env.SECRET_KEY;
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
 const MAX_INSCRIPTION_PARTICIPANTS = 8;
 
 function corsHeaders(req) {
@@ -263,6 +263,9 @@ export default async (req, context) => {
 
     // POST /api/admin/login
     if (method === "POST" && pathname === "/api/admin/login") {
+      if (!SECRET_KEY || !ADMIN_PASSWORD) {
+        return errorResponse("Authentification non configurée", 500, req);
+      }
       let body;
       try {
         body = await req.json();
@@ -277,6 +280,9 @@ export default async (req, context) => {
 
     // Protected admin routes
     if (pathname.startsWith("/api/admin/")) {
+      if (!SECRET_KEY || !ADMIN_PASSWORD) {
+        return errorResponse("Authentification non configurée", 500, req);
+      }
       if (!verifyToken(req)) {
         return errorResponse("Non autorisé", 401, req);
       }
