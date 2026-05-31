@@ -5,13 +5,15 @@ from fastapi import Depends, HTTPException
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 
-SECRET_KEY = os.getenv("SECRET_KEY", "change-me-in-production")
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 24  # 24h
-ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD", "admin")
+ADMIN_PASSWORD = os.getenv("ADMIN_PASSWORD")
 
 
 def create_access_token() -> str:
+    if not SECRET_KEY:
+        raise HTTPException(status_code=500, detail="Authentification non configurée")
     expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     return jwt.encode(
         {"sub": "admin", "exp": expire},
@@ -21,6 +23,8 @@ def create_access_token() -> str:
 
 
 def decode_token(token: str) -> bool:
+    if not SECRET_KEY:
+        return False
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         return payload.get("sub") == "admin"
