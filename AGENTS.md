@@ -17,7 +17,7 @@ src/
   styles/                # SCSS → dist/styles
   scripts/               # JS copiés vers dist/scripts (IIFE + main.js module)
   config/site_config.yaml
-  data/                  # translations.yaml, courses.yaml…
+  data/                  # translations.yaml, projects.yaml
 scripts/core/build.py    # Génération HTML
 netlify/functions/       # api.mjs, submission-created.js, etc.
 backend/                 # API FastAPI + SQLite/Postgres (hors Netlify)
@@ -62,7 +62,7 @@ npm run dev:py             # Site seul sans Grunt
 
 **Ajouter une page statique :** Markdown dans `src/locales/fr/pages/`, template dans `src/templates/pages/` si besoin, rebuild.
 
-**Modifier les cours affichés :** données en base (Neon) ou scripts seed/migrations dans `backend/` ; la liste sur `/cours` vient de l’API.
+**Modifier les cours affichés :** l’autorité est l’**admin web** (écrit dans Neon ; la liste sur `/cours` vient de l’API à l’exécution). `horaire-printemps-2026.json` + `intensifs.json` ne sont qu’un **seed initial historique** consommé par `backend/seed_courses.py`. **Ne pas éditer de YAML pour les cours** (il n’y en a plus).
 
 **Variables d’environnement :** `.env.example` à la racine ; `DATABASE_URL` sur Netlify pour les functions.
 
