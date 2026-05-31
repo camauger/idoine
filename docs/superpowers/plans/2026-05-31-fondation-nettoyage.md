@@ -481,6 +481,50 @@ git commit -m "chore: sort les bases SQLite du suivi git + ignore *.db" -m "Co-A
 
 ---
 
+## Task 7b : Détracker les artefacts générés (`__pycache__` + `.netlify`)
+
+> **Découvert pendant l'exécution (Task 3)** : ~90 fichiers `.pyc` dans 9 dossiers
+> `__pycache__/` **et** tout `.netlify/functions-serve/` sont suivis par git alors qu'ils
+> sont déjà couverts par `.gitignore` (`__pycache__/`, `*.py[cod]`, `.netlify`). Ce sont des
+> artefacts générés (même classe que le `.db`) ; un `.pyc` stale contenait même l'ancienne
+> chaîne `change-me-in-production`. Détracker (sans supprimer le local) est sûr et réversible.
+
+**Files:** aucun fichier source modifié — uniquement l'index git.
+
+- [ ] **Step 1 : Confirmer que ces chemins sont déjà ignorés**
+
+Run : `git check-ignore backend/app/__pycache__/auth.cpython-313.pyc .netlify/functions-serve/api/netlify/functions/api.mjs`
+Expected : les deux chemins sont retournés (donc déjà couverts par `.gitignore` — aucun ajout de règle nécessaire).
+
+- [ ] **Step 2 : Détracker tous les `__pycache__` suivis (l'index seulement)**
+
+```bash
+git rm -r --cached --quiet $(git ls-files "*__pycache__*")
+```
+(Variante portable si la substitution échoue sous PowerShell : `git ls-files "*__pycache__*" > files.txt` puis `git rm -r --cached --quiet --pathspec-from-file=files.txt` puis supprimer `files.txt`.)
+
+- [ ] **Step 3 : Détracker `.netlify/` (l'index seulement)**
+
+```bash
+git rm -r --cached --quiet .netlify
+```
+
+- [ ] **Step 4 : Vérifier**
+
+Run : `git ls-files "*.pyc" | wc -l` → `0`.
+Run : `git ls-files ".netlify/*" | wc -l` → `0`.
+Run : `git status --short` → uniquement des `D` (deletions de l'index) ; les fichiers existent
+toujours sur disque (`ls backend/app/__pycache__` non vide).
+
+- [ ] **Step 5 : Commit**
+
+```bash
+git add -A
+git commit -m "chore: detrack les artefacts generes (__pycache__, .netlify) deja gitignores" -m "Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>"
+```
+
+---
+
 ## Task 8 : Validation finale du chantier
 
 **Files:** aucun (vérification globale).
