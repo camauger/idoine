@@ -94,7 +94,7 @@
   }
 
   .loading-text {
-    color: var(--color-stone-gray);
+    color: var(--color-stone);
     font-size: var(--text-base);
   }
 }
@@ -111,7 +111,7 @@
   padding: var(--spacing-12) 0;
 
   p {
-    color: var(--color-stone-gray);
+    color: var(--color-stone);
     margin-bottom: var(--spacing-6);
   }
 }
@@ -187,7 +187,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-2);
-    color: var(--color-stone-gray);
+    color: var(--color-stone);
     font-size: var(--text-sm);
     margin-bottom: var(--spacing-1);
 
@@ -200,7 +200,7 @@
     display: flex;
     align-items: center;
     gap: var(--spacing-2);
-    color: var(--color-stone-gray);
+    color: var(--color-stone);
     font-size: var(--text-sm);
 
     svg {
@@ -212,7 +212,7 @@
 .no-events {
   text-align: center;
   padding: var(--spacing-12) 0;
-  color: var(--color-stone-gray);
+  color: var(--color-stone);
   font-size: var(--text-lg);
 }
 
@@ -298,7 +298,7 @@
     background-color: var(--color-clay-cream);
 
     .day-number {
-      color: var(--color-stone-gray);
+      color: var(--color-stone);
       opacity: 0.5;
     }
   }
@@ -357,7 +357,7 @@
 
 .more-events {
   font-size: var(--text-xs);
-  color: var(--color-stone-gray);
+  color: var(--color-stone);
   padding: 2px var(--spacing-2);
   cursor: pointer;
 
@@ -408,7 +408,7 @@
     border: none;
     background: transparent;
     font-size: var(--text-2xl);
-    color: var(--color-stone-gray);
+    color: var(--color-stone);
     cursor: pointer;
     transition: color 0.2s ease;
 
@@ -441,7 +441,7 @@
     margin-top: var(--spacing-4);
     padding-top: var(--spacing-4);
     border-top: 1px solid var(--color-border);
-    color: var(--color-stone-gray);
+    color: var(--color-stone);
     font-size: var(--text-sm);
     line-height: var(--leading-relaxed);
   }
