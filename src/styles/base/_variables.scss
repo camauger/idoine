@@ -26,6 +26,18 @@
   --color-glass-blue: #4A7C8C;           // Links, interactive elements
   --color-glass-blue-light: #5E94A6;     // Hover states
 
+  // Discipline Colors (codage couleur des cours)
+  // ---------------------------------------------------------------------------
+  --color-ceramique: #C2714F;            // = terracotta
+  --color-ceramique-light: #F1DDD2;      // fond de section pâle
+  --color-ceramique-dark: #A85D3F;       // hover / texte
+  --color-vitrail: #4A7C8C;              // = glass blue
+  --color-vitrail-light: #D9E6EA;        // fond de section pâle
+  --color-vitrail-dark: #3A6271;         // hover / texte
+  --color-mosaique: #D4A853;             // = amber
+  --color-mosaique-light: #F4E8CC;
+  --color-mosaique-dark: #B08B3C;
+
   // Neutral Tones
   // ---------------------------------------------------------------------------
   --color-warm-white: #FDFCFA;           // Alternate backgrounds
@@ -33,6 +45,18 @@
   --color-stone-light: #B8B3AA;          // Lighter borders
   --color-deep-brown: #4A3F35;           // Footer, dark sections
   --color-deep-brown-dark: #3A3129;      // Darker variant
+
+  // Warm Gray Ramp (neutres tièdes, pas de gris froid — utilisée par l'admin)
+  // ---------------------------------------------------------------------------
+  --color-gray-50: #F7F5F1;
+  --color-gray-100: #EFEBE4;
+  --color-gray-200: #E2DCD2;
+  --color-gray-300: #CFC7BA;
+  --color-gray-400: #B3A99B;
+  --color-gray-500: #9C9589;             // = stone
+  --color-gray-600: #7D766B;
+  --color-gray-700: #5C554C;
+  --color-gray-800: #3A342D;
 
   // Semantic Colors
   // ---------------------------------------------------------------------------
@@ -48,6 +72,12 @@
   --color-background-alt: var(--color-warm-white);
   --color-border: var(--color-stone-light);
   --color-white: #ffffff;
+  --color-accent: var(--color-primary);
+  --color-text-muted: var(--color-gray-600);   // texte atténué distinct de text-light, plus lisible
+  --color-text-accent: var(--color-terracotta);
+  --color-clay-light: var(--color-warm-white);
+  --color-primary-rgb: 194, 113, 79;     // pour rgba(var(--color-primary-rgb), …)
+  --gradient-primary: linear-gradient(135deg, var(--color-terracotta), var(--color-amber));
 
   // Feedback Colors
   // ---------------------------------------------------------------------------
@@ -126,6 +156,7 @@
   // ===========================================================================
   --border-radius-sm: 0.25rem;           // 4px - subtle rounding
   --border-radius: 0.5rem;               // 8px - default
+  --border-radius-md: 0.5rem;            // 8px - medium (= défaut, comble l'échelle)
   --border-radius-lg: 0.75rem;           // 12px - larger elements
   --border-radius-xl: 1rem;              // 16px - cards, modals
   --border-radius-full: 9999px;          // Pills, avatars
