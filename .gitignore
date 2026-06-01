@@ -17,6 +17,9 @@ tmp/
 .cache/
 *.cache
 
+# Bases SQLite locales (régénérées par seed/migrations — ne pas versionner)
+*.db
+
 # Python cache
 __pycache__/
 *.py[cod]

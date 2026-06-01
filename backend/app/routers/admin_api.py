@@ -9,7 +9,7 @@ from sqlalchemy import func
 from database import get_db
 from app.models import Course, Inscription
 from app.schemas import CourseCreate, CourseUpdate, CourseResponse, InscriptionResponse
-from app.auth import get_current_admin, create_access_token, ADMIN_PASSWORD
+from app.auth import get_current_admin, create_access_token, ADMIN_PASSWORD, SECRET_KEY
 
 router = APIRouter(prefix="/api/admin", tags=["admin"])
 
@@ -24,6 +24,8 @@ class LoginRequest(BaseModel):
 
 @router.post("/login")
 def admin_login(body: LoginRequest):
+    if not SECRET_KEY or not ADMIN_PASSWORD:
+        raise HTTPException(status_code=500, detail="Authentification non configurée")
     if body.password != ADMIN_PASSWORD:
         raise HTTPException(status_code=401, detail="Mot de passe incorrect")
     return {"access_token": create_access_token(), "token_type": "bearer"}

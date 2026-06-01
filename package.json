@@ -11,7 +11,7 @@
         "reset-netlify-deno": "node scripts/reset-netlify-deno-cache.js",
         "ensure-netlify-deno-version": "node scripts/ensure-netlify-deno-version-file.js",
         "watch": "grunt watchOnly",
-        "build": "grunt sass:prod && python scripts/core/build.py --build",
+        "build": "grunt build",
         "audit": "npm audit --audit-level=moderate || true",
         "audit:fix": "npm audit fix || true"
     },
