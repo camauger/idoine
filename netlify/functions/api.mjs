@@ -2,22 +2,17 @@
  * Netlify Function: API cours + inscriptions + admin (Neon DB)
  * Réplique le comportement du backend FastAPI pour le front vanilla.
  * Routes: 
- *   GET /api/cours, GET /api/cours/:slug, POST /api/inscriptions
+ *   GET /api/cours, GET /api/cours/:slug
  *   POST /api/admin/login, GET /api/admin/courses, POST /api/admin/courses,
  *   PUT /api/admin/courses/:id (partiel ou complet), DELETE /api/admin/courses/:id
  *   GET /api/admin/inscriptions, GET /api/admin/inscriptions/export
  */
 import { neon } from "@neondatabase/serverless";
 import jwt from "jsonwebtoken";
-import {
-  sendInscriptionConfirmation,
-  buildCourseLabel,
-} from "./lib/sendInscriptionConfirmation.mjs";
 import crypto from "node:crypto";
 
 const SECRET_KEY = process.env.SECRET_KEY;
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
-const MAX_INSCRIPTION_PARTICIPANTS = 8;
 
 function corsHeaders(req) {
   const origin = req.headers.get("origin");
@@ -122,141 +117,6 @@ export default async (req, context) => {
       const places_restantes = Math.max(0, (course.places_max || 0) - count);
       const out = { ...course, places_restantes };
       return jsonResponse(out, 200, req);
-    }
-
-    // POST /api/inscriptions
-    if (method === "POST" && pathname === "/api/inscriptions") {
-      let body;
-      try {
-        body = await req.json();
-      } catch {
-        return errorResponse("Body JSON invalide", 400, req);
-      }
-      const {
-        course_id,
-        cours: coursNom,
-        nom,
-        courriel,
-        telephone,
-        participants: participantsInput,
-        enfant = null,
-        jour_prefere = null,
-        horaire_prefere = null,
-        message = null,
-        newsletter = false,
-        est_membre: estMembreBody,
-      } = body;
-
-      let participants = [];
-      if (Array.isArray(participantsInput) && participantsInput.length > 0) {
-        participants = participantsInput
-          .map((p) => ({
-            nom: String((p && p.nom) || "").trim(),
-            enfant:
-              p && p.enfant != null && String(p.enfant).trim()
-                ? String(p.enfant).trim()
-                : null,
-          }))
-          .filter((p) => p.nom);
-      } else if (nom && String(nom).trim()) {
-        participants = [
-          {
-            nom: String(nom).trim(),
-            enfant: enfant != null && String(enfant).trim() ? String(enfant).trim() : null,
-          },
-        ];
-      }
-
-      if (!courriel || !telephone || participants.length < 1) {
-        return errorResponse("courriel, telephone et au moins un participant (nom) requis", 400, req);
-      }
-      if (participants.length > MAX_INSCRIPTION_PARTICIPANTS) {
-        return errorResponse(`Maximum ${MAX_INSCRIPTION_PARTICIPANTS} personnes par demande`, 400, req);
-      }
-
-      let course = null;
-      if (course_id) {
-        const rows = await sql`SELECT * FROM courses WHERE id = ${course_id}`;
-        course = (rows && rows[0]) || null;
-      }
-      if (!course && coursNom) {
-        const rows = await sql`SELECT * FROM courses WHERE nom = ${coursNom}`;
-        course = (rows && rows[0]) || null;
-      }
-      if (!course) {
-        return errorResponse("Cours non trouvé (course_id ou cours invalide)", 400, req);
-      }
-
-      const countRows = await sql`SELECT COUNT(*)::int AS cnt FROM inscriptions WHERE course_id = ${course.id}`;
-      const count = (countRows && countRows[0] && countRows[0].cnt) || 0;
-      if (count + participants.length > (course.places_max || 0)) {
-        return errorResponse(
-          "Ce cours est complet ou il ne reste pas assez de places pour ce nombre de personnes.",
-          400,
-          req
-        );
-      }
-
-      const estMembreBool =
-        estMembreBody === true || estMembreBody === "oui" || estMembreBody === "true";
-
-      for (const p of participants) {
-        const enfantVal = p.enfant || "";
-        const dupRows = await sql`
-          SELECT id, course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, created_at
-          FROM inscriptions
-          WHERE course_id = ${course.id}
-            AND lower(trim(courriel)) = lower(trim(${courriel}))
-            AND lower(trim(nom)) = lower(trim(${p.nom}))
-            AND coalesce(trim(enfant), '') = coalesce(trim(${enfantVal}), '')
-            AND created_at > now() - interval '15 minutes'
-          LIMIT 1
-        `;
-        if (dupRows && dupRows[0]) {
-          return jsonResponse({ ...dupRows[0], course_nom: course.nom }, 200, req);
-        }
-      }
-
-      const createdAt = new Date();
-      const insertQueries = participants.map((p, index) => {
-        const msg = index === 0 ? message : null;
-        const jp = index === 0 ? jour_prefere : null;
-        const hp = index === 0 ? horaire_prefere : null;
-        return sql`
-          INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, est_membre, created_at)
-          VALUES (${course.id}, ${p.nom}, ${courriel}, ${telephone}, ${p.enfant}, ${jp}, ${hp}, ${msg}, ${newsletter}, ${estMembreBool}, ${createdAt})
-          RETURNING id, course_id, nom, courriel, telephone, enfant, jour_prefere, horaire_prefere, message, newsletter, est_membre, created_at
-        `;
-      });
-
-      let insertResults;
-      if (typeof sql.transaction === "function") {
-        insertResults = await sql.transaction(insertQueries, { isolationLevel: "ReadCommitted" });
-      } else {
-        insertResults = [];
-        for (const q of insertQueries) {
-          insertResults.push(await q);
-        }
-      }
-
-      const firstRow = insertResults[0] && insertResults[0][0];
-      const ids = insertResults.map((r) => r[0].id);
-      const courseLabel = buildCourseLabel(course);
-      await sendInscriptionConfirmation({
-        to: courriel,
-        participantNames: participants.map((p) => p.nom),
-        courseLabel,
-      });
-      return jsonResponse(
-        {
-          ...(firstRow || {}),
-          inscription_ids: ids,
-          count: ids.length,
-          course_nom: course.nom,
-        },
-        201,
-        req
-      );
     }
 
     // ===== ADMIN ROUTES =====

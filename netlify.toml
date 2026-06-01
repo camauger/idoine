@@ -20,7 +20,7 @@
 # Le reset supprime ~/.config/netlify/deno-cli et, sous Windows, %APPDATA%\netlify\Config\deno-cli.
 # Autre option : winget install Deno.Land  (https://ntl.fyi/install-deno)
 
-# API cours + inscriptions (Neon) : rewrite /api/* vers la function (path conservé via :splat)
+# API cours + admin (Neon) : rewrite /api/* vers la function (path conservé via :splat)
 [[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
@@ -34,9 +34,9 @@
 # 2. Ne pas définir ATELIER_API_URL (ou laisser vide) pour que le front utilise /api/* sur le même domaine.
 # 3. Redéployer après avoir ajouté DATABASE_URL.
 #
-# DATABASE_URL (obligatoire pour /api/cours et /api/inscriptions)
+# DATABASE_URL (obligatoire pour /api/cours et les inscriptions)
 #   → Chaîne de connexion Neon (pooler) : postgresql://user:pass@ep-xxx-pooler.neon.tech/dbname?sslmode=require
-#   → Utilisée par netlify/functions/api.mjs pour /api/cours et /api/inscriptions.
+#   → Utilisée par api.mjs (/api/cours, admin) et submission-created.js (inscriptions du formulaire Netlify).
 #
 # ATELIER_API_URL (optionnel en prod)
 #   → Si défini : le front appelle ce backend externe pour cours/inscriptions.
@@ -55,7 +55,7 @@
 # 2) Variables Netlify (Site settings > Environment variables) :
 #    RESEND_API_KEY          → clé API (ex. re_xxx)
 #    CONFIRMATION_EMAIL_FROM → expéditeur autorisé, ex. Ateliers St-Elme <inscription@atelierstelme.ca>
-# Utilisé par : netlify/functions/submission-created.js (formulaire Netlify) et api.mjs (POST /api/inscriptions).
+# Utilisé par : netlify/functions/submission-created.js (formulaire Netlify, après enregistrement en base).
 # Si absentes : l’inscription est quand même enregistrée ; aucun courriel automatique.
 
 # Redirections optionnelles (décommenter si besoin)
