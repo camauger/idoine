@@ -204,10 +204,12 @@ exports.handler = async (event) => {
       RETURNING id
     `;
 
-    const txResults = await sql.transaction([lockQuery, insertQuery]);
+    // READ COMMITTED est requis : après le verrou, le COUNT de l'insertion doit voir les
+    // lignes committées par la transaction concurrente précédemment sérialisée.
+    const txResults = await sql.transaction([lockQuery, insertQuery], { isolationLevel: "ReadCommitted" });
     const insertedRows = txResults[1] || [];
     if (insertedRows.length === 0) {
-      console.error("Course full (atomic guard):", courseId);
+      console.error("Course full (atomic guard): course", courseId, "requested", n);
       return {
         statusCode: 200,
         body: JSON.stringify({ success: false, reason: "course_full" }),
