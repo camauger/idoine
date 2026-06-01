@@ -226,7 +226,7 @@ Le backend (`database.py`) accepte déjà les URLs `postgresql://` et convertit 
 
 ### Courriel de confirmation (inscriptions sur Netlify)
 
-Lorsque le site est déployé sur **Netlify** et que les inscriptions passent par le formulaire Netlify (function `submission-created`) ou par **`POST /api/inscriptions`** sur la même origine (`netlify/functions/api.mjs`), un **courriel transactionnel** est envoyé au participant après enregistrement réussi en base, via l’API [Resend](https://resend.com).
+Lorsque le site est déployé sur **Netlify** et que les inscriptions passent par le formulaire Netlify (function `submission-created`), un **courriel transactionnel** est envoyé au participant après enregistrement réussi en base, via l’API [Resend](https://resend.com).
 
 Variables d’environnement à définir dans **Netlify** (Site settings > Environment variables) :
 
