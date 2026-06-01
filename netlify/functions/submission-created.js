@@ -160,18 +160,6 @@ exports.handler = async (event) => {
       };
     }
 
-    const courseMeta = await sql`SELECT places_max FROM courses WHERE id = ${courseId} LIMIT 1`;
-    const placesMax = (courseMeta[0] && courseMeta[0].places_max) || 0;
-    const countRows = await sql`SELECT COUNT(*)::int AS cnt FROM inscriptions WHERE course_id = ${courseId}`;
-    const count = (countRows[0] && countRows[0].cnt) || 0;
-    if (count + participants.length > placesMax) {
-      console.error("Course full: need", participants.length, "only", placesMax - count, "left");
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ success: false, reason: "course_full" }),
-      };
-    }
-
     for (let i = 0; i < participants.length; i++) {
       const p = participants[i];
       const enfantStr = p.enfant || "";
@@ -198,27 +186,35 @@ exports.handler = async (event) => {
       }
     }
 
-    const insertQueries = participants.map((p, index) => {
-      const msg = index === 0 ? message : null;
-      return sql`
-        INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, message, newsletter, est_membre, created_at)
-        VALUES (${courseId}, ${p.nom}, ${courriel}, ${telephone}, ${p.enfant}, ${msg}, ${newsletter}, ${estMembre}, NOW())
-        RETURNING id
-      `;
-    });
+    const noms = participants.map((p) => p.nom);
+    const enfants = participants.map((p) => p.enfant); // null possible
+    const n = participants.length;
 
-    let results;
-    if (typeof sql.transaction === "function") {
-      results = await sql.transaction(insertQueries, { isolationLevel: "ReadCommitted" });
-    } else {
-      results = [];
-      for (const q of insertQueries) {
-        results.push(await q);
-      }
+    // Verrou applicatif par cours : sérialise les inscriptions concurrentes du même cours.
+    const lockQuery = sql`SELECT pg_advisory_xact_lock(${courseId})`;
+    // Insertion tout-ou-rien : n'insère QUE si la capacité reste respectée (anti-surbooking).
+    const insertQuery = sql`
+      INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, message, newsletter, est_membre, created_at)
+      SELECT ${courseId}, t.nom, ${courriel}, ${telephone}, t.enfant,
+             CASE WHEN t.ord = 1 THEN ${message} ELSE NULL END,
+             ${newsletter}, ${estMembre}, NOW()
+      FROM UNNEST(${noms}::text[], ${enfants}::text[]) WITH ORDINALITY AS t(nom, enfant, ord)
+      WHERE (SELECT COUNT(*) FROM inscriptions WHERE course_id = ${courseId}) + ${n}
+            <= (SELECT places_max FROM courses WHERE id = ${courseId})
+      RETURNING id
+    `;
+
+    const txResults = await sql.transaction([lockQuery, insertQuery]);
+    const insertedRows = txResults[1] || [];
+    if (insertedRows.length === 0) {
+      console.error("Course full (atomic guard):", courseId);
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ success: false, reason: "course_full" }),
+      };
     }
-
-    const ids = results.map((r) => r[0].id);
-    console.log("Inscriptions created:", ids);
+    const ids = insertedRows.map((r) => r.id);
+    console.log("Inscriptions created (atomic):", ids);
 
     const courseRows = await sql`
       SELECT nom, date_debut, jour, heure FROM courses WHERE id = ${courseId} LIMIT 1
