@@ -32,8 +32,8 @@
   --color-ceramique-light: #F1DDD2;      // fond de section pâle
   --color-ceramique-dark: #A85D3F;       // hover / texte
   --color-vitrail: #4A7C8C;              // = glass blue
-  --color-vitrail-light: #D9E6EA;
-  --color-vitrail-dark: #3A6271;
+  --color-vitrail-light: #D9E6EA;        // fond de section pâle
+  --color-vitrail-dark: #3A6271;         // hover / texte
   --color-mosaique: #D4A853;             // = amber
   --color-mosaique-light: #F4E8CC;
   --color-mosaique-dark: #B08B3C;
@@ -73,7 +73,7 @@
   --color-border: var(--color-stone-light);
   --color-white: #ffffff;
   --color-accent: var(--color-primary);
-  --color-text-muted: var(--color-stone);
+  --color-text-muted: var(--color-gray-600);   // texte atténué distinct de text-light, plus lisible
   --color-text-accent: var(--color-terracotta);
   --color-clay-light: var(--color-warm-white);
   --color-primary-rgb: 194, 113, 79;     // pour rgba(var(--color-primary-rgb), …)
