@@ -317,12 +317,35 @@ class DevServer:
         except Exception as e:
             logger.error(f"❌ Build error: {e}")
 
+    def _check_frontend_assets(self):
+        """
+        Avertit si le CSS/JS (produits par Grunt, pas par build.py) sont absents.
+
+        dev_server.py ne lance que build.py (HTML + assets) ; la compilation SCSS et la
+        copie des scripts relèvent de Grunt. Sans Grunt, le site est servi sans style ni
+        JS (404 sur /styles/main.css et /scripts/*.js).
+        """
+        missing = []
+        if not (self.dist_path / "styles" / "main.css").exists():
+            missing.append("dist/styles/main.css")
+        if not (self.dist_path / "scripts").is_dir():
+            missing.append("dist/scripts/")
+        if missing:
+            logger.warning(
+                "⚠️  CSS/JS absents (%s) : build.py ne compile pas le SCSS ni ne copie "
+                "les scripts. Lance `npm run dev` (Grunt, port 9000) pour un site stylé, "
+                "ou `grunt watchOnly` en parallèle de ce serveur.",
+                ", ".join(missing),
+            )
+
     def start(self):
         """Start the development server."""
         # Ensure dist directory exists
         if not self.dist_path.exists():
             logger.info("Running initial build...")
             self._rebuild()
+
+        self._check_frontend_assets()
 
         # Set up file watcher
         if self.auto_reload:

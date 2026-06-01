@@ -50,9 +50,11 @@ backend/                 # API FastAPI + SQLite/Postgres (hors Netlify)
 npm install
 pip install -r requirements.txt
 npm run build              # ou npx grunt build + build Python
-npm run dev                # Grunt + connect + watch
-npm run dev:py             # Site seul sans Grunt
+npm run dev                # Grunt + connect + watch (serveur stylé : CSS+JS) — recommandé
+npm run dev:py             # HTML seul (Python) — REQUIERT `grunt watchOnly` à côté pour le CSS/JS
 ```
+
+> **`npm run dev:py` seul = site sans style.** `build.py` régénère le HTML mais ne compile pas le SCSS ni ne copie les JS (rôle de Grunt). Pour un site stylé : `npm run dev` (port 9000) ; sinon lancer `grunt watchOnly` en parallèle. `build.py` préserve désormais `dist/styles` et `dist/scripts` afin de ne pas écraser le build frontend (sinon `dev:py` effacerait le CSS/JS produits par Grunt → 404).
 
 **Netlify + API locale :** `just dev` ou `npx netlify dev` (voir section Problèmes). Alternative : `npm run dev:functions` sur un port + `ATELIER_API_URL` pointant vers cette URL.
 

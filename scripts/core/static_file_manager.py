@@ -41,9 +41,29 @@ class StaticFileManager:
             raise
 
     def setup_output_dir(self):
+        """
+        Prépare dist/ pour un nouveau build HTML.
+
+        Supprime le contenu généré par build.py mais PRÉSERVE les répertoires du build
+        frontend (Grunt) : ``styles/`` et ``scripts/``. Ainsi un build Python seul
+        (dev_server.py / ``npm run dev:py``) ne détruit pas le CSS/JS compilés par Grunt,
+        conformément au contrat de copy_static_files (« Leaves styles and scripts to the
+        frontend build »).
+        """
+        preserve = {"styles", "scripts"}
         if self.dist_path.exists():
-            shutil.rmtree(self.dist_path, onerror=self.handle_remove_readonly)
-        self.dist_path.mkdir(parents=True)
+            for child in self.dist_path.iterdir():
+                if child.name in preserve:
+                    continue
+                if child.is_dir():
+                    shutil.rmtree(child, onerror=self.handle_remove_readonly)
+                else:
+                    try:
+                        child.unlink()
+                    except PermissionError:
+                        os.chmod(child, stat.S_IWRITE)
+                        child.unlink()
+        self.dist_path.mkdir(parents=True, exist_ok=True)
 
     def _file_checksum(self, path: Path, chunk_size: int = 1024 * 1024) -> str:
         h = hashlib.sha256()
