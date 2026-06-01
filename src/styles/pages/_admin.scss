@@ -17,7 +17,7 @@
   margin: 4rem auto;
   padding: var(--spacing-8);
   background: white;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-lg);
 
   h1 {
@@ -65,7 +65,7 @@
   align-items: center;
   padding: var(--spacing-6);
   background: white;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   text-align: center;
 
@@ -132,7 +132,7 @@
 
 .admin-tab-content {
   background: white;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   box-shadow: var(--shadow-sm);
   padding: var(--spacing-6);
 }
@@ -262,7 +262,7 @@
     font-size: var(--text-xs);
     padding: 0.15em 0.35em;
     background: var(--color-gray-100);
-    border-radius: var(--radius-sm, 4px);
+    border-radius: var(--border-radius-sm, 4px);
   }
 
   .admin-cell-muted {
@@ -290,7 +290,7 @@
   padding: 0.2em 0.6em;
   font-size: var(--text-xs);
   font-weight: 500;
-  border-radius: var(--radius-full);
+  border-radius: var(--border-radius-full);
   text-transform: capitalize;
 
   &.badge-ceramique {
@@ -315,7 +315,7 @@
   padding: 0.2em 0.6em;
   font-size: var(--text-xs);
   font-weight: 500;
-  border-radius: var(--radius-full);
+  border-radius: var(--border-radius-full);
 
   &.status-active {
     background: #dcfce7;
@@ -395,7 +395,7 @@
   color: white;
   border: none;
   padding: 0.25em 0.75em;
-  border-radius: var(--radius-sm);
+  border-radius: var(--border-radius-sm);
   font-size: var(--text-xs);
   cursor: pointer;
   transition: background 0.2s;
@@ -422,7 +422,7 @@
 
 .modal-content {
   background: white;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   max-width: 500px;
   width: 100%;
   max-height: 80vh;
@@ -473,7 +473,7 @@
   .message-text {
     background: var(--color-gray-50);
     padding: var(--spacing-4);
-    border-radius: var(--radius-md);
+    border-radius: var(--border-radius-md);
     white-space: pre-wrap;
     line-height: 1.6;
   }
@@ -482,7 +482,7 @@
 // Dialog — ajout de cours
 .admin-add-course-dialog {
   border: none;
-  border-radius: var(--radius-lg);
+  border-radius: var(--border-radius-lg);
   padding: 0;
   max-width: 720px;
   width: calc(100% - 2rem);
@@ -582,7 +582,7 @@
 .creneau-extra-row {
   padding: var(--spacing-4);
   border: 1px solid var(--color-gray-200);
-  border-radius: var(--radius-md);
+  border-radius: var(--border-radius-md);
   background: var(--color-gray-50);
 }
 
