@@ -175,27 +175,6 @@
     if (errorEl) errorEl.style.display = 'block';
   }
 
-  /**
-   * Netlify reçoit name="cours" : libellé lisible (courriel).
-   * name="course_id" : id pour submission-created.js (résolution fiable en base).
-   */
-  function syncCoursHiddenFields() {
-    var sel = document.getElementById('cours');
-    var libelle = document.getElementById('cours-libelle');
-    var idField = document.getElementById('course_id');
-    if (!sel || !libelle || !idField) return;
-    var opt = sel.options[sel.selectedIndex];
-    if (!opt || !opt.value) {
-      libelle.value = '';
-      idField.value = '';
-      return;
-    }
-    idField.value = opt.value;
-    libelle.value = window.normalizeCoursLibelle
-      ? window.normalizeCoursLibelle(opt.textContent)
-      : (opt.textContent || '').trim();
-  }
-
   function showPrefillNotice(coursName) {
     var formCard = document.querySelector('.form-card-header');
     if (formCard) {
@@ -245,8 +224,10 @@
           }
           showPrefillNotice(noticeLabel);
         }
-        syncCoursHiddenFields();
-        selectElement.addEventListener('change', syncCoursHiddenFields);
+        if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
+        selectElement.addEventListener('change', function () {
+          if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
+        });
       })
       .catch(function(err) {
         console.error('[Inscription] Erreur chargement cours:', err);
@@ -259,7 +240,7 @@
     if (!form) return;
     form.addEventListener('submit', function (ev) {
       if (ev.defaultPrevented) return;
-      syncCoursHiddenFields();
+      if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
       var btn = form.querySelector('button[type="submit"]');
       if (btn) {
         btn.disabled = true;

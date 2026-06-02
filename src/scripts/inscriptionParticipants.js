@@ -102,23 +102,6 @@
     return document.getElementById('cours');
   }
 
-  function syncCoursHiddenFields() {
-    var sel = getSelect();
-    var libelle = document.getElementById('cours-libelle');
-    var idField = document.getElementById('course_id');
-    if (!sel || !libelle || !idField) return;
-    var opt = sel.options[sel.selectedIndex];
-    if (!opt || !opt.value) {
-      libelle.value = '';
-      idField.value = '';
-      return;
-    }
-    idField.value = opt.value;
-    libelle.value = window.normalizeCoursLibelle
-      ? window.normalizeCoursLibelle(opt.textContent)
-      : (opt.textContent || '').trim();
-  }
-
   function collectParticipants() {
     var list = getList();
     if (!list) return [];
@@ -210,7 +193,7 @@
       return;
     }
 
-    syncCoursHiddenFields();
+    if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
 
     var participants = collectParticipants();
     if (participants.length < 1) {
