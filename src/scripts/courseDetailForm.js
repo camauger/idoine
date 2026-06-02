@@ -111,23 +111,6 @@
     if (errorEl) errorEl.style.display = 'block';
   }
 
-  function syncCoursHiddenFields() {
-    var sel = document.getElementById('cours');
-    var libelle = document.getElementById('cours-libelle');
-    var idField = document.getElementById('course_id');
-    if (!sel || !libelle || !idField) return;
-    var opt = sel.options[sel.selectedIndex];
-    if (!opt || !opt.value) {
-      libelle.value = '';
-      idField.value = '';
-      return;
-    }
-    idField.value = opt.value;
-    libelle.value = window.normalizeCoursLibelle
-      ? window.normalizeCoursLibelle(opt.textContent)
-      : (opt.textContent || '').trim();
-  }
-
   function init() {
     var selectElement = document.getElementById('cours');
     if (!selectElement) return;
@@ -174,8 +157,10 @@
           }
         }
 
-        syncCoursHiddenFields();
-        selectElement.addEventListener('change', syncCoursHiddenFields);
+        if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
+        selectElement.addEventListener('change', function () {
+          if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
+        });
       })
       .catch(function (err) {
         console.error('[CourseDetailForm] Erreur:', err);
@@ -183,27 +168,11 @@
       });
   }
 
-  function attachSubmitGuard() {
-    var form = document.getElementById('inscription-form');
-    if (!form) return;
-    form.addEventListener('submit', function (ev) {
-      if (ev.defaultPrevented) return;
-      syncCoursHiddenFields();
-      var btn = form.querySelector('button[type="submit"]');
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Envoi en cours…';
-      }
-    });
-  }
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       init();
-      attachSubmitGuard();
     });
   } else {
     init();
-    attachSubmitGuard();
   }
 })();
