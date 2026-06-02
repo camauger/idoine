@@ -168,27 +168,11 @@
       });
   }
 
-  function attachSubmitGuard() {
-    var form = document.getElementById('inscription-form');
-    if (!form) return;
-    form.addEventListener('submit', function (ev) {
-      if (ev.defaultPrevented) return;
-      if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
-      var btn = form.querySelector('button[type="submit"]');
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Envoi en cours…';
-      }
-    });
-  }
-
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
       init();
-      attachSubmitGuard();
     });
   } else {
     init();
-    attachSubmitGuard();
   }
 })();

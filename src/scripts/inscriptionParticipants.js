@@ -230,6 +230,11 @@
     }
 
     pj.value = JSON.stringify(participants);
+    var submitBtn = form.querySelector('button[type="submit"]');
+    if (submitBtn) {
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Envoi en cours…';
+    }
     window.HTMLFormElement.prototype.submit.call(form);
   }
 
