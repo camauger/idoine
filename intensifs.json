@@ -126,7 +126,29 @@
       "salle": null,
       "description": "Activité parent-enfant : façonnez ensemble un bol animal et un colifichet pour vos petits trésors (1 parent + 1 enfant par duo).",
       "page_dediee": null,
-      "badge_new": true
+      "badge_new": true,
+      "image": "/assets/images/intensifs-ceramique/duo-parenthese.jpeg"
+    },
+    {
+      "nom": "Vitrail Niveau 3 - Orchidée",
+      "slug": "vitrail-niveau-3-orchidee",
+      "discipline": "vitrail",
+      "type_cours": "intensif",
+      "jour": "samedi",
+      "creneau": "après-midi",
+      "heure": "12h30-17h30",
+      "duree_semaines": null,
+      "date_debut": "27 Juin 2026",
+      "places_max": 5,
+      "prix": "65$",
+      "taxes": "inclus",
+      "statut": "actif",
+      "prof": "Marilyn Boucher",
+      "salle": "Vitrail",
+      "description": "Découvrez l’art du vitrail à travers la création d’une délicate orchidée inspirée de la nature. Lors de cet atelier intensif d’une journée, les participant·e·s réaliseront une pièce décorative unique en utilisant la technique Tiffany : coupe du verre, meulage, sertissage au cuivre et soudure.\n\nCe cours permet d’explorer davantage les assemblages organiques et les formes florales tout en développant précision et confiance dans le travail du verre. Chaque participant repartira avec son orchidée en vitrail prête à être exposée.\n\nPré-requis : avoir complété l’intensif niveau 1 ou 2, ou posséder une expérience de base en vitrail.\n\nTous les matériaux et outils sont fournis.",
+      "page_dediee": null,
+      "badge_new": true,
+      "image": "/assets/images/intensifs-vitrail/vitrail-niveau-3-orchidee.jpeg"
     }
   ]
 }
