@@ -1,103 +1,21 @@
 ---
 title: À propos
 slug: a-propos
-description: Christian Amauger, auteur et créateur derrière Ludomancien.
+description: Près de 40 ans de jeu de rôle, de Tunnels & Trolls à la création de jeux — le parcours rôliste de Christian Amauger.
 template: pages/about.html
 translation_id: about
 ---
 
-<div class="container">
+Cela fait près de 40 ans que je navigue dans l'univers du jeu de rôle. J'ai eu la chance d'être initié par mon grand frère, à la fin des années 80, lorsque le jeu de rôle a connu un essor en France.
 
-  <div class="intro">
-    <h2 class="intro-title">À la croisée du code et de l'imaginaire</h2>
-    <div class="intro-text">
-      <p>Je suis Christian Amauger, développeur front-end senior et créateur de jeux. Depuis plus de 15 ans, je construis des expériences numériques qui engagent et inspirent, que ce soit à travers des interfaces web innovantes ou des univers ludiques captivants.</p>
-      <p>Mon parcours unique combine expertise technique et création narrative : je développe des plateformes web utilisées par des centaines de milliers d'utilisateurs, tout en concevant des jeux de rôle qui stimulent l'imagination de communautés passionnées.</p>
-      <p>Que vous cherchiez un expert en développement front-end pour votre projet tech ou un créateur pour votre prochain jeu, explorez mon univers pour découvrir comment nous pourrions collaborer.</p>
-    </div>
-  </div>
+J'ai commencé non pas avec Donjons & Dragons mais avec Tunnels & Trolls. L'avantage de cet ancien parmi les anciens était les scénarios en mode « solo », une passerelle parfaite entre les livres dont vous êtes le héros et le jeu de rôle proprement dit.
 
-  <section class="passions">
-    <h2 class="section-title">Ce qui me passionne</h2>
-    <div class="passions-grid">
-      <div class="passion-card">
-        <h3 class="card-title">Développement Web & Expérience Utilisateur</h3>
-        <p>Je crée des interfaces web qui allient performance et élégance. Mon approche se concentre sur l'accessibilité et l'expérience utilisateur, transformant des concepts complexes en interactions fluides et intuitives. De la plateforme éducative Brio avec ses 242 000 apprenants aux systèmes de gestion de contenu personnalisés, chaque projet est une opportunité de repousser les limites de l'innovation web.</p>
-      </div>
+Ensuite, bien sûr, j'ai plongé dans Donjons & Dragons. La boîte rouge, pour commencer. Puis la bleu, la turquoise, la verte, etc.
 
-   <div class="passion-card">
-        <h3 class="card-title">Création de Jeux & Narration Interactive</h3>
-        <p>Les jeux sont ma seconde passion. Créateur du jeu de rôle "Vous êtes dans une auberge", j'explore les nouvelles frontières de la narration interactive. Mon travail récent sur l'utilisation de l'IA dans la création de jeux ("The Roleplayer's Guide to ChatGPT") témoigne de ma volonté d'innover dans ce domaine en constante évolution.</p>
-      </div>
-    </div>
+J'ai initié mes amis, et nous avons exploré bien des univers de jeux, profitant de l'expansion et de la diversification du jeu pendant les années 90. Les classiques (D&D, T&T, Oeil Noir) ont laissé place à des systèmes plus complexes (Rolemaster), des univers plus originaux (Rêve de Dragon), des structures narratives plus intéressantes (Vampire La Mascarade). Les explorations de donjon furent abandonnées au profit de récits plus axés sur l'investigation et l'interprétation.
 
-  </section>
+Comme beaucoup de ma génération, j'ai délaissé le jeu de rôle par manque de temps, par la difficulté à garder un groupe de jeu régulier. L'arrivée de Magic et des jeux vidéo a également éclipsé l'intérêt du jeu de rôle. Puis vint la famille, et la conciliation travail-famille-jeux est une équation difficile à gérer. J'ai toujours gardé un oeil sur l'évolution de mon passe-temps favori, lisant articles de blogs, magazines et mêmes livres de règles et campagnes, comme d'autres dévorent un bon polar.
 
-  <section class="expertise">
-    <h2 class="section-title">Expertise Technique</h2>
-    <div class="expertise-grid">
-      <div class="expertise-card">
-        <h3 class="card-title">Innovation Front-End</h3>
-        <p>Maîtrise approfondie des frameworks modernes (Vue.js, React.js) et attention particulière aux performances. Chaque ligne de code est écrite avec la perspective de l'utilisateur final.</p>
-      </div>
+Depuis quelques années, je suis redevenu un rôliste actif, après avoir longtemps été en dormance. Ce retour au jeu était important pour moi. Emprunt de nostalgie d'abord, et la nostalgie est un sentiment précieux pour celui qui s'est expatrié (je vis au Québec depuis 25 ans). Mais ce qui était au départ pour moi un retour sur le passé est devenu beaucoup plus significatif. Le jeu de rôle est fondamentalement important. Encore plus aujourd'hui qu'hier. Dans une société dans laquelle la culture s'atomise, l'appartenance à une sous-culture est précieuse. Oui, il y a une culture ludique.
 
- <div class="expertise-card">
-        <h3 class="card-title">Architecture & Qualité</h3>
-        <p>Expert en développement d'architectures évolutives et maintenables. Mon expérience en tant que lead developer m'a appris l'importance des revues de code rigoureuses et des tests automatisés.</p>
-      </div>
-
-   <div class="expertise-card">
-        <h3 class="card-title">Leadership Technique</h3>
-        <p>Mentor passionné, j'ai guidé de nombreuses équipes dans l'adoption des meilleures pratiques de développement et des méthodologies Agile. La transmission des connaissances est au cœur de ma pratique.</p>
-      </div>
-    </div>
-
-  </section>
-
-  <section class="games">
-    <h2 class="section-title">L'Art du Jeu & de la Narration</h2>
-    <div class="games-content">
-      <p>Ma passion pour les jeux de rôle et de société va au-delà du simple loisir - c'est un laboratoire d'innovation narrative et d'expériences interactives.</p>
-
-   <div class="game-section">
-        <h3 class="subsection-title">Création de Jeux</h3>
-        <p>"Vous êtes dans une auberge" (2020) représente ma vision d'un jeu de rôle moderne : accessible aux nouveaux joueurs tout en offrant une profondeur narrative satisfaisante pour les vétérans. Financé avec succès sur Kickstarter, ce projet démontre ma capacité à transformer une vision créative en produit tangible apprécié par sa communauté.</p>
-      </div>
-
-   <div class="game-section">
-        <h3 class="subsection-title">Innovation & Intelligence Artificielle</h3>
-        <p>Avec "The Roleplayer's Guide to ChatGPT", j'explore les nouvelles frontières de la création narrative. Ce guide pratique aide les maîtres de jeu à utiliser l'IA comme outil créatif pour enrichir leurs univers et leurs scénarios. Cette fusion entre technologie et créativité représente parfaitement ma double expertise.</p>
-      </div>
-    </div>
-
-  </section>
-
-  <section class="impact">
-    <h2 class="section-title">Impact Communautaire & Engagement</h2>
-    <div class="impact-grid">
-      <div class="impact-card">
-        <h3 class="card-title">Leadership Local</h3>
-        <p>En tant que fondateur et organisateur du Marché public de Saint-Sauveur, j'ai contribué à créer un espace vivant qui rassemble producteurs locaux et citoyens. Cette expérience m'a appris l'importance de l'organisation communautaire et de la création de liens durables entre les acteurs locaux.</p>
-      </div>
-
-   <div class="impact-card">
-        <h3 class="card-title">Mentorat & Formation</h3>
-        <p>Ma passion pour le partage de connaissances s'est concrétisée à travers :</p>
-        <ul>
-          <li>L'animation d'ateliers sur les médias sociaux et les tendances web auprès de plus de 1000 gestionnaires et spécialistes marketing</li>
-          <li>Le mentorat de développeurs juniors, les guidant dans leur progression professionnelle</li>
-          <li>L'organisation de sessions de formation sur la création de jeux et l'utilisation des outils numériques</li>
-        </ul>
-      </div>
-    </div>
-
-  </section>
-
-  <section class="contact">
-    <h2 class="section-title">Me Contacter</h2>
-    <div class="contact-content">
-      <p>Que vous ayez un projet web ambitieux, une idée de jeu innovante, ou simplement l'envie d'échanger sur ces sujets, je suis toujours ouvert aux nouvelles opportunités de collaboration.</p>
-      <a href="mailto:christian@amauger.com" class="btn btn-primary"><i class="fa-solid fa-envelope"></i>Contactez-moi</a>
-    </div>
-  </section>
-</div>
+Le jeu de rôle est également plus important que jamais car il nous fait réfléchir sur notre rapport au temps, aux autres, à nous-mêmes.
