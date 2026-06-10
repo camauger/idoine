@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Spec — Import du « À propos » rôliste</title>
+<style>
+:root{
+  --accent:#475569;--accent-dark:#334155;--soft:#eef1f5;
+  --text:#1e293b;--muted:#64748b;--border:#dbe1e8;--bg:#fff;
+  --amber-bg:#fdf6ec;--amber-border:#e2c08d;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.65}
+header.page{background:var(--accent-dark);color:#fff;padding:1.6rem 2rem 1.2rem}
+header.page h1{font-family:var(--serif);margin:0 0 .3rem;font-size:1.7rem;font-weight:600}
+header.page .meta{color:#cbd5e1;font-size:.85rem}
+#progress-wrap{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);padding:.55rem 2rem;display:flex;align-items:center;gap:1rem}
+#progress-bar{flex:1;height:10px;background:var(--soft);border-radius:5px;overflow:hidden}
+#progress-fill{height:100%;width:0;background:var(--accent);transition:width .25s}
+#progress-label{font-size:.8rem;color:var(--muted);white-space:nowrap}
+.controls{display:flex;gap:.5rem;padding:.8rem 2rem 0}
+.controls button{font:inherit;font-size:.78rem;padding:.32rem .7rem;border:1px solid var(--border);background:var(--soft);color:var(--accent-dark);border-radius:5px;cursor:pointer}
+.controls button:hover{background:#e2e8f0}
+.layout{display:flex;gap:2rem;padding:1rem 2rem 4rem;align-items:flex-start}
+nav#toc{position:sticky;top:3.2rem;flex:0 0 230px;font-size:.83rem;border-right:1px solid var(--border);padding-right:1rem}
+nav#toc h2{font-family:var(--serif);font-size:.95rem;margin:.4rem 0 .5rem;color:var(--accent-dark)}
+nav#toc a{display:block;color:var(--muted);text-decoration:none;padding:.22rem 0}
+nav#toc a:hover{color:var(--accent-dark)}
+main{flex:1;min-width:0;max-width:none}
+details.sec{border:1px solid var(--border);border-radius:8px;margin:.8rem 0;background:var(--bg)}
+details.sec>summary{font-family:var(--serif);font-size:1.12rem;font-weight:600;color:var(--accent-dark);cursor:pointer;padding:.75rem 1rem;list-style:none;display:flex;align-items:center;gap:.55rem}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::before{content:"›";display:inline-block;transition:transform .18s;color:var(--accent);font-size:1.2rem}
+details.sec[open]>summary::before{transform:rotate(90deg)}
+details.sec>.body{padding:0 1.2rem 1rem}
+.badge{margin-left:auto;font-family:var(--sans);font-size:.72rem;font-weight:600;background:var(--soft);color:var(--accent-dark);border-radius:10px;padding:.1rem .55rem}
+table{border-collapse:collapse;width:100%;margin:.7rem 0;font-size:.9rem}
+th,td{border:1px solid var(--border);padding:.45rem .7rem;text-align:left}
+th{background:var(--soft);font-weight:600}
+code{font-family:var(--mono);font-size:.85em;background:var(--soft);padding:.1em .35em;border-radius:4px}
+ul{padding-left:1.3rem}
+.note{background:var(--amber-bg);border-left:4px solid var(--amber-border);padding:.6rem .9rem;border-radius:0 6px 6px 0;font-size:.9rem;margin:.7rem 0}
+.check-list{list-style:none;padding-left:.2rem}
+.check-list li{display:flex;gap:.55rem;align-items:flex-start;padding:.3rem 0}
+.check-list input{margin-top:.3rem;accent-color:var(--accent);width:1rem;height:1rem;flex:0 0 auto}
+.check-list li.done label{text-decoration:line-through;color:var(--muted)}
+.check-list label{cursor:pointer}
+h3{font-family:var(--serif);color:var(--accent-dark);font-size:1rem;margin:1rem 0 .4rem}
+@media (max-width:860px){
+  .layout{flex-direction:column;padding:1rem}
+  nav#toc{position:static;flex:none;border-right:0;border-bottom:1px solid var(--border);padding:0 0 .8rem;width:100%}
+  header.page,#progress-wrap,.controls{padding-left:1rem;padding-right:1rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  details.sec{border:0}
+  #progress-wrap,.controls,nav#toc{display:none}
+  details.sec>summary::before{display:none}
+}
+</style>
+</head>
+<body>
+<header class="page">
+<h1>Spec — Import du « À propos » rôliste depuis ludomancien2024</h1>
+<div class="meta">2026-06-10 · Statut : validé (design approuvé en brainstorming) · Branche : à créer depuis <code>css-improvements</code> ou <code>main</code></div>
+</header>
+
+<div id="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progression des critères">
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<span id="progress-label">0 / 0 tâches (0 %)</span>
+</div>
+
+<div class="controls">
+<button type="button" id="expand-all">Tout déplier</button>
+<button type="button" id="collapse-all">Tout replier</button>
+<button type="button" id="reset-checks">Réinitialiser les cases</button>
+</div>
+
+<div class="layout">
+<nav id="toc" aria-label="Table des matières">
+<h2>Sommaire</h2>
+<a href="#contexte">Contexte</a>
+<a href="#objectif">Objectif</a>
+<a href="#conception">Conception</a>
+<a href="#criteres">Critères d'acceptation</a>
+<a href="#hors-perimetre">Hors périmètre</a>
+</nav>
+
+<main>
+
+<details class="sec" id="contexte">
+<summary>Contexte</summary>
+<div class="body">
+<p>Le chantier initial visait à « importer les articles et pages de <code>C:\dev\ludomancien2024</code> » (ancien site Vue/Vite) dans ce repo (générateur Idoine). L'exploration a montré que l'essentiel est déjà importé :</p>
+<ul>
+<li><strong>33 articles</strong> : corps de texte strictement identiques entre les deux repos ; seul le front matter a été normalisé côté Idoine (clés triées, ajout de <code>title</code>/<code>summary</code>).</li>
+<li><strong>Images</strong> : les ~145 images d'articles (banners, thumbnails) sont déjà dans <code>src/assets/images</code>.</li>
+</ul>
+<p>Restaient quatre contenus non importés ; après arbitrage, <strong>un seul est retenu</strong> :</p>
+<table>
+<tr><th>Contenu source</th><th>Décision</th></tr>
+<tr><td><code>drafts/outils-images.md</code> (brouillon)</td><td>Hors périmètre</td></tr>
+<tr><td><code>src/pages/liens.vue</code> (annuaire JDR)</td><td>Hors périmètre</td></tr>
+<tr><td><code>src/pages/verglas/*.vue</code> (jeu Verglas)</td><td>Hors périmètre</td></tr>
+<tr><td><code>src/pages/a-propos.vue</code> (récit rôliste)</td><td><strong>À importer — ce spec</strong></td></tr>
+</table>
+</div>
+</details>
+
+<details class="sec" id="objectif">
+<summary>Objectif</summary>
+<div class="body">
+<p>Remplacer le contenu actuel de la page « À propos » (portfolio professionnel) par le récit rôliste personnel de <code>ludomancien2024</code>, en FR et en EN, et nettoyer le SCSS portfolio devenu orphelin.</p>
+<h3>Décisions validées</h3>
+<ul>
+<li><strong>Remplacement complet</strong> — le contenu portfolio est retiré (pas de fusion).</li>
+<li><strong>Repères temporels actualisés à 2026</strong> — chaque ajustement est soumis dans le diff.</li>
+<li><strong>Approche B</strong> — réécriture Markdown pur + nettoyage SCSS orphelin.</li>
+<li><strong>Version EN traduite</strong> — traduction fidèle du récit, mêmes repères actualisés.</li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="conception">
+<summary>Conception</summary>
+<div class="body">
+<h3>1. Contenu FR — <code>src/locales/fr/pages/about.md</code></h3>
+<ul>
+<li>Corps actuel (HTML portfolio : <code>.intro</code>, <code>.passion-card</code>, <code>.expertise-grid</code>, etc.) remplacé par le récit rôliste de <code>a-propos.vue</code>, converti en <strong>Markdown pur</strong> : paragraphes simples, aucun balisage HTML.</li>
+<li>Front matter conservé : <code>title</code>, <code>slug: a-propos</code>, <code>template: pages/about.html</code>, <code>translation_id: about</code>.</li>
+<li><code>description</code> (SEO) réécrite pour refléter le récit rôliste.</li>
+<li>Actualisation des repères temporels (texte écrit vers 2021) : « cela fait 30 ans » → ajusté (initiation fin des années 80, donc « près de 40 ans » ou équivalent) ; « au Québec depuis 20 ans » → « depuis 25 ans » ; tout autre repère daté détecté est listé dans le diff.</li>
+<li>La voix et le contenu du texte sont préservés ; pas de réécriture stylistique.</li>
+</ul>
+<h3>2. Contenu EN — <code>src/locales/en/pages/about.md</code></h3>
+<ul>
+<li>Traduction fidèle du même récit (voix personnelle préservée, repères actualisés identiques).</li>
+<li>Même structure de front matter que la page FR (avec <code>translation_id: about</code>).</li>
+</ul>
+<h3>3. Nettoyage SCSS — <code>src/styles/pages/_about-page.scss</code></h3>
+<ul>
+<li>Les classes portfolio (<code>.intro</code>, <code>.section-title</code>, <code>.passion-card</code>, <code>.expertise*</code>, <code>.impact*</code>, <code>.games</code>, <code>.contact*</code>, <code>.card-title</code>…) ne sont utilisées <strong>que</strong> par les deux <code>about.md</code> → supprimables après réécriture.</li>
+<li><code>.container</code> est aussi utilisé par <code>src/templates/pages/glossary.html</code> → la règle est <strong>déplacée</strong> vers un emplacement partagé (layout/base) ou conservée ; elle ne doit pas disparaître.</li>
+<li>La règle globale <code>body { … }</code> est probablement redondante avec les styles de base → vérifier avant suppression ; en cas de doute, la conserver.</li>
+<li>Le <code>@use "about-page"</code> dans <code>src/styles/pages/index.scss</code> est retiré ou ajusté selon ce qui reste.</li>
+</ul>
+<div class="note">⚠️ <code>_about-page.scss</code> contient des règles génériques (<code>body</code>, <code>.container</code>) : ne pas supprimer le fichier en bloc sans avoir traité ces deux cas.</div>
+<h3>4. Vérification</h3>
+<ul>
+<li>Build local : <code>python scripts/build.py</code> sans erreur.</li>
+<li>Contrôle visuel : pages <code>/a-propos</code> (FR), <code>/en/about</code> (EN) et glossaire (pour <code>.container</code>).</li>
+<li>Aucun autre template ni page ne doit changer.</li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="criteres">
+<summary>Critères d'acceptation <span class="badge" data-badge>0/7</span></summary>
+<div class="body">
+<ul class="check-list">
+<li><input type="checkbox" id="c1"><label for="c1"><code>src/locales/fr/pages/about.md</code> contient le récit rôliste en Markdown pur, sans HTML.</label></li>
+<li><input type="checkbox" id="c2"><label for="c2">Les repères temporels sont actualisés et chaque ajustement a été soumis à validation.</label></li>
+<li><input type="checkbox" id="c3"><label for="c3"><code>description</code> du front matter FR reflète le nouveau contenu.</label></li>
+<li><input type="checkbox" id="c4"><label for="c4"><code>src/locales/en/pages/about.md</code> contient la traduction fidèle du récit.</label></li>
+<li><input type="checkbox" id="c5"><label for="c5">Les styles portfolio orphelins sont supprimés de <code>_about-page.scss</code>.</label></li>
+<li><input type="checkbox" id="c6"><label for="c6"><code>.container</code> fonctionne toujours sur la page glossaire.</label></li>
+<li><input type="checkbox" id="c7"><label for="c7">Le build passe et les trois pages (about FR, about EN, glossaire) s'affichent correctement.</label></li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="hors-perimetre">
+<summary>Hors périmètre (suivis futurs)</summary>
+<div class="body">
+<ul>
+<li>Import du brouillon <code>outils-images.md</code> (mentionné dans CLAUDE.md mais absent du repo).</li>
+<li>Page « Liens » (annuaire d'une vingtaine de blogs/podcasts JDR, <code>liens.vue</code> + <code>websites.json</code>).</li>
+<li>Pages « Verglas » (présentation du jeu, mise en page riche, template dédié à créer).</li>
+<li>Mise à jour du CLAUDE.md (décompte « 1 brouillon » inexact).</li>
+</ul>
+</div>
+</details>
+
+</main>
+</div>
+
+<script>
+(function(){
+var KEY="spec-2026-06-10-import-a-propos";
+var boxes=Array.prototype.slice.call(document.querySelectorAll('.check-list input[type=checkbox]'));
+var fill=document.getElementById('progress-fill'),label=document.getElementById('progress-label');
+var wrap=document.getElementById('progress-wrap');
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return{}}}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+function refresh(){
+  var done=boxes.filter(function(b){return b.checked}).length,total=boxes.length;
+  var pct=total?Math.round(done/total*100):0;
+  fill.style.width=pct+"%";
+  label.textContent=done+" / "+total+" tâches ("+pct+" %)";
+  wrap.setAttribute('aria-valuenow',pct);
+  boxes.forEach(function(b){b.closest('li').classList.toggle('done',b.checked)});
+  document.querySelectorAll('details.sec').forEach(function(d){
+    var badge=d.querySelector('[data-badge]');if(!badge)return;
+    var bs=Array.prototype.slice.call(d.querySelectorAll('.check-list input'));
+    badge.textContent=bs.filter(function(b){return b.checked}).length+"/"+bs.length;
+  });
+}
+var state=load();
+boxes.forEach(function(b){
+  if(state[b.id])b.checked=true;
+  b.addEventListener('change',function(){state[b.id]=b.checked;save(state);refresh()});
+});
+document.getElementById('expand-all').onclick=function(){document.querySelectorAll('details.sec').forEach(function(d){d.open=true})};
+document.getElementById('collapse-all').onclick=function(){document.querySelectorAll('details.sec').forEach(function(d){d.open=false})};
+document.getElementById('reset-checks').onclick=function(){state={};save(state);boxes.forEach(function(b){b.checked=false});refresh()};
+document.querySelectorAll('#toc a').forEach(function(a){
+  a.addEventListener('click',function(){
+    var t=document.querySelector(a.getAttribute('href'));
+    if(t&&t.tagName==='DETAILS')t.open=true;
+  });
+});
+window.addEventListener('beforeprint',function(){document.querySelectorAll('details.sec').forEach(function(d){d.open=true})});
+refresh();
+})();
+</script>
+</body>
+</html>
