@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Plan — Import du « À propos » rôliste</title>
+<style>
+:root{
+  --accent:#475569;--accent-dark:#334155;--soft:#eef1f5;
+  --text:#1e293b;--muted:#64748b;--border:#dbe1e8;--bg:#fff;
+  --amber-bg:#fdf6ec;--amber-border:#e2c08d;--info-bg:#eef2f7;--info-border:#94a3b8;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:ui-monospace,"Cascadia Code",Consolas,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:var(--sans);color:var(--text);background:var(--bg);line-height:1.65}
+header.page{background:var(--accent-dark);color:#fff;padding:1.6rem 2rem 1.2rem}
+header.page h1{font-family:var(--serif);margin:0 0 .3rem;font-size:1.7rem;font-weight:600}
+header.page .meta{color:#cbd5e1;font-size:.85rem}
+#progress-wrap{position:sticky;top:0;z-index:50;background:var(--bg);border-bottom:1px solid var(--border);padding:.55rem 2rem;display:flex;align-items:center;gap:1rem}
+#progress-bar{flex:1;height:10px;background:var(--soft);border-radius:5px;overflow:hidden}
+#progress-fill{height:100%;width:0;background:var(--accent);transition:width .25s}
+#progress-label{font-size:.8rem;color:var(--muted);white-space:nowrap}
+.controls{display:flex;gap:.5rem;padding:.8rem 2rem 0}
+.controls button{font:inherit;font-size:.78rem;padding:.32rem .7rem;border:1px solid var(--border);background:var(--soft);color:var(--accent-dark);border-radius:5px;cursor:pointer}
+.controls button:hover{background:#e2e8f0}
+.layout{display:flex;gap:2rem;padding:1rem 2rem 4rem;align-items:flex-start}
+nav#toc{position:sticky;top:3.2rem;flex:0 0 250px;font-size:.83rem;border-right:1px solid var(--border);padding-right:1rem}
+nav#toc h2{font-family:var(--serif);font-size:.95rem;margin:.4rem 0 .5rem;color:var(--accent-dark)}
+nav#toc a{display:block;color:var(--muted);text-decoration:none;padding:.22rem 0}
+nav#toc a:hover{color:var(--accent-dark)}
+main{flex:1;min-width:0}
+details.sec{border:1px solid var(--border);border-radius:8px;margin:.8rem 0;background:var(--bg)}
+details.sec>summary{font-family:var(--serif);font-size:1.12rem;font-weight:600;color:var(--accent-dark);cursor:pointer;padding:.75rem 1rem;list-style:none;display:flex;align-items:center;gap:.55rem}
+details.sec>summary::-webkit-details-marker{display:none}
+details.sec>summary::before{content:"›";display:inline-block;transition:transform .18s;color:var(--accent);font-size:1.2rem}
+details.sec[open]>summary::before{transform:rotate(90deg)}
+details.sec>.body{padding:0 1.2rem 1rem}
+.badge{margin-left:auto;font-family:var(--sans);font-size:.72rem;font-weight:600;background:var(--soft);color:var(--accent-dark);border-radius:10px;padding:.1rem .55rem}
+table{border-collapse:collapse;width:100%;margin:.7rem 0;font-size:.9rem}
+th,td{border:1px solid var(--border);padding:.45rem .7rem;text-align:left}
+th{background:var(--soft);font-weight:600}
+code{font-family:var(--mono);font-size:.85em;background:var(--soft);padding:.1em .35em;border-radius:4px}
+pre{background:#1e293b;color:#e2e8f0;padding:.9rem 1.1rem;border-radius:8px;overflow-x:auto;font-size:.82rem;line-height:1.5}
+pre code{background:none;color:inherit;padding:0}
+ul{padding-left:1.3rem}
+.note{background:var(--amber-bg);border-left:4px solid var(--amber-border);padding:.6rem .9rem;border-radius:0 6px 6px 0;font-size:.9rem;margin:.7rem 0}
+.info{background:var(--info-bg);border-left:4px solid var(--info-border);padding:.6rem .9rem;border-radius:0 6px 6px 0;font-size:.9rem;margin:.7rem 0}
+.check-list{list-style:none;padding-left:.2rem}
+.check-list>li{display:flex;gap:.55rem;align-items:flex-start;padding:.35rem 0;border-bottom:1px dashed var(--border)}
+.check-list>li:last-child{border-bottom:0}
+.check-list input{margin-top:.3rem;accent-color:var(--accent);width:1rem;height:1rem;flex:0 0 auto}
+.check-list>li.done>div>label{text-decoration:line-through;color:var(--muted)}
+.check-list label{cursor:pointer;font-weight:600}
+.check-list .step-body{margin-top:.3rem;font-weight:400}
+.files{font-size:.85rem;color:var(--muted);margin:.4rem 0 .8rem}
+h3{font-family:var(--serif);color:var(--accent-dark);font-size:1rem;margin:1rem 0 .4rem}
+@media (max-width:860px){
+  .layout{flex-direction:column;padding:1rem}
+  nav#toc{position:static;flex:none;border-right:0;border-bottom:1px solid var(--border);padding:0 0 .8rem;width:100%}
+  header.page,#progress-wrap,.controls{padding-left:1rem;padding-right:1rem}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  details.sec{border:0}
+  #progress-wrap,.controls,nav#toc{display:none}
+  details.sec>summary::before{display:none}
+  pre{background:var(--soft);color:var(--text)}
+}
+</style>
+</head>
+<body>
+<header class="page">
+<h1>Plan — Import du « À propos » rôliste</h1>
+<div class="meta">2026-06-10 · Spec : <code>docs/superpowers/specs/2026-06-10-import-a-propos-roliste-design.md</code> · Exécution : superpowers:subagent-driven-development ou executing-plans</div>
+</header>
+
+<div id="progress-wrap" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progression des étapes">
+<div id="progress-bar"><div id="progress-fill"></div></div>
+<span id="progress-label">0 / 0 tâches (0 %)</span>
+</div>
+
+<div class="controls">
+<button type="button" id="expand-all">Tout déplier</button>
+<button type="button" id="collapse-all">Tout replier</button>
+<button type="button" id="reset-checks">Réinitialiser les cases</button>
+</div>
+
+<div class="layout">
+<nav id="toc" aria-label="Table des matières">
+<h2>Sommaire</h2>
+<a href="#decisions">Décisions verrouillées</a>
+<a href="#task1">Task 1 — about.md FR</a>
+<a href="#task2">Task 2 — about.md EN</a>
+<a href="#task3">Task 3 — Nettoyage SCSS</a>
+<a href="#task4">Task 4 — Vérification finale</a>
+<a href="#hors-perimetre">Hors périmètre</a>
+</nav>
+
+<main>
+
+<div class="info">💡 <strong>Goal :</strong> remplacer le contenu portfolio de la page « À propos » (FR + EN) par le récit rôliste de <code>ludomancien2024</code>, repères temporels actualisés à 2026, et supprimer le SCSS portfolio orphelin. Référence source (lecture seule) : <code>C:\dev\ludomancien2024\src\pages\a-propos.vue</code>.</div>
+
+<details class="sec" id="decisions" open>
+<summary>Décisions verrouillées (du spec)</summary>
+<div class="body">
+<ul>
+<li><strong>Remplacement complet</strong> du contenu portfolio — pas de fusion.</li>
+<li><strong>Deux seuls ajustements temporels</strong> (révision stylistique déclinée ; les coquilles du texte source — « la bleu », « Emprunt de nostalgie » — sont <strong>conservées volontairement</strong>) :
+<ol>
+<li>« Cela fait 30 ans » → « Cela fait près de 40 ans »</li>
+<li>« je vis au Québec depuis 20 ans » → « je vis au Québec depuis 25 ans »</li>
+</ol></li>
+<li><code>_about-page.scss</code> supprimé <strong>en entier</strong> : sa règle <code>.container</code> est un doublon de <code>layout/_layout.scss:20</code> (qui sert déjà <code>glossary.html</code>) ; sa règle <code>body</code> est redondante avec <code>base/</code> et <code>layout/</code>.</li>
+<li>Front matter EN : retirer <code>hero_cta</code> et <code>about_image</code> ; conserver <code>title</code>, <code>description</code> (réécrite), <code>template</code>, <code>translation_id</code>.</li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="task1">
+<summary>Task 1 — Réécrire <code>about.md</code> FR <span class="badge" data-badge>0/4</span></summary>
+<div class="body">
+<p class="files"><strong>Fichier :</strong> Modify <code>src/locales/fr/pages/about.md</code> (remplacement intégral)</p>
+<ul class="check-list">
+<li><input type="checkbox" id="t1s1"><div><label for="t1s1">Step 1 : Remplacer intégralement le contenu du fichier</label>
+<div class="step-body">
+<pre><code>---
+title: À propos
+slug: a-propos
+description: Près de 40 ans de jeu de rôle, de Tunnels &amp; Trolls à la création de jeux — le parcours rôliste de Christian Amauger.
+template: pages/about.html
+translation_id: about
+---
+
+Cela fait près de 40 ans que je navigue dans l'univers du jeu de rôle. J'ai eu la chance d'être initié par mon grand frère, à la fin des années 80, lorsque le jeu de rôle a connu un essor en France.
+
+J'ai commencé non pas avec Donjons &amp; Dragons mais avec Tunnels &amp; Trolls. L'avantage de cet ancien parmi les anciens était les scénarios en mode « solo », une passerelle parfaite entre les livres dont vous êtes le héros et le jeu de rôle proprement dit.
+
+Ensuite, bien sûr, j'ai plongé dans Donjons &amp; Dragons. La boîte rouge, pour commencer. Puis la bleu, la turquoise, la verte, etc.
+
+J'ai initié mes amis, et nous avons exploré bien des univers de jeux, profitant de l'expansion et de la diversification du jeu pendant les années 90. Les classiques (D&amp;D, T&amp;T, Oeil Noir) ont laissé place à des systèmes plus complexes (Rolemaster), des univers plus originaux (Rêve de Dragon), des structures narratives plus intéressantes (Vampire La Mascarade). Les explorations de donjon furent abandonnées au profit de récits plus axés sur l'investigation et l'interprétation.
+
+Comme beaucoup de ma génération, j'ai délaissé le jeu de rôle par manque de temps, par la difficulté à garder un groupe de jeu régulier. L'arrivée de Magic et des jeux vidéo a également éclipsé l'intérêt du jeu de rôle. Puis vint la famille, et la conciliation travail-famille-jeux est une équation difficile à gérer. J'ai toujours gardé un oeil sur l'évolution de mon passe-temps favori, lisant articles de blogs, magazines et mêmes livres de règles et campagnes, comme d'autres dévorent un bon polar.
+
+Depuis quelques années, je suis redevenu un rôliste actif, après avoir longtemps été en dormance. Ce retour au jeu était important pour moi. Emprunt de nostalgie d'abord, et la nostalgie est un sentiment précieux pour celui qui s'est expatrié (je vis au Québec depuis 25 ans). Mais ce qui était au départ pour moi un retour sur le passé est devenu beaucoup plus significatif. Le jeu de rôle est fondamentalement important. Encore plus aujourd'hui qu'hier. Dans une société dans laquelle la culture s'atomise, l'appartenance à une sous-culture est précieuse. Oui, il y a une culture ludique.
+
+Le jeu de rôle est également plus important que jamais car il nous fait réfléchir sur notre rapport au temps, aux autres, à nous-mêmes.</code></pre>
+<p>Fidélité : transcription exacte de <code>a-propos.vue</code> (graphies « oeil », « mêmes livres », « la bleu », « Emprunt de nostalgie » conservées), aux deux ajustements temporels près.</p>
+</div></div></li>
+<li><input type="checkbox" id="t1s2"><div><label for="t1s2">Step 2 : Builder en mode dev</label>
+<div class="step-body">Run : <code>python scripts/build.py --dev</code> — Expected : build sans erreur.</div></div></li>
+<li><input type="checkbox" id="t1s3"><div><label for="t1s3">Step 3 : Vérifier le HTML généré</label>
+<div class="step-body"><pre><code>$page = Get-ChildItem dist -Recurse -Filter "*.html" | Select-String -Pattern "Tunnels &amp; Trolls|Tunnels &amp;amp; Trolls" -List | Select-Object -ExpandProperty Path
+$page
+Select-String -Path $page -Pattern "passion-card" -Quiet</code></pre>
+Expected : au moins un chemin FR affiché ; le second test renvoie <code>False</code>.</div></div></li>
+<li><input type="checkbox" id="t1s4"><div><label for="t1s4">Step 4 : Commit</label>
+<div class="step-body"><pre><code>git add src/locales/fr/pages/about.md
+git commit -m "feat(about): remplace le portfolio par le récit rôliste (FR)"</code></pre></div></div></li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="task2">
+<summary>Task 2 — Réécrire <code>about.md</code> EN <span class="badge" data-badge>0/4</span></summary>
+<div class="body">
+<p class="files"><strong>Fichier :</strong> Modify <code>src/locales/en/pages/about.md</code> (remplacement intégral)</p>
+<ul class="check-list">
+<li><input type="checkbox" id="t2s1"><div><label for="t2s1">Step 1 : Remplacer intégralement le contenu du fichier</label>
+<div class="step-body">
+<pre><code>---
+title: About
+description: Nearly forty years of roleplaying games — from Tunnels &amp; Trolls to game design, Christian Amauger's journey as a roleplayer.
+template: pages/about.html
+translation_id: about
+---
+
+I have been navigating the world of tabletop roleplaying games for nearly forty years. I was lucky enough to be introduced to the hobby by my older brother in the late 1980s, when roleplaying games were booming in France.
+
+I did not start with Dungeons &amp; Dragons but with Tunnels &amp; Trolls. The advantage of that elder among elders was its "solo" scenarios, a perfect bridge between choose-your-own-adventure books and roleplaying games proper.
+
+Then, of course, I dove into Dungeons &amp; Dragons. The red box, to start. Then the blue one, the turquoise, the green, and so on.
+
+I introduced my friends to the hobby, and together we explored many game worlds, riding the wave of expansion and diversification of the 1990s. The classics (D&amp;D, T&amp;T, The Dark Eye) gave way to more complex systems (Rolemaster), more original settings (Rêve de Dragon), and more interesting narrative structures (Vampire: The Masquerade). Dungeon crawls were abandoned in favor of stories built on investigation and roleplay.
+
+Like many of my generation, I drifted away from roleplaying games for lack of time and the difficulty of keeping a regular gaming group together. The arrival of Magic and video games also eclipsed the appeal of roleplaying. Then came family, and balancing work, family and games is a difficult equation to manage. I always kept an eye on my favorite pastime, reading blog posts, magazines, and even rulebooks and campaigns the way others devour a good detective novel.
+
+A few years ago, I became an active roleplayer again, after a long dormancy. This return to the game mattered to me. Tinged with nostalgia at first — and nostalgia is a precious feeling for someone who has left his home country (I have been living in Quebec for 25 years). But what began as a look back at the past became much more meaningful. Roleplaying games are fundamentally important. Even more so today than yesterday. In a society where culture is fragmenting, belonging to a subculture is precious. Yes, there is such a thing as gaming culture.
+
+Roleplaying games also matter more than ever, because they make us reflect on our relationship to time, to others, and to ourselves.</code></pre>
+<p>Notes : <code>hero_cta</code> et <code>about_image</code> retirés ; pas de clé <code>slug</code> (comme l'original EN) ; « Oeil Noir » → « The Dark Eye ».</p>
+</div></div></li>
+<li><input type="checkbox" id="t2s2"><div><label for="t2s2">Step 2 : Builder en mode dev</label>
+<div class="step-body">Run : <code>python scripts/build.py --dev</code> — Expected : build sans erreur.</div></div></li>
+<li><input type="checkbox" id="t2s3"><div><label for="t2s3">Step 3 : Vérifier le HTML généré EN</label>
+<div class="step-body"><pre><code>$page = Get-ChildItem dist -Recurse -Filter "*.html" | Select-String -Pattern "The Dark Eye" -List | Select-Object -ExpandProperty Path
+$page
+Select-String -Path $page -Pattern "passion-card|expertise-card" -Quiet</code></pre>
+Expected : chemin de la page EN affiché ; second test <code>False</code>.</div></div></li>
+<li><input type="checkbox" id="t2s4"><div><label for="t2s4">Step 4 : Commit</label>
+<div class="step-body"><pre><code>git add src/locales/en/pages/about.md
+git commit -m "feat(about): translate the roleplayer story for the EN about page"</code></pre></div></div></li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="task3">
+<summary>Task 3 — Supprimer le SCSS portfolio orphelin <span class="badge" data-badge>0/5</span></summary>
+<div class="body">
+<p class="files"><strong>Fichiers :</strong> Delete <code>src/styles/pages/_about-page.scss</code> · Modify <code>src/styles/pages/index.scss:3</code></p>
+<ul class="check-list">
+<li><input type="checkbox" id="t3s1"><div><label for="t3s1">Step 1 : Vérifier qu'aucun usage des classes portfolio ne subsiste</label>
+<div class="step-body"><pre><code>Get-ChildItem src -Recurse -Include *.md,*.html,*.js | Select-String -Pattern "passion-card|expertise-card|impact-card|intro-title|passions-grid" | Select-Object Path, LineNumber</code></pre>
+Expected : aucun résultat. <strong>Si un résultat apparaît : STOP, signaler — ne pas supprimer.</strong></div></div></li>
+<li><input type="checkbox" id="t3s2"><div><label for="t3s2">Step 2 : Supprimer le fichier SCSS</label>
+<div class="step-body"><pre><code>git rm src/styles/pages/_about-page.scss</code></pre></div></div></li>
+<li><input type="checkbox" id="t3s3"><div><label for="t3s3">Step 3 : Retirer l'import dans <code>index.scss</code></label>
+<div class="step-body">Supprimer la ligne <code>@use "about-page";</code>. Le fichier devient :
+<pre><code>@use "home";
+@use "about";
+@use "hero";
+@use "glossary-term";
+@use "glossary-tag";</code></pre></div></div></li>
+<li><input type="checkbox" id="t3s4"><div><label for="t3s4">Step 4 : Compiler le CSS et vérifier</label>
+<div class="step-body"><pre><code>npx grunt build
+Select-String -Path dist/styles/main.css -Pattern "passion-card" -Quiet
+Select-String -Path dist/styles/main.css -Pattern "\.container" -Quiet</code></pre>
+Expected : compilation OK ; premier test <code>False</code> ; second test <code>True</code> (<code>.container</code> de layout toujours présent pour le glossaire).</div></div></li>
+<li><input type="checkbox" id="t3s5"><div><label for="t3s5">Step 5 : Commit</label>
+<div class="step-body"><pre><code>git add src/styles/pages/index.scss
+git commit -m "refactor(styles): supprime _about-page.scss devenu orphelin"</code></pre></div></div></li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="task4">
+<summary>Task 4 — Vérification finale <span class="badge" data-badge>0/4</span></summary>
+<div class="body">
+<p class="files"><strong>Fichiers :</strong> aucun (vérification seulement)</p>
+<ul class="check-list">
+<li><input type="checkbox" id="t4s1"><div><label for="t4s1">Step 1 : Build de production complet</label>
+<div class="step-body">Run : <code>just build</code> (= <code>npx grunt build</code> + <code>python scripts/build.py</code>) — Expected : aucun échec.</div></div></li>
+<li><input type="checkbox" id="t4s2"><div><label for="t4s2">Step 2 : Lancer la prévisualisation</label>
+<div class="step-body">Run : <code>just preview</code> (arrière-plan) — sert <code>dist/</code> sur http://localhost:8000.</div></div></li>
+<li><input type="checkbox" id="t4s3"><div><label for="t4s3">Step 3 : Contrôle des trois pages</label>
+<div class="step-body">
+<ol>
+<li>« À propos » FR : hero affiché, récit en paragraphes, « près de 40 ans » et « depuis 25 ans » présents, aucune carte portfolio.</li>
+<li>« About » EN : traduction affichée, « The Dark Eye » présent.</li>
+<li>Glossaire : mise en page intacte (conteneur centré, largeur contrainte).</li>
+</ol>
+<pre><code>curl.exe -s http://localhost:8000/a-propos/ | Select-String "près de 40 ans"
+curl.exe -s http://localhost:8000/a-propos/ | Select-String "passion-card"</code></pre>
+Expected : première commande renvoie une ligne ; deuxième ne renvoie rien. (Adapter les URL aux chemins réels de <code>dist/</code>.)</div></div></li>
+<li><input type="checkbox" id="t4s4"><div><label for="t4s4">Step 4 : Arrêter la prévisualisation et clore</label>
+<div class="step-body">Arrêter le serveur. Cocher les critères d'acceptation dans le HTML du spec. Pas de commit attendu (sauf correctifs <code>fix(about): …</code>).</div></div></li>
+</ul>
+</div>
+</details>
+
+<details class="sec" id="hors-perimetre">
+<summary>Hors périmètre (rappel)</summary>
+<div class="body">
+<p>Ne PAS toucher : brouillon <code>outils-images.md</code>, page « Liens », pages « Verglas », CLAUDE.md. Ces suivis sont notés dans le spec.</p>
+</div>
+</details>
+
+</main>
+</div>
+
+<script>
+(function(){
+var KEY="plan-2026-06-10-import-a-propos";
+var boxes=Array.prototype.slice.call(document.querySelectorAll('.check-list input[type=checkbox]'));
+var fill=document.getElementById('progress-fill'),label=document.getElementById('progress-label');
+var wrap=document.getElementById('progress-wrap');
+function load(){try{return JSON.parse(localStorage.getItem(KEY)||"{}")}catch(e){return{}}}
+function save(s){try{localStorage.setItem(KEY,JSON.stringify(s))}catch(e){}}
+function refresh(){
+  var done=boxes.filter(function(b){return b.checked}).length,total=boxes.length;
+  var pct=total?Math.round(done/total*100):0;
+  fill.style.width=pct+"%";
+  label.textContent=done+" / "+total+" tâches ("+pct+" %)";
+  wrap.setAttribute('aria-valuenow',pct);
+  boxes.forEach(function(b){b.closest('li').classList.toggle('done',b.checked)});
+  document.querySelectorAll('details.sec').forEach(function(d){
+    var badge=d.querySelector('[data-badge]');if(!badge)return;
+    var bs=Array.prototype.slice.call(d.querySelectorAll('.check-list input'));
+    badge.textContent=bs.filter(function(b){return b.checked}).length+"/"+bs.length;
+  });
+}
+var state=load();
+boxes.forEach(function(b){
+  if(state[b.id])b.checked=true;
+  b.addEventListener('change',function(){state[b.id]=b.checked;save(state);refresh()});
+});
+document.getElementById('expand-all').onclick=function(){document.querySelectorAll('details.sec').forEach(function(d){d.open=true})};
+document.getElementById('collapse-all').onclick=function(){document.querySelectorAll('details.sec').forEach(function(d){d.open=false})};
+document.getElementById('reset-checks').onclick=function(){state={};save(state);boxes.forEach(function(b){b.checked=false});refresh()};
+document.querySelectorAll('#toc a').forEach(function(a){
+  a.addEventListener('click',function(){
+    var t=document.querySelector(a.getAttribute('href'));
+    if(t&&t.tagName==='DETAILS')t.open=true;
+  });
+});
+window.addEventListener('beforeprint',function(){document.querySelectorAll('details.sec').forEach(function(d){d.open=true})});
+refresh();
+})();
+</script>
+</body>
+</html>
