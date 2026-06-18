@@ -7,25 +7,38 @@
 // -----------------------------------------------------------------------------
 .inscription-hero {
   background-color: var(--color-clay-cream);
-  padding: var(--spacing-16) 0 var(--spacing-12);
+  padding: var(--spacing-6) 0;
   text-align: center;
 
   .page-title {
     font-family: var(--font-display);
-    font-size: var(--text-4xl);
+    font-size: var(--text-xl);
     font-weight: 700;
     color: var(--color-kiln-charcoal);
-    margin-bottom: var(--spacing-4);
+    margin-bottom: var(--spacing-3);
 
     @media (min-width: 768px) {
-      font-size: var(--text-5xl);
+      font-size: var(--text-2xl);
     }
   }
+}
 
-  .page-intro {
-    max-width: 42rem;
-    margin: 0 auto;
-    color: var(--color-text-light);
+.session-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-4);
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-full);
+  font-family: var(--font-sans);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--color-kiln-charcoal);
+  box-shadow: var(--shadow-sm);
+
+  i {
+    color: var(--color-terracotta);
   }
 }
 
@@ -33,7 +46,7 @@
 // Inscription Section
 // -----------------------------------------------------------------------------
 .inscription-section {
-  padding: var(--spacing-12) 0;
+  padding: var(--spacing-8) 0 var(--spacing-12);
 }
 
 .inscription-closed-notice {
@@ -180,20 +193,33 @@
   margin: 0;
 
   li {
-    margin-bottom: var(--spacing-2);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+    margin-bottom: var(--spacing-3);
     padding-left: 0 !important;
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
 
     &::before {
       display: none !important;
     }
 
-    strong {
-      color: var(--color-kiln-charcoal);
+    &:last-child {
+      margin-bottom: 0;
+    }
+
+    > i {
+      flex-shrink: 0;
+      width: 1.25rem;
+      text-align: center;
+      color: var(--color-terracotta);
     }
 
     a {
-      color: var(--color-terracotta);
+      color: var(--color-glass-blue);
       text-decoration: none;
+      font-weight: 600;
 
       &:hover {
         text-decoration: underline;
@@ -202,23 +228,41 @@
   }
 }
 
+.contact-note {
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
+
 // -----------------------------------------------------------------------------
 // Email Alternative Section
 // -----------------------------------------------------------------------------
 .section-email-alt {
-  padding: var(--spacing-8) 0 var(--spacing-12);
+  padding: var(--spacing-4) 0 var(--spacing-16);
 }
 
 .email-alt-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-3);
   background-color: var(--color-deep-brown);
   color: var(--color-warm-white);
-  padding: var(--spacing-6);
+  padding: var(--spacing-6) var(--spacing-8);
   border-radius: var(--border-radius-lg);
   text-align: center;
 
+  > i {
+    flex-shrink: 0;
+    font-size: var(--text-xl);
+    color: var(--color-amber);
+  }
+
   p {
+    max-width: 46rem;
     margin: 0;
-    font-size: var(--text-base);
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    line-height: var(--leading-normal);
   }
 
   a {
@@ -236,6 +280,33 @@
 // Form Field Enhancements for this page
 // -----------------------------------------------------------------------------
 #inscription-form {
+  // Numérotation des sections : repère de progression visuel.
+  counter-reset: fieldset-step;
+
+  .form-fieldset > legend {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-3);
+
+    &::before {
+      counter-increment: fieldset-step;
+      content: counter(fieldset-step);
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 1.875rem;
+      height: 1.875rem;
+      font-family: var(--font-sans);
+      font-size: var(--text-sm);
+      font-weight: 700;
+      color: var(--color-warm-white);
+      background-color: var(--color-terracotta);
+      border-radius: var(--border-radius-full);
+      box-shadow: 0 1px 2px rgba(var(--color-primary-rgb), 0.4);
+    }
+  }
+
   // Course select enhancement
   #cours {
     optgroup {
@@ -251,20 +322,152 @@
 }
 
 // -----------------------------------------------------------------------------
-// Prefill Notice (shown when coming from course page)
+// Récapitulatif du cours sélectionné
 // -----------------------------------------------------------------------------
-.prefill-notice {
-  margin-top: var(--spacing-4);
-  padding: var(--spacing-3) var(--spacing-4);
-  background-color: rgba(194, 113, 79, 0.1);
-  border-left: 3px solid var(--color-terracotta);
-  border-radius: var(--border-radius-sm);
+.cours-recap {
+  margin-top: var(--spacing-5);
+  margin-bottom: var(--spacing-8);
+}
+
+// État vide — invitation discrète tant qu'aucun cours n'est choisi.
+.cours-recap-empty {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-3);
+  margin: 0;
+  padding: var(--spacing-4) var(--spacing-5);
+  background-color: var(--color-clay-cream);
+  border: 1px dashed var(--color-stone-light);
+  border-radius: var(--border-radius-lg);
+  font-family: var(--font-sans);
   font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-muted);
+
+  &::before {
+    content: '\f05a'; // fa-circle-info
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    flex-shrink: 0;
+    font-size: var(--text-xl);
+    color: var(--color-stone);
+  }
+}
+
+// Carte « ticket » du cours sélectionné — accent coloré par discipline.
+.cours-recap-card {
+  --recap-accent: var(--color-terracotta);
+  position: relative;
+  overflow: hidden;
+  background-color: var(--color-warm-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--shadow-md);
+  animation: recap-rise var(--transition-spring);
+
+  &::before { // liseré d'accent en haut
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 4px;
+    background-color: var(--recap-accent);
+  }
+
+  &--ceramique { --recap-accent: var(--color-ceramique); }
+  &--vitrail { --recap-accent: var(--color-vitrail); }
+  &--mosaique { --recap-accent: var(--color-mosaique); }
+}
+
+@keyframes recap-rise {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.cours-recap-head {
+  padding: var(--spacing-4) var(--spacing-5);
+  background-color: var(--color-clay-cream);
+  background-color: color-mix(in srgb, var(--recap-accent) 12%, var(--color-warm-white));
+  border-bottom: 1px solid var(--color-border);
+}
+
+.cours-recap-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-2);
+}
+
+.cours-recap-title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  line-height: var(--leading-snug);
+  color: var(--color-kiln-charcoal);
+}
+
+.cours-recap-details {
+  margin: 0;
+  padding: var(--spacing-5);
+  display: grid;
+  gap: var(--spacing-3) var(--spacing-5);
+
+  @media (min-width: 480px) {
+    grid-template-columns: max-content 1fr;
+    align-items: baseline;
+  }
+}
+
+.cours-recap-row {
+  display: contents;
+}
+
+.cours-recap-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-wide);
+  color: var(--color-text-muted);
+
+  i {
+    width: 1.1em;
+    text-align: center;
+    font-size: var(--text-sm);
+    color: var(--recap-accent);
+  }
+}
+
+.cours-recap-value {
+  margin: 0;
+  font-size: var(--text-base);
   color: var(--color-kiln-charcoal);
 
-  strong {
-    color: var(--color-terracotta);
+  .price-amount {
+    font-weight: 600;
   }
+
+  .price-tax-line {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+}
+
+.cours-recap-full {
+  font-weight: 700;
+  color: var(--color-error);
+}
+
+.cours-recap-description {
+  margin: 0;
+  padding: var(--spacing-4) var(--spacing-5) var(--spacing-5);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--text-sm);
+  line-height: var(--leading-normal);
+  color: var(--color-text-muted);
 }
 
 // -----------------------------------------------------------------------------

@@ -19,6 +19,162 @@
       .replace(/"/g, '&quot;');
   }
 
+  // Cours indexés par id (String) pour alimenter le récapitulatif.
+  var coursesById = {};
+
+  // -- Helpers d'affichage du récapitulatif (alignés sur courseList.js) -------
+
+  function creneauLabel(raw) {
+    if (raw == null || raw === '') return '';
+    var x = String(raw).toLowerCase();
+    if (x === 'matin') return 'Matin';
+    if (x.indexOf('après') !== -1 || x === 'apres-midi') return 'Après-midi';
+    if (x === 'soir') return 'Soir';
+    return String(raw);
+  }
+
+  function capitalizeDay(j) {
+    if (!j) return '';
+    var s = String(j).trim();
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
+  function labelDiscipline(discipline) {
+    var d = (discipline || '').toLowerCase();
+    if (d === 'vitrail') return 'Vitrail';
+    if (d === 'mosaique' || d === 'mosaïque') return 'Mosaïque';
+    return 'Céramique';
+  }
+
+  function badgeClass(discipline) {
+    var d = (discipline || '').toLowerCase();
+    if (d === 'vitrail') return 'badge-vitrail';
+    if (d === 'mosaique' || d === 'mosaïque') return 'badge-mosaique';
+    return 'badge-ceramique';
+  }
+
+  /** Sépare montant et mention de taxe, comme les cartes de cours. */
+  function formatPrix(rawPrix) {
+    var prix = (rawPrix || '').trim();
+    if (!prix) return '<span class="price-note">Sur demande</span>';
+    var prixStr = prix.toLowerCase();
+    var amount = prix;
+    var taxLine = '';
+    var idx = prix.indexOf(' (');
+    if (idx !== -1) {
+      amount = prix.slice(0, idx).trim();
+      taxLine = prix.slice(idx).trim();
+    } else {
+      idx = prix.indexOf(' non taxable');
+      if (idx !== -1) {
+        amount = prix.slice(0, idx).trim();
+        taxLine = '(non taxable)';
+      } else if (!/non taxable|taxes incluses|taxes en sus|incluses/.test(prixStr)) {
+        taxLine = '+ taxes';
+      }
+    }
+    var html = '<span class="price-amount">' + esc(amount) + '</span>';
+    if (taxLine) html += ' <span class="price-tax-line">' + esc(taxLine) + '</span>';
+    return html;
+  }
+
+  /** Clé de discipline pour l'accent visuel du récapitulatif. */
+  function disciplineKey(discipline) {
+    var d = (discipline || '').toLowerCase();
+    if (d === 'vitrail') return 'vitrail';
+    if (d === 'mosaique' || d === 'mosaïque') return 'mosaique';
+    return 'ceramique';
+  }
+
+  function recapRow(icon, label, valueHtml) {
+    return '<div class="cours-recap-row">' +
+      '<dt class="cours-recap-label">' +
+        '<i class="fa-solid ' + icon + '" aria-hidden="true"></i>' +
+        '<span>' + esc(label) + '</span>' +
+      '</dt>' +
+      '<dd class="cours-recap-value">' + valueHtml + '</dd>' +
+    '</div>';
+  }
+
+  /** Construit le récapitulatif complet d'un cours. */
+  function buildRecapHtml(c) {
+    var badges = '<span class="course-badge ' + badgeClass(c.discipline) + '">' + esc(labelDiscipline(c.discipline)) + '</span>';
+    var t = (c.type_cours || '').toLowerCase();
+    if (t === 'intensif') badges += ' <span class="course-badge badge-intensif">Intensif</span>';
+    if (t === 'enfants') badges += ' <span class="course-badge badge-enfants">Enfants</span>';
+
+    var horaireParts = [];
+    if (c.jour) horaireParts.push(esc(capitalizeDay(c.jour)));
+    if (c.creneau) horaireParts.push(esc(creneauLabel(c.creneau)));
+    if (c.heure) horaireParts.push(esc(c.heure));
+
+    var rows = '';
+    if (horaireParts.length) rows += recapRow('fa-clock', 'Horaire', horaireParts.join(' · '));
+    if (c.date_debut) rows += recapRow('fa-calendar', 'Début', esc(c.date_debut));
+    if (c.duree_semaines) rows += recapRow('fa-hourglass-half', 'Durée', esc(c.duree_semaines) + ' semaines');
+    rows += recapRow('fa-user', 'Professeur', c.prof ? esc(c.prof) : 'À confirmer');
+    rows += recapRow('fa-tag', 'Prix', formatPrix(c.prix));
+
+    var places;
+    if (c.places_restantes === 0) {
+      places = '<span class="cours-recap-full">Complet</span>';
+    } else if (c.places_restantes != null) {
+      places = esc(String(c.places_restantes)) + (c.places_restantes === 1 ? ' place restante' : ' places restantes');
+    } else {
+      places = (c.places_max || 0) + ' places max.';
+    }
+    rows += recapRow('fa-users', 'Places', places);
+
+    var desc = (c.description || '').trim();
+    var descHtml = desc
+      ? '<p class="cours-recap-description">' + esc(desc) + '</p>'
+      : '';
+
+    return '<div class="cours-recap-card cours-recap-card--' + disciplineKey(c.discipline) + '">' +
+      '<div class="cours-recap-head">' +
+        '<div class="cours-recap-badges">' + badges + '</div>' +
+        '<h3 class="cours-recap-title">' + esc(c.nom || 'Cours') + '</h3>' +
+      '</div>' +
+      '<dl class="cours-recap-details">' + rows + '</dl>' +
+      descHtml +
+    '</div>';
+  }
+
+  /** Rend le récapitulatif selon le cours actuellement sélectionné. */
+  function renderRecapFromSelect() {
+    var recap = document.getElementById('cours-recap');
+    var sel = document.getElementById('cours');
+    if (!recap || !sel) return;
+    var c = coursesById[sel.value];
+    if (!c) {
+      recap.innerHTML = '<p class="cours-recap-empty">Sélectionnez un cours ci-dessus pour afficher le récapitulatif complet (horaire, professeur, description, prix).</p>';
+      return;
+    }
+    recap.innerHTML = buildRecapHtml(c);
+  }
+
+  /**
+   * Aligne les paramètres de l'URL (course_id / cours) sur le cours sélectionné,
+   * sans recharger ni ajouter d'entrée d'historique. Évite qu'un rechargement,
+   * un partage de lien ou un favori ne restaure l'ancien cours.
+   */
+  function updateUrlForSelection() {
+    if (!window.history || !window.history.replaceState) return;
+    var sel = document.getElementById('cours');
+    if (!sel) return;
+    var url = new URL(window.location.href);
+    var c = coursesById[sel.value];
+    if (c && c.id != null) {
+      url.searchParams.set('course_id', String(c.id));
+      if (c.nom) url.searchParams.set('cours', c.nom);
+      else url.searchParams.delete('cours');
+    } else {
+      url.searchParams.delete('course_id');
+      url.searchParams.delete('cours');
+    }
+    window.history.replaceState(window.history.state, '', url);
+  }
+
   /** Aligné sur courseList.sectionKey : intensifs / enfants avant la discipline. */
   function getSectionKey(c) {
     var d = (c.discipline || '').toLowerCase();
@@ -175,21 +331,14 @@
     if (errorEl) errorEl.style.display = 'block';
   }
 
-  function showPrefillNotice(coursName) {
-    var formCard = document.querySelector('.form-card-header');
-    if (formCard) {
-      var notice = document.createElement('div');
-      notice.className = 'prefill-notice';
-      notice.innerHTML = '<strong>Cours sélectionné :</strong> ' + esc(coursName);
-      formCard.appendChild(notice);
-    }
-
+  // Arrivée depuis une carte de cours : on amène le formulaire (et son
+  // récapitulatif déjà rempli) dans le champ de vision.
+  function scrollToForm() {
     var formElement = document.getElementById('inscription-form');
-    if (formElement) {
-      setTimeout(function() {
-        formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }, 300);
-    }
+    if (!formElement) return;
+    setTimeout(function () {
+      formElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 300);
   }
 
   function init() {
@@ -212,21 +361,24 @@
           return;
         }
 
+        coursesById = {};
+        courses.forEach(function (c) {
+          if (c && c.id != null) coursesById[String(c.id)] = c;
+        });
+
         var preselectedIndex = populateDropdown(selectElement, courses, preselect);
 
         if (preselectedIndex > 0) {
           selectElement.selectedIndex = preselectedIndex;
           selectElement.classList.add('prefilled');
-          var noticeLabel = preselect;
-          var optSel = selectElement.options[selectElement.selectedIndex];
-          if (optSel && optSel.textContent) {
-            noticeLabel = optSel.textContent.replace(/\s*\[COMPLET\]\s*$/i, '').trim();
-          }
-          showPrefillNotice(noticeLabel);
+          scrollToForm();
         }
         if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
+        renderRecapFromSelect();
         selectElement.addEventListener('change', function () {
           if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
+          renderRecapFromSelect();
+          updateUrlForSelection();
         });
       })
       .catch(function(err) {

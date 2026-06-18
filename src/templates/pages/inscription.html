@@ -1,11 +1,14 @@
 {% extends "page.html" %}
 
 {% block content %}
-  {# Page Header #}
+  {# Page Header — compact : titre + session (le détail rassurant est dans la carte) #}
   <section class="section section-page-hero inscription-hero">
     <div class="container">
       <h1 class="page-title">{{ page.title }}</h1>
-      <p class="page-intro lead">{{ content | safe }}</p>
+      <span class="session-pill">
+        <i class="fa-solid fa-calendar" aria-hidden="true"></i>
+        Session Été 2026 — début le 2 juillet
+      </span>
     </div>
   </section>
 
@@ -17,8 +20,7 @@
         <div class="inscription-form-wrapper">
           <div class="form-card">
             <header class="form-card-header">
-              <h2>Demande d'inscription</h2>
-              <p>Session Été 2026 - Début des cours le 2 juillet</p>
+              <p>Réservez votre place en quelques minutes. Nous confirmons par courriel sous 48 h, sans paiement à cette étape.</p>
             </header>
 
             <form
@@ -39,9 +41,50 @@
 
               <input type="hidden" name="participants_json" id="participants_json" value="">
 
+              {# Choix du cours en premier — populated dynamically via formPrefill.js #}
+              <fieldset class="form-fieldset">
+                <legend>Choix du cours</legend>
+
+                <div class="form-group">
+                  <label for="cours" class="form-label">
+                    Titre du cours <span class="required">*</span>
+                  </label>
+                  {# cours = libellé pour les courriels Netlify ; course_id = id pour la fonction submission-created #}
+                  <input type="hidden" name="cours" id="cours-libelle" value="">
+                  <input type="hidden" name="course_id" id="course_id" value="">
+                  <select id="cours" class="form-select" required aria-describedby="cours-error">
+                    <option value="">Chargement des cours...</option>
+                  </select>
+                  <p id="cours-error" class="form-error" style="display: none;">
+                    Impossible de charger la liste des cours.
+                    <a href="mailto:info@atelierstelme.ca?subject=Inscription">Contactez-nous par courriel</a> pour vous inscrire.
+                  </p>
+                </div>
+
+                {# Récapitulatif complet du cours sélectionné — alimenté par formPrefill.js #}
+                <div id="cours-recap" class="cours-recap" aria-live="polite">
+                  <p class="cours-recap-empty">Sélectionnez un cours ci-dessus pour afficher le récapitulatif complet (horaire, professeur, description, prix).</p>
+                </div>
+
+                <div class="form-group">
+                  <span class="form-label">Êtes-vous membre de l'atelier? <span class="required">*</span></span>
+                  <div class="form-radio-group">
+                    <label class="form-radio">
+                      <input type="radio" name="est_membre" value="oui" class="form-radio-input" required>
+                      <span class="form-radio-label">Oui, je suis membre</span>
+                    </label>
+                    <label class="form-radio">
+                      <input type="radio" name="est_membre" value="non" class="form-radio-input" required>
+                      <span class="form-radio-label">Non, je ne suis pas encore membre</span>
+                    </label>
+                  </div>
+                  <p class="form-hint">La carte de membre (30$ + taxes) est obligatoire pour les cours réguliers adultes.</p>
+                </div>
+              </fieldset>
+
               {# Inscription principale (contact pour le suivi) #}
               <fieldset class="form-fieldset">
-                <legend>Inscription principale</legend>
+                <legend>Vos coordonnées</legend>
 
                 <div class="form-row">
                   <div class="form-group">
@@ -75,9 +118,9 @@
                 </div>
               </fieldset>
 
-              {# Personnes supplémentaires à inscrire (données agrégées dans participants_json à l’envoi) #}
+              {# Personnes à inscrire (données agrégées dans participants_json à l’envoi) #}
               <fieldset class="form-fieldset" id="participants-fieldset">
-                <legend>Personnes supplémentaires à inscrire</legend>
+                <legend>Personnes à inscrire</legend>
                 <p class="form-hint">Ajoutez une ligne par personne. Chaque personne occupe une place dans le cours choisi.</p>
                 <div id="participants-list">
                   <div class="participant-block" data-participant-index="0">
@@ -118,42 +161,6 @@
                   <button type="button" id="add-participant" class="btn btn-secondary">
                     Ajouter une personne
                   </button>
-                </div>
-              </fieldset>
-
-              {# Course Selection - populated dynamically via formPrefill.js #}
-              <fieldset class="form-fieldset">
-                <legend>Choix du cours</legend>
-
-                <div class="form-group">
-                  <label for="cours" class="form-label">
-                    Titre du cours <span class="required">*</span>
-                  </label>
-                  {# cours = libellé pour les courriels Netlify ; course_id = id pour la fonction submission-created #}
-                  <input type="hidden" name="cours" id="cours-libelle" value="">
-                  <input type="hidden" name="course_id" id="course_id" value="">
-                  <select id="cours" class="form-select" required aria-describedby="cours-error">
-                    <option value="">Chargement des cours...</option>
-                  </select>
-                  <p id="cours-error" class="form-error" style="display: none;">
-                    Impossible de charger la liste des cours. 
-                    <a href="mailto:info@atelierstelme.ca?subject=Inscription">Contactez-nous par courriel</a> pour vous inscrire.
-                  </p>
-                </div>
-
-                <div class="form-group">
-                  <span class="form-label">Êtes-vous membre de l'atelier? <span class="required">*</span></span>
-                  <div class="form-radio-group">
-                    <label class="form-radio">
-                      <input type="radio" name="est_membre" value="oui" class="form-radio-input" required>
-                      <span class="form-radio-label">Oui, je suis membre</span>
-                    </label>
-                    <label class="form-radio">
-                      <input type="radio" name="est_membre" value="non" class="form-radio-input" required>
-                      <span class="form-radio-label">Non, je ne suis pas encore membre</span>
-                    </label>
-                  </div>
-                  <p class="form-hint">La carte de membre (30$ + taxes) est obligatoire pour les cours réguliers adultes.</p>
                 </div>
               </fieldset>
 
@@ -220,12 +227,13 @@
             <p>Contactez-nous directement par courriel ou téléphone :</p>
             <ul class="contact-list">
               <li>
-                <strong>Courriel :</strong>
+                <i class="fa-solid fa-envelope" aria-hidden="true"></i>
                 <a href="mailto:info@atelierstelme.ca">info@atelierstelme.ca</a>
               </li>
               <li>
-                <strong>Téléphone :</strong>
-                <a href="tel:+14186666177">418-666-6177</a> (répondeur)
+                <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                <a href="tel:+14186666177">418-666-6177</a>
+                <span class="contact-note">(répondeur)</span>
               </li>
             </ul>
           </div>
@@ -245,8 +253,9 @@
 
   {# Alternative: Email directly #}
   <section class="section section-email-alt">
-    <div class="container container-narrow">
+    <div class="container">
       <div class="email-alt-card">
+        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
         <p>
           <strong>Vous préférez nous écrire directement?</strong>
           Envoyez un courriel à
