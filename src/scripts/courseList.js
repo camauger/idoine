@@ -272,8 +272,7 @@
     if (c.heure) details += '<div class="course-detail"><span class="detail-label">Heure</span><span class="detail-value">' + esc(c.heure) + '</span></div>';
     if (c.date_debut) details += '<div class="course-detail"><span class="detail-label">Début</span><span class="detail-value">' + esc(c.date_debut) + '</span></div>';
     if (c.duree_semaines) details += '<div class="course-detail"><span class="detail-label">Durée</span><span class="detail-value">' + esc(c.duree_semaines) + ' semaines</span></div>';
-    if (c.prof) details += '<div class="course-detail"><span class="detail-label">Professeur</span><span class="detail-value">' + esc(c.prof) + '</span></div>';
-    if (!c.jour && !c.creneau && !c.heure && !c.date_debut && !c.duree_semaines && !c.prof) details += '<div class="course-detail"><span class="detail-label">Places</span><span class="detail-value">' + (c.places_max || 0) + ' max.</span></div>';
+    details += '<div class="course-detail"><span class="detail-label">Professeur</span><span class="detail-value">' + (c.prof ? esc(c.prof) : 'À confirmer') + '</span></div>';
 
     var rawDesc = enrichCardDescription(c);
     var desc = rawDesc ? esc(rawDesc) : 'Cours à l\'Atelier St-Elme. Inscription via le formulaire en ligne.';
