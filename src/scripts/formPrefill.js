@@ -140,6 +140,24 @@
     '</div>';
   }
 
+  /**
+   * Affiche la question « propre argile » seulement pour les cours de céramique.
+   * Masquée : radios non requises et décochées pour ne pas bloquer la soumission.
+   */
+  function updateArgileGroup() {
+    var group = document.getElementById('propre-argile-group');
+    var sel = document.getElementById('cours');
+    if (!group || !sel) return;
+    var c = coursesById[sel.value];
+    var show = !!c && disciplineKey(c.discipline) === 'ceramique';
+    group.hidden = !show;
+    var radios = group.querySelectorAll('input[type="radio"]');
+    Array.prototype.forEach.call(radios, function (radio) {
+      radio.required = show;
+      if (!show) radio.checked = false;
+    });
+  }
+
   /** Rend le récapitulatif selon le cours actuellement sélectionné. */
   function renderRecapFromSelect() {
     var recap = document.getElementById('cours-recap');
@@ -325,10 +343,34 @@
     return preselectedIndex;
   }
 
-  function showError(selectElement) {
-    selectElement.innerHTML = '<option value="">Erreur de chargement...</option>';
-    var errorEl = document.getElementById('cours-error');
-    if (errorEl) errorEl.style.display = 'block';
+  /**
+   * Mode « demande d'information » : quand aucun cours n'est disponible
+   * (liste vide ou API en erreur), le formulaire reste utilisable et
+   * l'envoi est étiqueté comme demande d'information (Netlify Forms).
+   */
+  function enableInfoRequestMode(selectElement) {
+    selectElement.innerHTML = '';
+    var opt = document.createElement('option');
+    opt.value = "Demande d'information";
+    opt.textContent = "Demande d'information";
+    opt.selected = true;
+    selectElement.appendChild(opt);
+    if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
+
+    var recap = document.getElementById('cours-recap');
+    if (recap) {
+      recap.innerHTML = '<p class="cours-recap-empty">' +
+        'Aucun cours n\u2019est ouvert aux inscriptions pour le moment. ' +
+        'Vous pouvez tout de m\u00eame nous envoyer une demande d\u2019information : ' +
+        'remplissez le formulaire et nous vous r\u00e9pondrons par courriel.' +
+      '</p>';
+    }
+
+    var subject = document.querySelector('#inscription-form input[name="subject"]');
+    if (subject) subject.value = "Demande d'information - Ateliers St-Elme";
+
+    var submitBtn = document.querySelector('#inscription-form button[type="submit"]');
+    if (submitBtn) submitBtn.textContent = "Envoyer ma demande d'information";
   }
 
   // Arrivée depuis une carte de cours : on amène le formulaire (et son
@@ -356,8 +398,9 @@
         return r.json();
       })
       .then(function(courses) {
-        if (!courses || !courses.length) {
-          showError(selectElement);
+        var actifs = (courses || []).filter(function (c) { return c && c.actif; });
+        if (!actifs.length) {
+          enableInfoRequestMode(selectElement);
           return;
         }
 
@@ -375,15 +418,17 @@
         }
         if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
         renderRecapFromSelect();
+        updateArgileGroup();
         selectElement.addEventListener('change', function () {
           if (window.syncCoursHiddenFields) window.syncCoursHiddenFields();
           renderRecapFromSelect();
+          updateArgileGroup();
           updateUrlForSelection();
         });
       })
       .catch(function(err) {
         console.error('[Inscription] Erreur chargement cours:', err);
-        showError(selectElement);
+        enableInfoRequestMode(selectElement);
       });
   }
 

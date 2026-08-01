@@ -64,6 +64,14 @@
 }
 
 @font-face {
+  font-family: 'Montserrat';
+  src: url('/assets/fonts/montserrat/montserrat-latin-700-normal.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
   font-family: 'Cinzel Decorative';
   src: url('/assets/fonts/cinzel-decorative/cinzel-decorative-latin-400-normal.woff2') format('woff2');
   font-weight: 400;

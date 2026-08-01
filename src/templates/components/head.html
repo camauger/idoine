@@ -6,9 +6,26 @@
   <meta name="keywords" content="{{ site.keywords }}" />
   <title>{{ page.title }} - {{ site.title }}</title>
 
+  {# SEO : canonical avec slash final (URLs servies en dossiers /page/) #}
+  {% set page_path = page.url | default('/') %}
+  {% set canonical_url = site.base_url ~ (page_path if page_path.endswith('/') else page_path ~ '/') %}
+  <link rel="canonical" href="{{ canonical_url }}" />
+  {% if page.noindex %}<meta name="robots" content="noindex, nofollow" />{% endif %}
+
+  {# Open Graph / partage social #}
+  {% set og_image = site.base_url ~ (page.hero_image | default(site.default_og_image)) %}
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="{{ site.title }}" />
+  <meta property="og:locale" content="fr_CA" />
+  <meta property="og:title" content="{{ page.title }} - {{ site.title }}" />
+  <meta property="og:description" content="{{ page.description or site.default_description }}" />
+  <meta property="og:url" content="{{ canonical_url }}" />
+  <meta property="og:image" content="{{ og_image }}" />
+  <meta name="twitter:card" content="summary_large_image" />
+
   <!-- Preload critical fonts for better performance -->
   <link rel="preload" href="/assets/fonts/montserrat/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="/assets/fonts/montserrat/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="/assets/fonts/montserrat/montserrat-latin-600-normal.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/assets/fonts/cinzel-decorative/cinzel-decorative-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 
   <!-- Styles (includes self-hosted fonts and Font Awesome) -->

@@ -11,10 +11,15 @@
         "reset-netlify-deno": "node scripts/reset-netlify-deno-cache.js",
         "ensure-netlify-deno-version": "node scripts/ensure-netlify-deno-version-file.js",
         "watch": "grunt watchOnly",
-        "build": "grunt build",
+        "build": "grunt build && npm run seo",
+        "sitemap": "node scripts/seo/generate-sitemap.mjs --url https://atelierstelme.ca",
+        "robots": "node scripts/seo/generate-robots.mjs --url https://atelierstelme.ca",
+        "verify-seo": "node scripts/seo/verify-seo.mjs --url https://atelierstelme.ca",
+        "seo": "npm run sitemap && npm run robots && npm run verify-seo",
         "audit": "npm audit --audit-level=moderate || true",
         "audit:fix": "npm audit fix || true"
     },
+    "homepage": "https://atelierstelme.ca",
     "author": "Christian Amauger <christian@amauger.com>",
     "license": "MIT",
     "dependencies": {

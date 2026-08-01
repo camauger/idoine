@@ -1,0 +1,209 @@
+================================================================================
+ATELIER ST-ELME — RÉCAPITULATIF DES AJUSTEMENTS
+Date : 1er août 2026
+================================================================================
+
+Ce document résume tous les ajustements apportés au site lors de la session
+de travail du 1er août 2026, regroupés par thème.
+
+
+--------------------------------------------------------------------------------
+1. SESSION AUTOMNE 2026 (contenu)
+--------------------------------------------------------------------------------
+
+- La section « début des cours » ne mentionne plus la session d'été
+  (2 juillet) : elle affiche désormais la Session Automne 2026 —
+  début le 14 septembre, durée 8 à 10 semaines, inscriptions à partir
+  du 3 août.
+
+- Les informations de session sont centralisées dans
+  src/config/site_config.yaml (bloc « session ») : une seule place à
+  modifier à chaque changement de session. La page /cours et la pastille
+  du formulaire d'inscription lisent toutes deux ces variables.
+
+Fichiers : src/config/site_config.yaml, src/templates/pages/cours.html,
+src/templates/pages/inscription.html, src/locales/fr/pages/cours.md
+
+
+--------------------------------------------------------------------------------
+2. FORMULAIRE D'INSCRIPTION
+--------------------------------------------------------------------------------
+
+a) Nouvelle question « Je désire utiliser ma propre argile » (radio Oui/Non) :
+   - Oui (35$ déduits de l'inscription) / Non (prix régulier).
+   - Visible uniquement pour les cours de céramique (affichage géré par
+     src/scripts/formPrefill.js selon la discipline du cours choisi).
+
+b) Notes importantes simplifiées :
+   - Retrait des mentions de coût d'argile et de matériel vitrail.
+   - Conservé : « Cuissons en sus pour les cours de céramique » et la
+     carte de membre obligatoire.
+
+c) Mode « Demande d'information » quand aucun cours n'est disponible :
+   - Avant : « Erreur de chargement... » et formulaire bloqué.
+   - Maintenant : le sélecteur propose « Demande d'information », le
+     récapitulatif explique la situation, et le formulaire reste
+     utilisable pour une demande générale (le bouton devient
+     « Envoyer ma demande d'information »).
+
+d) Corrections d'alignement :
+   - Champs de formulaire alignés en bas de leur rangée quand une
+     étiquette passe sur deux lignes (section « Personnes à inscrire »).
+   - Carte « Vous préférez nous écrire directement ? » : texte aligné à
+     gauche à côté de l'icône, espacement augmenté.
+
+Fichiers : src/templates/pages/inscription.html, src/scripts/formPrefill.js,
+src/styles/components/_forms.scss, src/styles/pages/_inscription.scss
+
+
+--------------------------------------------------------------------------------
+3. PIED DE PAGE
+--------------------------------------------------------------------------------
+
+- Ajout de « Site créé par Christian Amauger » avec lien vers
+  christianamauger.com (barre du bas, à côté du copyright).
+- Icônes de réseaux sociaux (Facebook/Instagram) recentrées verticalement
+  dans leurs pastilles (dimensionnement par la fonte plutôt que par une
+  boîte forcée).
+
+Fichiers : src/templates/components/footer.html, src/styles/layout/_footer.scss
+
+
+--------------------------------------------------------------------------------
+4. SUPPRESSION DE LA PAGE /EMPLOI
+--------------------------------------------------------------------------------
+
+- Page /emploi supprimée : markdown, gabarit, styles SCSS, clé de
+  traduction « jobs » et lien dans le pied de page.
+- Note : si l'ancienne URL /emploi était indexée, prévoir une
+  redirection 301 dans netlify.toml (non fait).
+
+Fichiers supprimés : src/locales/fr/pages/emploi.md,
+src/templates/pages/emploi.html, src/styles/pages/_emploi.scss
+Fichiers modifiés : src/styles/pages/index.scss, src/data/translations.yaml,
+src/templates/components/footer.html
+
+
+--------------------------------------------------------------------------------
+5. POLICES (Montserrat)
+--------------------------------------------------------------------------------
+
+- Correction de l'avertissement « preloaded but not used » : le preload
+  pointait vers la graisse 700 alors que seule la 600 était déclarée.
+- Ajout de la déclaration @font-face manquante pour Montserrat 700 :
+  les graisses 700 utilisées dans le CSS ne sont plus synthétisées par
+  le navigateur.
+
+Fichiers : src/templates/components/head.html, src/styles/base/_fonts.scss
+
+
+--------------------------------------------------------------------------------
+6. PAGE À PROPOS : ALIGNEMENT + FORMULAIRE DE CONTACT
+--------------------------------------------------------------------------------
+
+a) Bug d'alignement corrigé :
+   - Cause : un </div> fermait le conteneur trop tôt dans a-propos.md ;
+     la section « Contactez-nous » se retrouvait hors du conteneur,
+     collée au bord de la fenêtre.
+
+b) Formulaire de contact :
+   - Le bouton mailto « Contactez-nous » est remplacé par un vrai
+     formulaire Netlify (nom, courriel, message) avec anti-spam
+     (honeypot) et sujet de courriel dédié.
+   - Nouvelle page de confirmation /contact-merci/ (noindexée).
+   - Le bouton « Contactez-nous » du bandeau d'en-tête pointe désormais
+     vers le formulaire (#contact) au lieu de /cours.
+   - La fonction Netlify submission-created ignore proprement ce
+     formulaire (elle ne traite que les inscriptions) ; les messages
+     arrivent dans Netlify Forms.
+   - NOTE : Netlify enregistrera le formulaire « contact » au prochain
+     déploiement. Penser à configurer la notification courriel dans
+     Netlify > Forms si souhaité.
+
+Fichiers : src/locales/fr/pages/a-propos.md,
+src/locales/fr/pages/contact-merci.md,
+src/templates/pages/contact-merci.html, src/styles/pages/_about-page.scss
+
+
+--------------------------------------------------------------------------------
+7. NETTOYAGE CSS DE LA PAGE À PROPOS
+--------------------------------------------------------------------------------
+
+a) Sélecteurs globaux corrigés :
+   - _about-page.scss stylait body, .container, .section-title et
+     .card-title au niveau global, écrasant les styles canoniques de
+     base/, layout/, components/_card.scss et pages/_home.scss sur tout
+     le site (ex. : le soulignement vert des titres de section sur les
+     pages Accueil/Cours/Admin venait de cette fuite).
+   - Tout le fichier est maintenant scopé sous .about-page (classe posée
+     sur le conteneur de la page) ; les doublons body et .container ont
+     été supprimés au profit des définitions canoniques.
+   - Conséquence voulue : les titres de section hors À propos reprennent
+     le style défini par _home.scss (sans bordure verte).
+
+b) Code mort supprimé :
+   - Les règles .passions, .expertise, .games, .impact, leurs grilles et
+     cartes, et .card-title (restes d'un gabarit, utilisées nulle part)
+     ont été retirées.
+
+Fichiers : src/styles/pages/_about-page.scss, src/locales/fr/pages/a-propos.md
+
+
+--------------------------------------------------------------------------------
+8. PASSE SEO TECHNIQUE
+--------------------------------------------------------------------------------
+
+a) Balises on-page (toutes les pages, via head.html) :
+   - Canonical absolu avec slash final (ex. https://atelierstelme.ca/a-propos/).
+   - Open Graph : og:type, og:site_name, og:locale (fr_CA), og:title,
+     og:description, og:url, og:image (+ twitter:card).
+   - Image de partage par défaut : hero-workshop.jpg (clé
+     default_og_image dans site_config.yaml ; hero_image de la page en
+     priorité si défini).
+   - Balise noindex conditionnelle pilotée par le frontmatter
+     (noindex: true) — active sur /admin, /inscription-merci,
+     /contact-merci.
+
+b) Sitemap et robots.txt générés à chaque build :
+   - Scripts autonomes dans scripts/seo/ (sans dépendance npm).
+   - sitemap.xml : 11 URLs publiques, les routes noindexées sont exclues.
+   - robots.txt : tout autorisé + déclaration du sitemap. Pas de
+     Disallow sur /admin : le noindex doit rester visible des robots.
+   - Commandes : npm run sitemap / robots / verify-seo / seo.
+   - npm run build et le build Netlify (netlify.toml) enchaînent
+     automatiquement la génération SEO (le build Python nettoie dist,
+     les fichiers doivent être régénérés après chaque build).
+   - L'URL de production est passée explicitement
+     (--url https://atelierstelme.ca) car le .env local contient
+     SITE_URL=http://localhost:9000 qui faussait l'auto-détection.
+
+c) Vérification : npm run verify-seo passe au vert (fichiers présents,
+   sitemap valide, toutes les pages ont title, description, canonical
+   et Open Graph).
+
+d) À FAIRE APRÈS DÉPLOIEMENT :
+   - Soumettre https://atelierstelme.ca/sitemap.xml dans Google Search
+     Console et Bing Webmaster Tools (le ping automatique n'existe plus
+     depuis 2023).
+   - Valider l'aperçu de partage avec les débogueurs Facebook/Twitter.
+
+Fichiers : src/templates/components/head.html, src/config/site_config.yaml,
+scripts/seo/ (4 scripts), package.json, netlify.toml,
+src/locales/fr/pages/{admin,inscription-merci,contact-merci}.md
+
+
+--------------------------------------------------------------------------------
+POINTS EN SUSPENS (non traités, repérés en passant)
+--------------------------------------------------------------------------------
+
+- Double astérisque sur les champs requis : le HTML ajoute « * » et la
+  règle CSS .required::after (src/styles/base/_accessibility.scss) en
+  ajoute un second. À harmoniser (retirer l'un des deux).
+- Redirection 301 pour l'ancienne URL /emploi si elle était indexée.
+- Le .env local contient SITE_URL=http://localhost:9000 — inoffensif
+  maintenant que l'URL SEO est explicite, mais à savoir.
+- caniuse-lite (Browserslist) a 7 mois : npx update-browserslist-db@latest.
+
+================================================================================
+Fin du document
+================================================================================

@@ -23,6 +23,11 @@
   flex-direction: column;
   gap: var(--spacing-3);
   margin-bottom: var(--spacing-8);
+
+  // L'attribut hidden doit primer sur display: flex (ex. question argile)
+  &[hidden] {
+    display: none;
+  }
 }
 
 .form-row {
@@ -31,6 +36,14 @@
 
   @media (min-width: 640px) {
     grid-template-columns: repeat(2, 1fr);
+
+    // Aligne les champs côte à côte même quand un libellé passe sur deux lignes
+    // (ex. « Si inscription pour un enfant (optionnel) ») : l'input est poussé
+    // en bas du groupe, dont la hauteur est égalisée par la grille.
+    .form-group > .form-input,
+    .form-group > .form-select {
+      margin-top: auto;
+    }
   }
 }
 

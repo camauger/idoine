@@ -7,7 +7,7 @@
       <h1 class="page-title">{{ page.title }}</h1>
       <span class="session-pill">
         <i class="fa-solid fa-calendar" aria-hidden="true"></i>
-        Session Été 2026 — début le 2 juillet
+        {{ site.session.title | default('Session Automne 2026') }} — début le {{ site.session.start | default('14 septembre') }}
       </span>
     </div>
   </section>
@@ -52,13 +52,9 @@
                   {# cours = libellé pour les courriels Netlify ; course_id = id pour la fonction submission-created #}
                   <input type="hidden" name="cours" id="cours-libelle" value="">
                   <input type="hidden" name="course_id" id="course_id" value="">
-                  <select id="cours" class="form-select" required aria-describedby="cours-error">
+                  <select id="cours" class="form-select" required>
                     <option value="">Chargement des cours...</option>
                   </select>
-                  <p id="cours-error" class="form-error" style="display: none;">
-                    Impossible de charger la liste des cours.
-                    <a href="mailto:info@atelierstelme.ca?subject=Inscription">Contactez-nous par courriel</a> pour vous inscrire.
-                  </p>
                 </div>
 
                 {# Récapitulatif complet du cours sélectionné — alimenté par formPrefill.js #}
@@ -79,6 +75,21 @@
                     </label>
                   </div>
                   <p class="form-hint">La carte de membre (30$ + taxes) est obligatoire pour les cours réguliers adultes.</p>
+                </div>
+
+                {# Question argile — visible seulement pour les cours de céramique (géré par formPrefill.js) #}
+                <div class="form-group" id="propre-argile-group" hidden>
+                  <span class="form-label">Je désire utiliser ma propre argile <span class="required">*</span></span>
+                  <div class="form-radio-group">
+                    <label class="form-radio">
+                      <input type="radio" name="propre_argile" value="oui" class="form-radio-input">
+                      <span class="form-radio-label">Oui (35$ déduits de l'inscription)</span>
+                    </label>
+                    <label class="form-radio">
+                      <input type="radio" name="propre_argile" value="non" class="form-radio-input">
+                      <span class="form-radio-label">Non (prix régulier)</span>
+                    </label>
+                  </div>
                 </div>
               </fieldset>
 
@@ -242,8 +253,7 @@
             <h3>Notes importantes</h3>
             <ul>
               <li>Carte de membre obligatoire (30$ + taxes) pour les cours réguliers adultes</li>
-              <li>Argile et cuissons en sus pour les cours de céramique</li>
-              <li>Matériel vitrail pour débutants : 55$ + taxes</li>
+              <li>Cuissons en sus pour les cours de céramique</li>
             </ul>
           </div>
         </aside>

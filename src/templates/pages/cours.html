@@ -7,20 +7,21 @@
       <h1 id="cours-hero-title" class="page-title">{{ page.title }}</h1>
       <div class="page-intro lead">{{ content | safe }}</div>
       <div class="cours-hero-meta">
-        <span class="session-label">{{ page.session_title | default('Session Été 2026') }}</span>
+        {# Infos session centralisées dans site_config.yaml (clé `session`) #}
+        <span class="session-label">{{ site.session.title | default('Session Automne 2026') }}</span>
         <p class="session-details">
-          <strong>Début des cours :</strong> {{ page.session_start | default('2 juillet') }} &bull;
-          <strong>Durée :</strong> {{ page.session_duration | default('4 semaines') }}
+          <strong>Début des cours :</strong> {{ site.session.start | default('14 septembre') }} &bull;
+          <strong>Durée :</strong> {{ site.session.duration | default('8 à 10 semaines') }}
         </p>
         <p class="session-registration">
-          <strong>Inscriptions :</strong> à partir du {{ page.registration_open | default('16 juin') }} via le formulaire en ligne
+          <strong>Inscriptions :</strong> à partir du {{ site.session.registration_open | default('3 août') }} via le formulaire en ligne
         </p>
       </div>
       <div class="cours-hero-notes" id="notes-importantes" aria-labelledby="notes-importantes-title">
         <h2 id="notes-importantes-title" class="notes-heading">À savoir avant de vous inscrire</h2>
         <ul class="notes-list">
           <li><strong>Carte de membre obligatoire</strong> (30$ (taxes en sus)) pour les cours réguliers (8 semaines) pour adultes.</li>
-          <li><strong>Cours céramique réguliers :</strong> frais en sus pour l'argile et les cuissons. Argile en vente à l'atelier au coût de 30$ (taxes en sus) pour un sac de 22 lbs.</li>
+          <li><strong>Cours céramique réguliers :</strong> cuissons en sus.</li>
           <li><strong>Groupes privés :</strong> possibilité d'organiser des ateliers pour groupes d'amis, famille, team-building. Contactez-nous!</li>
         </ul>
       </div>
@@ -124,7 +125,7 @@
       <div class="cta-banner">
         <div class="cta-content">
           <h2 id="cta-inscription-title">Prêt à commencer?</h2>
-          <p>Inscrivez-vous dès maintenant pour la {{ page.session_title | default('Session Été 2026') }}</p>
+          <p>Inscrivez-vous dès maintenant pour la {{ site.session.title | default('Session Automne 2026') }}</p>
         </div>
         <a href="/inscription" class="btn btn-primary btn-lg">S'inscrire</a>
       </div>

@@ -244,12 +244,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: var(--spacing-3);
+  gap: var(--spacing-4);
   background-color: var(--color-deep-brown);
   color: var(--color-warm-white);
   padding: var(--spacing-6) var(--spacing-8);
   border-radius: var(--border-radius-lg);
-  text-align: center;
+  // Texte aligné à gauche : sur deux lignes, le centrage donnait un rendu
+  // déséquilibré à côté de l'icône (le bloc icône + texte reste centré).
+  text-align: left;
 
   > i {
     flex-shrink: 0;

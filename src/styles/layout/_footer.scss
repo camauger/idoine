@@ -181,9 +181,17 @@
     box-shadow: 0 0 0 3px rgba(253, 252, 250, 0.5);
   }
 
-  svg, i {
+  svg {
     width: 1.25rem;
     height: 1.25rem;
+  }
+
+  // Icônes Font Awesome : dimensionner par la fonte et laisser le flex du
+  // parent centrer. Une boîte forcée (width/height) sur le <i> inline
+  // décalait le glyphe (line-height héritée > 1.25rem).
+  i {
+    font-size: 1.25rem;
+    line-height: 1;
   }
 }
 

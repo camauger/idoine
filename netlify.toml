@@ -2,7 +2,7 @@
 # https://docs.netlify.com/configure-builds/file-based-configuration/
 
 [build]
-  command = "npm install && python -m pip install -r requirements.txt && npx grunt build"
+  command = "npm install && python -m pip install -r requirements.txt && npx grunt build && npm run seo"
   publish = "dist"
 
 [build.environment]
