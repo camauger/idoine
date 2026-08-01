@@ -27,6 +27,12 @@
   status = 200
   force = true
 
+# Ancienne page /emploi supprimée (août 2026) : redirection permanente
+[[redirects]]
+  from = "/emploi"
+  to = "/"
+  status = 301
+
 # Variables d'environnement (Netlify UI > Site settings > Environment variables)
 #
 # PRODUCTION – Pour que les cours s'affichent :

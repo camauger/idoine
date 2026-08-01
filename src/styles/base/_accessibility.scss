@@ -184,11 +184,9 @@ label {
   }
 }
 
-// Required field indicator
-.required::after {
-  content: " *";
-  color: var(--color-error);
-}
+// Champs requis : l'astérisque est écrit dans le HTML
+// (<span class="required">*</span>, coloré via _forms.scss) — pas de ::after
+// ici, sinon l'astérisque apparaît en double.
 
 // -----------------------------------------------------------------------------
 // Image accessibility

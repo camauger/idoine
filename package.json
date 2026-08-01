@@ -46,9 +46,9 @@
         "grunt-shell": "^3.0.1",
         "load-grunt-tasks": "^5.1.0",
         "marked": "^15.0.7",
+        "netlify-cli": "^23.9.3",
         "postcss": "^8.5.6",
         "sass": "^1.69.0",
-        "sharp": "^0.34.5",
-        "netlify-cli": "^23.9.3"
+        "sharp": "^0.34.5"
     }
 }

@@ -75,8 +75,7 @@ Fichiers : src/templates/components/footer.html, src/styles/layout/_footer.scss
 
 - Page /emploi supprimée : markdown, gabarit, styles SCSS, clé de
   traduction « jobs » et lien dans le pied de page.
-- Note : si l'ancienne URL /emploi était indexée, prévoir une
-  redirection 301 dans netlify.toml (non fait).
+- Redirection 301 /emploi → / ajoutée dans netlify.toml (voir section 9).
 
 Fichiers supprimés : src/locales/fr/pages/emploi.md,
 src/templates/pages/emploi.html, src/styles/pages/_emploi.scss
@@ -174,8 +173,9 @@ b) Sitemap et robots.txt générés à chaque build :
      automatiquement la génération SEO (le build Python nettoie dist,
      les fichiers doivent être régénérés après chaque build).
    - L'URL de production est passée explicitement
-     (--url https://atelierstelme.ca) car le .env local contient
-     SITE_URL=http://localhost:9000 qui faussait l'auto-détection.
+     (--url https://atelierstelme.ca) car le .env local contenait
+     SITE_URL=http://localhost:9000 qui faussait l'auto-détection
+     (ligne depuis commentée, voir section 9).
 
 c) Vérification : npm run verify-seo passe au vert (fichiers présents,
    sitemap valide, toutes les pages ont title, description, canonical
@@ -193,16 +193,48 @@ src/locales/fr/pages/{admin,inscription-merci,contact-merci}.md
 
 
 --------------------------------------------------------------------------------
+9. RÉSOLUTION DES POINTS EN SUSPENS
+--------------------------------------------------------------------------------
+
+Les quatre points repérés en passant plus tôt dans la session ont été réglés :
+
+a) Double astérisque sur les champs requis :
+   - La règle CSS .required::after (content: " *") a été retirée de
+     src/styles/base/_accessibility.scss ; l'astérisque écrit dans le
+     HTML (<span class="required">*</span>) est conservé, coloré par
+     .form-label .required dans _forms.scss.
+   - Vérifié : le CSS compilé ne contient plus de ::after sur .required.
+
+b) Redirection 301 pour l'ancienne URL /emploi :
+   - Ajoutée dans netlify.toml : /emploi → / (statut 301).
+   - Prendra effet au prochain déploiement (relancer netlify dev pour
+     la voir en local).
+
+c) SITE_URL dans le .env local :
+   - La ligne SITE_URL=http://localhost:9000 a été commentée dans .env
+     et .env.example, avec une note expliquant que les scripts SEO
+     liraient cette valeur en priorité (sitemap localhost).
+
+d) Base caniuse-lite (Browserslist) mise à jour :
+   - 1.0.30001766 → 1.0.30001806 via npx update-browserslist-db@latest.
+   - Aucun changement dans les navigateurs cibles.
+
+Vérification : npx grunt build passe après ces changements.
+
+Fichiers : src/styles/base/_accessibility.scss, netlify.toml, .env,
+.env.example, package-lock.json
+
+
+--------------------------------------------------------------------------------
 POINTS EN SUSPENS (non traités, repérés en passant)
 --------------------------------------------------------------------------------
 
-- Double astérisque sur les champs requis : le HTML ajoute « * » et la
-  règle CSS .required::after (src/styles/base/_accessibility.scss) en
-  ajoute un second. À harmoniser (retirer l'un des deux).
-- Redirection 301 pour l'ancienne URL /emploi si elle était indexée.
-- Le .env local contient SITE_URL=http://localhost:9000 — inoffensif
-  maintenant que l'URL SEO est explicite, mais à savoir.
-- caniuse-lite (Browserslist) a 7 mois : npx update-browserslist-db@latest.
+- Le build Sass émet un avertissement de dépréciation « legacy-js-api »
+  (l'API sera retirée dans Dart Sass 2.0) — à traiter lors d'une mise à
+  jour de la chaîne Grunt/Sass.
+- npm signale 8 paquets avec des scripts d'installation non couverts par
+  allowScripts (netlify-cli, sharp, esbuild, @parcel/watcher…) —
+  npm install-scripts ls pour réviser.
 
 ================================================================================
 Fin du document
