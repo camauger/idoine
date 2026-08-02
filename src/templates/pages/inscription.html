@@ -39,7 +39,7 @@
                 <label>Ne pas remplir si vous êtes humain: <input name="bot-field"></label>
               </p>
 
-              <input type="hidden" name="participants_json" id="participants_json" value="">
+              <input type="hidden" name="participants" id="participants" value="">
 
               {# Choix du cours en premier — populated dynamically via formPrefill.js #}
               <fieldset class="form-fieldset">
@@ -129,7 +129,7 @@
                 </div>
               </fieldset>
 
-              {# Personnes à inscrire (données agrégées dans participants_json à l’envoi) #}
+              {# Personnes à inscrire (agrégées en texte lisible dans le champ participants à l’envoi) #}
               <fieldset class="form-fieldset" id="participants-fieldset">
                 <legend>Personnes à inscrire</legend>
                 <p class="form-hint">Ajoutez une ligne par personne. Chaque personne occupe une place dans le cours choisi.</p>

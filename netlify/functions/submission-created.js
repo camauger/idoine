@@ -9,26 +9,51 @@ const { neon } = require("@neondatabase/serverless");
 
 const MAX_PARTICIPANTS = 8;
 
+/**
+ * Accepte :
+ * - texte lisible (nouveau) : une personne par ligne, option « — enfant : … »
+ * - JSON historique : [{"nom":"…","enfant":null|string}, …]
+ * - anciens champs plats nom / enfant
+ */
 function normalizeParticipants(data) {
-  let raw = data.participants_json;
+  let raw = data.participants != null ? data.participants : data.participants_json;
   if (raw != null && typeof raw === "string") raw = raw.trim();
   if (raw) {
-    try {
-      const arr = JSON.parse(raw);
-      if (Array.isArray(arr) && arr.length > 0) {
-        return arr
-          .map((p) => ({
-            nom: String((p && p.nom) || "").trim(),
-            enfant:
-              p && p.enfant != null && String(p.enfant).trim()
-                ? String(p.enfant).trim()
-                : null,
-          }))
-          .filter((p) => p.nom);
+    if (raw.charAt(0) === "[") {
+      try {
+        const arr = JSON.parse(raw);
+        if (Array.isArray(arr) && arr.length > 0) {
+          return arr
+            .map((p) => ({
+              nom: String((p && p.nom) || "").trim(),
+              enfant:
+                p && p.enfant != null && String(p.enfant).trim()
+                  ? String(p.enfant).trim()
+                  : null,
+            }))
+            .filter((p) => p.nom);
+        }
+      } catch (_) {
+        /* fallback texte / champs plats */
       }
-    } catch (_) {
-      /* fallback below */
     }
+
+    const fromText = raw
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        const m = line.match(/^(.*?)\s*[—–-]\s*enfant\s*:\s*(.+)$/i);
+        if (m) {
+          return {
+            nom: m[1].trim(),
+            enfant: m[2].trim() || null,
+          };
+        }
+        return { nom: line, enfant: null };
+      })
+      .filter((p) => p.nom);
+    if (fromText.length > 0) return fromText;
   }
   const n = String(data.nom || "").trim();
   if (n) {

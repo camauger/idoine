@@ -1,5 +1,6 @@
 /**
- * Inscription multi-personnes : blocs participants, participants_json, validation des places.
+ * Inscription multi-personnes : blocs participants, champ « participants » (texte lisible),
+ * validation des places.
  * Charger après coursLibelle.js ; avant formPrefill.js / courseDetailForm.js (submit intercepté en premier).
  */
 (function () {
@@ -117,6 +118,23 @@
     return out;
   }
 
+  /** Texte lisible pour Netlify Forms / CSV / notifications (pas de JSON brut). */
+  function formatParticipantsForForm(participants) {
+    return participants
+      .map(function (p) {
+        if (p.enfant) return p.nom + ' — enfant : ' + p.enfant;
+        return p.nom;
+      })
+      .join('\n');
+  }
+
+  function getParticipantsField() {
+    return (
+      document.getElementById('participants') ||
+      document.getElementById('participants_json')
+    );
+  }
+
   function updateBlockTitles(list) {
     var blocks = list.querySelectorAll('.participant-block');
     var n = blocks.length;
@@ -183,7 +201,7 @@
 
   function onSubmit(ev) {
     var form = getForm();
-    var pj = document.getElementById('participants_json');
+    var pj = getParticipantsField();
     if (!form || !pj || !getList()) return;
 
     ev.preventDefault();
@@ -229,7 +247,7 @@
       return;
     }
 
-    pj.value = JSON.stringify(participants);
+    pj.value = formatParticipantsForForm(participants);
     var submitBtn = form.querySelector('button[type="submit"]');
     if (submitBtn) {
       submitBtn.disabled = true;
