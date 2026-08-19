@@ -10,6 +10,33 @@ const { neon } = require("@neondatabase/serverless");
 const MAX_PARTICIPANTS = 8;
 
 /**
+ * Accents translittérés côté SQL (évite de dépendre de l'extension unaccent).
+ * Doit rester synchronisé avec normaliserComparaison() ci-dessous : les deux
+ * normalisations sont comparées sur le corpus réel par
+ * scripts/verifier-normalisation-inscription.mjs.
+ */
+const SQL_ACCENTS_DE = "àâäáãåçéèêëíìîïñóòôöõúùûüýÿ";
+const SQL_ACCENTS_VERS = "aaaaaaceeeeiiiinooooouuuuyy";
+
+/**
+ * Clé de comparaison d'un nom ou d'un champ « enfant ».
+ * Ignore casse, accents, ponctuation et mentions d'âge, afin que
+ * « Magalie Marcoux (12 ans) » et « MAgalie MArcoux » soient reconnues comme
+ * la même personne lors d'une ressaisie — tout en gardant distincts deux
+ * enfants différents d'un même parent.
+ */
+function normaliserComparaison(valeur) {
+  return String(valeur == null ? "" : valeur)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\(.*?\)|[0-9]+\s*ans?|[0-9]+/g, " ")
+    .replace(/[^a-z]/g, "");
+}
+
+module.exports.normaliserComparaison = normaliserComparaison;
+
+/**
  * Accepte :
  * - texte lisible (nouveau) : une personne par ligne, option « — enfant : … »
  * - JSON historique : [{"nom":"…","enfant":null|string}, …]
@@ -185,73 +212,154 @@ exports.handler = async (event) => {
       };
     }
 
-    for (let i = 0; i < participants.length; i++) {
-      const p = participants[i];
-      const enfantStr = p.enfant || "";
-      const dupCheck = await sql`
-        SELECT id FROM inscriptions
-        WHERE course_id = ${courseId}
-          AND lower(trim(courriel)) = lower(trim(${courriel}))
-          AND lower(trim(nom)) = lower(trim(${p.nom}))
-          AND coalesce(trim(enfant), '') = coalesce(trim(${enfantStr}), '')
-          AND created_at > now() - interval '15 minutes'
-        LIMIT 1
-      `;
-      if (dupCheck && dupCheck.length > 0) {
-        console.log("Duplicate batch rejected (participant", i, "):", dupCheck[0].id);
-        return {
-          statusCode: 200,
-          body: JSON.stringify({
-            success: true,
-            duplicate: true,
-            inscription_id: dupCheck[0].id,
-            course_id: courseId,
-          }),
-        };
-      }
+    // Écarte les personnes DÉJÀ inscrites à ce cours avec le même courriel.
+    // Aucune fenêtre temporelle : une même personne au même cours n'est jamais une
+    // inscription légitime, même des jours plus tard. Les re-soumissions observées
+    // s'étalaient de 27 minutes à 7 jours — un délai fixe ne peut pas les couvrir.
+    // Un désistement traité par l'admin supprime la ligne, ce qui rouvre la
+    // réinscription.
+    const dejaInscrits = await sql`
+      SELECT nom, enfant FROM inscriptions
+      WHERE course_id = ${courseId} AND lower(trim(courriel)) = lower(trim(${courriel}))
+    `;
+    const clesExistantes = new Set(
+      (dejaInscrits || []).map((r) => `${normaliserComparaison(r.nom)}|${normaliserComparaison(r.enfant)}`)
+    );
+    const estDejaInscrit = (p) =>
+      clesExistantes.has(`${normaliserComparaison(p.nom)}|${normaliserComparaison(p.enfant)}`);
+
+    const ignores = participants.filter(estDejaInscrit);
+    const aInscrire = participants.filter((p) => !estDejaInscrit(p));
+
+    if (aInscrire.length === 0) {
+      // Re-soumission intégrale : rien à créer, et surtout aucun courriel — c'est
+      // précisément le doublon que voyait l'atelier.
+      console.log(
+        `Re-soumission ignorée : ${participants.length} personne(s) déjà inscrite(s) au cours ${courseId}`
+      );
+      return {
+        statusCode: 200,
+        body: JSON.stringify({
+          success: true,
+          duplicate: true,
+          reason: "already_registered",
+          skipped_duplicates: ignores.length,
+          course_id: courseId,
+        }),
+      };
     }
 
-    const noms = participants.map((p) => p.nom);
-    const enfants = participants.map((p) => p.enfant); // null possible
-    const n = participants.length;
+    const noms = aInscrire.map((p) => p.nom);
+    const enfants = aInscrire.map((p) => p.enfant); // null possible
+    // Clés de comparaison calculées ici pour n'avoir qu'une seule copie de
+    // l'expression de normalisation en SQL (appliquée aux lignes déjà stockées).
+    const nomsCle = aInscrire.map((p) => normaliserComparaison(p.nom));
+    const enfantsCle = aInscrire.map((p) => normaliserComparaison(p.enfant));
 
     // Verrou applicatif par cours : sérialise les inscriptions concurrentes du même cours.
     const lockQuery = sql`SELECT pg_advisory_xact_lock(${courseId})`;
-    // Insertion tout-ou-rien : n'insère QUE si la capacité reste respectée (anti-surbooking).
+    // Insertion dédoublonnée et plafonnée, en une seule instruction sous le verrou.
+    // Le NOT EXISTS reprend le filtre déjà appliqué en JavaScript : il sert de
+    // garde-fou atomique contre deux soumissions concurrentes qui auraient toutes
+    // deux lu la base avant que l'une n'écrive.
     const insertQuery = sql`
+      WITH entrants AS (
+        SELECT t.nom, t.enfant, t.nom_cle, t.enfant_cle, t.ord
+        FROM UNNEST(${noms}::text[], ${enfants}::text[], ${nomsCle}::text[], ${enfantsCle}::text[])
+             WITH ORDINALITY AS t(nom, enfant, nom_cle, enfant_cle, ord)
+      ),
+      nouveaux AS (
+        SELECT e.nom, e.enfant, e.ord
+        FROM entrants e
+        WHERE NOT EXISTS (
+          SELECT 1 FROM inscriptions d
+          WHERE d.course_id = ${courseId}
+            AND lower(trim(d.courriel)) = lower(trim(${courriel}))
+            AND regexp_replace(
+                  regexp_replace(
+                    translate(lower(coalesce(d.nom, '')), ${SQL_ACCENTS_DE}, ${SQL_ACCENTS_VERS}),
+                    '\\(.*?\\)|[0-9]+\\s*ans?|[0-9]+', ' ', 'g'),
+                  '[^a-z]', '', 'g') = e.nom_cle
+            AND regexp_replace(
+                  regexp_replace(
+                    translate(lower(coalesce(d.enfant, '')), ${SQL_ACCENTS_DE}, ${SQL_ACCENTS_VERS}),
+                    '\\(.*?\\)|[0-9]+\\s*ans?|[0-9]+', ' ', 'g'),
+                  '[^a-z]', '', 'g') = e.enfant_cle
+        )
+      ),
+      capacite AS (
+        SELECT (SELECT COUNT(*) FROM inscriptions WHERE course_id = ${courseId}) AS occupees,
+               (SELECT places_max FROM courses WHERE id = ${courseId}) AS maximum,
+               (SELECT COUNT(*) FROM nouveaux) AS demandees
+      )
       INSERT INTO inscriptions (course_id, nom, courriel, telephone, enfant, message, newsletter, est_membre, created_at)
-      SELECT ${courseId}, t.nom, ${courriel}, ${telephone}, t.enfant,
-             CASE WHEN t.ord = 1 THEN ${message} ELSE NULL END,
+      SELECT ${courseId}, n.nom, ${courriel}, ${telephone}, n.enfant,
+             CASE WHEN n.ord = 1 THEN ${message} ELSE NULL END,
              ${newsletter}, ${estMembre}, NOW()
-      FROM UNNEST(${noms}::text[], ${enfants}::text[]) WITH ORDINALITY AS t(nom, enfant, ord)
-      WHERE (SELECT COUNT(*) FROM inscriptions WHERE course_id = ${courseId}) + ${n}
-            <= (SELECT places_max FROM courses WHERE id = ${courseId})
-      RETURNING id
+      FROM nouveaux n, capacite c
+      WHERE c.demandees > 0 AND c.occupees + c.demandees <= c.maximum
+      RETURNING id, nom, enfant
     `;
 
     // READ COMMITTED est requis : après le verrou, le COUNT de l'insertion doit voir les
     // lignes committées par la transaction concurrente précédemment sérialisée.
     const txResults = await sql.transaction([lockQuery, insertQuery], { isolationLevel: "ReadCommitted" });
     const insertedRows = txResults[1] || [];
-    if (insertedRows.length === 0) {
-      console.error("Course full (atomic guard): course", courseId, "requested", n);
-      return {
-        statusCode: 200,
-        body: JSON.stringify({ success: false, reason: "course_full" }),
-      };
-    }
-    const ids = insertedRows.map((r) => r.id);
-    console.log("Inscriptions created (atomic):", ids);
 
     const courseRows = await sql`
       SELECT nom, date_debut, jour, heure FROM courses WHERE id = ${courseId} LIMIT 1
     `;
-    const { sendInscriptionConfirmation, buildCourseLabel } = await import("./lib/sendInscriptionConfirmation.mjs");
+    const { sendInscriptionConfirmation, sendInscriptionNotification, buildCourseLabel } = await import(
+      "./lib/sendInscriptionConfirmation.mjs"
+    );
     const courseLabel = buildCourseLabel(courseRows[0]);
+
+    if (insertedRows.length === 0) {
+      // Des personnes nouvelles restaient à inscrire (sinon on serait sorti plus haut) :
+      // c'est donc le plafond de places qui a bloqué. L'atelier doit le savoir — une
+      // demande refusée reste une demande.
+      console.error(`Cours complet : cours ${courseId}, ${aInscrire.length} place(s) demandée(s)`);
+      await sendInscriptionNotification({
+        courseLabel,
+        participants: aInscrire,
+        courriel,
+        telephone,
+        estMembre,
+        propreArgile: data.propre_argile || null,
+        newsletter,
+        message,
+        ignores,
+        statut: "cours_complet",
+      });
+      return {
+        statusCode: 200,
+        body: JSON.stringify({ success: false, reason: "course_full", course_id: courseId }),
+      };
+    }
+
+    const ids = insertedRows.map((r) => r.id);
+    console.log("Inscriptions created (atomic):", ids, "— ignorées (doublons):", ignores.length);
+
+    const inscritsReels = insertedRows.map((r) => ({ nom: r.nom, enfant: r.enfant || null }));
+
     await sendInscriptionConfirmation({
       to: courriel,
-      participantNames: participants.map((p) => p.nom),
+      participantNames: inscritsReels.map((p) => p.nom),
       courseLabel,
+    });
+
+    // Notification à l'atelier : envoyée seulement quand au moins une place a été
+    // créée, donc jamais pour une re-soumission intégrale.
+    await sendInscriptionNotification({
+      courseLabel,
+      participants: inscritsReels,
+      courriel,
+      telephone,
+      estMembre,
+      propreArgile: data.propre_argile || null,
+      newsletter,
+      message,
+      ignores,
     });
 
     return {
@@ -261,6 +369,7 @@ exports.handler = async (event) => {
         inscription_ids: ids,
         inscription_id: ids[0],
         count: ids.length,
+        skipped_duplicates: ignores.length,
         course_id: courseId,
       }),
     };

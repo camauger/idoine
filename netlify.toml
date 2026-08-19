@@ -53,16 +53,45 @@
 # ATELIER_API_URL=http://localhost:9999/.netlify/functions — voir aussi la note Deno ci-dessus.
 
 # Netlify Forms (formulaire d’inscription)
-# Configurer dans Netlify : Settings > Forms > Form notifications > Add notification > Email
-# Destinataire : atelierstelme@gmail.com (ou info@atelierstelme.ca)
 #
-# Courriel de confirmation au participant (Resend) — optionnel mais recommandé
-# 1) Compte Resend + domaine vérifié (DNS) : https://resend.com
-# 2) Variables Netlify (Site settings > Environment variables) :
-#    RESEND_API_KEY          → clé API (ex. re_xxx)
-#    CONFIRMATION_EMAIL_FROM → expéditeur autorisé, ex. Ateliers St-Elme <inscription@atelierstelme.ca>
-# Utilisé par : netlify/functions/submission-created.js (formulaire Netlify, après enregistrement en base).
-# Si absentes : l’inscription est quand même enregistrée ; aucun courriel automatique.
+# Courriels transactionnels (Postmark) — requis pour la confirmation ET la
+# notification à l’atelier. Utilisés par netlify/functions/submission-created.js.
+#
+# POURQUOI C’EST CRITIQUE : sans courriel de confirmation, les gens ne savent pas
+# si leur demande est passée et refont le formulaire des heures ou des jours plus
+# tard. C’est l’origine des doublons d’inscription constatés à l’été 2026.
+#
+# 1) Compte Postmark : https://postmarkapp.com
+# 2) Vérifier l’expéditeur — Sender Signature sur l’adresse, ou mieux, vérifier
+#    le domaine atelierstelme.ca (DKIM + Return-Path dans le DNS). Sans cela
+#    Postmark refuse l’envoi (ErrorCode 300).
+# 3) Variables Netlify (Site settings > Environment variables), portées Builds ET Functions :
+#    POSTMARK_SERVER_TOKEN   → jeton de serveur (Servers > votre serveur > API Tokens)
+#    CONFIRMATION_EMAIL_FROM → expéditeur vérifié, ex. Ateliers St-Elme <inscription@atelierstelme.ca>
+#    NOTIFICATION_EMAIL_TO   → destinataire(s) de la notification interne, séparés par des virgules
+#                              (défaut si absente : info@atelierstelme.ca)
+#    NOTIFICATION_EMAIL_FROM → optionnel ; à défaut CONFIRMATION_EMAIL_FROM est réutilisé
+#    POSTMARK_MESSAGE_STREAM → optionnel ; défaut "outbound" (flux transactionnel).
+#                              Une infolettre exigerait un flux "broadcast" distinct.
+#
+# Si POSTMARK_SERVER_TOKEN est absente : l’inscription est quand même enregistrée,
+# mais AUCUN courriel ne part — ni à la personne, ni à l’atelier. La fonction le
+# signale par un console.error visible dans les logs Netlify.
+
+# Netlify Forms — notification automatique
+#
+# Elle part à CHAQUE soumission, y compris les re-soumissions d’une même personne :
+# c’est elle qui produisait deux courriels identiques pour une seule inscription.
+# submission-created.js envoie désormais sa propre notification, uniquement
+# lorsqu’une place a réellement été créée (ou pour signaler un cours complet).
+#
+# ORDRE À RESPECTER — ne pas désactiver avant d’avoir validé Postmark, sinon
+# l’atelier ne reçoit plus rien du tout :
+#   1. Configurer les variables Postmark ci-dessus et redéployer.
+#   2. Faire une inscription de test et confirmer la réception des DEUX courriels
+#      (celui de la personne et celui de l’atelier).
+#   3. Seulement ensuite : Settings > Forms > Form notifications → supprimer la
+#      notification « Email » du formulaire « inscription ».
 
 # Redirections optionnelles (décommenter si besoin)
 # [[redirects]]
