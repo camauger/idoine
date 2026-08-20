@@ -410,7 +410,7 @@
   function renderInscriptions() {
     var tbody = document.querySelector('#inscriptions-table tbody');
     if (!inscriptions.length) {
-      tbody.innerHTML = '<tr><td colspan="8" class="empty">Aucune inscription</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="9" class="empty">Aucune inscription</td></tr>';
       return;
     }
 
@@ -430,15 +430,21 @@
         }
       }
       
-      return '<tr>' +
+      return '<tr data-inscription-id="' + i.id + '">' +
         '<td>' + esc(dateInscription) + '</td>' +
-        '<td>' + esc(i.nom) + '</td>' +
+        '<td class="inscription-nom">' + esc(i.nom) + '</td>' +
         '<td><a href="mailto:' + esc(i.courriel) + '">' + esc(i.courriel) + '</a></td>' +
         '<td>' + esc(i.telephone || '-') + '</td>' +
         '<td>' + esc(i.course_nom || '-') + '</td>' +
         '<td>' + esc(coursDate) + '</td>' +
         '<td>' + membre + '</td>' +
         '<td>' + message + '</td>' +
+        '<td class="cell-actions">' +
+          '<button type="button" class="btn btn-outline btn-sm btn-delete-inscription" ' +
+            'aria-label="Supprimer l’inscription de ' + esc(i.nom) + '">' +
+            'Supprimer' +
+          '</button>' +
+        '</td>' +
       '</tr>';
     }).join('');
 
@@ -450,6 +456,59 @@
         if (insc && insc.message) {
           showMessageModal(insc);
         }
+      });
+    });
+
+    tbody.querySelectorAll('.btn-delete-inscription').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var row = btn.closest('tr');
+        var id = parseInt(row.getAttribute('data-inscription-id'), 10);
+        var insc = inscriptions.find(function(x) { return x.id === id; });
+        if (!insc) return;
+        var qui = insc.enfant ? insc.nom + ' (enfant : ' + insc.enfant + ')' : insc.nom;
+        if (!confirm(
+          'Supprimer l’inscription de ' + qui + ' ?\n\n' +
+          'Courriel : ' + (insc.courriel || '-') + '\n' +
+          'Cours : ' + (insc.course_nom || '-') + '\n\n' +
+          'La suppression est définitive. La place sera rouverte et la personne pourra se réinscrire.'
+        )) {
+          return;
+        }
+        btn.disabled = true;
+        fetch(API_URL + '/api/admin/inscriptions/' + id, {
+          method: 'DELETE',
+          headers: authHeaders()
+        })
+          .then(function(r) {
+            if (r.status === 401) { clearToken(); showLogin(); throw new Error('Session expirée'); }
+            if (r.status === 404) {
+              return Promise.reject(new Error('Cette inscription n’existe plus.'));
+            }
+            if (!r.ok) {
+              return r.json().then(
+                function(j) {
+                  var d = j && j.detail;
+                  var msg = typeof d === 'string' ? d : '';
+                  return Promise.reject(new Error(msg || 'Erreur'));
+                },
+                function() {
+                  return Promise.reject(new Error('Erreur HTTP ' + r.status));
+                }
+              );
+            }
+            return r.json();
+          })
+          .then(function() {
+            inscriptions = inscriptions.filter(function(x) { return x.id !== id; });
+            renderInscriptions();
+            updateStats();
+            // Les places restantes des créneaux changent : recharger la liste des cours.
+            return loadCourses();
+          })
+          .catch(function(err) {
+            alert(err.message || 'Impossible de supprimer cette inscription.');
+            btn.disabled = false;
+          });
       });
     });
   }

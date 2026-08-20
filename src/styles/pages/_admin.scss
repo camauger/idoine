@@ -222,14 +222,16 @@
   }
 
   .btn-edit-course,
-  .btn-delete-course {
+  .btn-delete-course,
+  .btn-delete-inscription {
     flex: 0 0 auto;
     min-width: 6.25rem;
     padding-inline: var(--spacing-3);
     white-space: nowrap;
   }
 
-  .btn-delete-course {
+  .btn-delete-course,
+  .btn-delete-inscription {
     border-color: var(--color-error);
     color: var(--color-error);
 

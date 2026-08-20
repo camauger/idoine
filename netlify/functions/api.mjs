@@ -478,6 +478,36 @@ export default async (req, context) => {
         return jsonResponse({ ok: true, id: courseId }, 200, req);
       }
 
+      // DELETE /api/admin/inscriptions/:id — désistement traité par l'atelier.
+      // Suppression définitive : la place se rouvre (les compteurs sont des COUNT(*)
+      // calculés à la volée) et la personne peut se réinscrire, le garde-fou anti-doublon
+      // de submission-created.js ne la reconnaissant plus comme déjà inscrite.
+      const adminInscriptionDelete = pathname.match(/^\/api\/admin\/inscriptions\/(\d+)$/);
+      if (method === "DELETE" && adminInscriptionDelete) {
+        const inscriptionId = parseInt(adminInscriptionDelete[1], 10);
+        const rows = await sql`
+          SELECT id, course_id, nom, courriel, enfant FROM inscriptions WHERE id = ${inscriptionId} LIMIT 1
+        `;
+        const inscription = (rows && rows[0]) || null;
+        if (!inscription) {
+          return errorResponse("Inscription non trouvée", 404, req);
+        }
+        // Trace dans les logs Netlify avant l'effacement : seule trace restante
+        // en cas de fausse manœuvre.
+        console.log(
+          "Suppression inscription:",
+          JSON.stringify({
+            id: inscription.id,
+            course_id: inscription.course_id,
+            nom: inscription.nom,
+            courriel: inscription.courriel,
+            enfant: inscription.enfant,
+          })
+        );
+        await sql`DELETE FROM inscriptions WHERE id = ${inscriptionId}`;
+        return jsonResponse({ ok: true, id: inscriptionId, course_id: inscription.course_id }, 200, req);
+      }
+
       // GET /api/admin/inscriptions
       if (method === "GET" && pathname === "/api/admin/inscriptions") {
         const courseId = url.searchParams.get("course_id");
