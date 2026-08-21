@@ -196,7 +196,8 @@ async function envoyerCourriel({ from, to, subject, text, html, replyTo, context
  *   courriel: string, telephone?: string,
  *   estMembre?: boolean, propreArgile?: string|null,
  *   newsletter?: boolean, message?: string|null,
- *   ignores?: Array<{ nom: string, enfant: string|null }>
+ *   ignores?: Array<{ nom: string, enfant: string|null }>,
+ *   confirmation?: { sent: boolean, reason?: string, errorCode?: number, data?: any }
  * }} opts
  */
 export async function sendInscriptionNotification({
@@ -210,6 +211,7 @@ export async function sendInscriptionNotification({
   message,
   ignores,
   statut,
+  confirmation,
 }) {
   const from = process.env.NOTIFICATION_EMAIL_FROM || process.env.CONFIRMATION_EMAIL_FROM;
   const to = (process.env.NOTIFICATION_EMAIL_TO || "info@atelierstelme.ca")
@@ -226,7 +228,31 @@ export async function sendInscriptionNotification({
     ? "DEMANDE NON ENREGISTRÉE — COURS COMPLET"
     : "Nouvelle inscription";
 
+  // ALERTE DE SILENCE — c'est ce qui a coûté le plus cher à l'été 2026 : quand la
+  // confirmation ne part pas, la personne inscrite doute et re-soumet, et personne
+  // à l'atelier ne sait que le courriel a échoué. La notification interne, elle,
+  // passe toujours (même domaine que l'expéditeur, donc immunisée à l'ErrorCode 412
+  // du compte en attente d'approbation). On y accroche le verdict de l'envoi.
+  const confEchouee = Boolean(confirmation) && confirmation.sent === false;
+  const confDetail = confEchouee
+    ? [
+        `motif : ${confirmation.reason || "inconnu"}`,
+        confirmation.errorCode ? `ErrorCode Postmark ${confirmation.errorCode}` : null,
+        confirmation.data && confirmation.data.Message ? confirmation.data.Message : null,
+      ]
+        .filter(Boolean)
+        .join(" — ")
+    : "";
+
   const lignes = [];
+  if (confEchouee) {
+    lignes.push(
+      "⚠ LA CONFIRMATION N'A PAS ÉTÉ ENVOYÉE À LA PERSONNE INSCRITE.",
+      `   ${confDetail}`,
+      "   Elle risque de re-soumettre le formulaire : la contacter directement.",
+      ""
+    );
+  }
   if (complet) lignes.push(entete, "");
   lignes.push(
     `Cours : ${label}`,
@@ -251,7 +277,14 @@ export async function sendInscriptionNotification({
   }
   const text = lignes.join("\n");
 
-  const html = `<h2>${escapeHtml(entete)}</h2>
+  const bandeau = confEchouee
+    ? `<p style="background:#fdecea;border-left:4px solid #c0392b;padding:12px;margin:0 0 16px">
+<strong>⚠ La confirmation n'a PAS été envoyée à la personne inscrite.</strong><br>
+${escapeHtml(confDetail)}<br>
+Elle risque de re-soumettre le formulaire&nbsp;: la contacter directement.</p>`
+    : "";
+
+  const html = `${bandeau}<h2>${escapeHtml(entete)}</h2>
 <p><strong>Cours&nbsp;:</strong> ${escapeHtml(label)}<br>
 <strong>${complet ? "Places demandées" : "Nombre de places"}&nbsp;:</strong> ${nb}${
     complet ? " — refusées, cours complet" : ""

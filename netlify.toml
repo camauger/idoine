@@ -74,6 +74,42 @@
 #    POSTMARK_MESSAGE_STREAM → optionnel ; défaut "outbound" (flux transactionnel).
 #                              Une infolettre exigerait un flux "broadcast" distinct.
 #
+# PIEGE N°1 — APPROBATION DU COMPTE POSTMARK (constaté le 21 août 2026)
+#
+# Un compte Postmark neuf est « pending approval ». Dans cet état, Postmark
+# REFUSE tout destinataire hors du domaine de l'expéditeur, avec :
+#     HTTP 422 / ErrorCode 412
+#     « While your account is pending approval, all recipient addresses must
+#       share the same domain as the 'From' address. »
+#
+# Conséquence exacte, et elle est sournoise :
+#   • la notification interne (info@atelierstelme.ca) PART — même domaine que
+#     l'expéditeur. L'atelier voit donc les inscriptions arriver normalement.
+#   • la confirmation à la personne inscrite (gmail, hotmail, videotron…) est
+#     REJETÉE à 100 %. Elle ne reçoit rien, doute, et re-soumet le formulaire.
+#   → Tout a l'air de marcher côté atelier pendant que rien ne marche côté public.
+#     C'est l'origine des doublons d'inscription de l'été 2026.
+#
+# CORRECTIF : demander l'approbation dans l'interface Postmark
+# (https://account.postmarkapp.com — bannière « pending approval » > Request
+# approval). Décrire l'usage transactionnel : confirmations d'inscription à des
+# cours, volume faible, adresses fournies par les personnes elles-mêmes via le
+# formulaire du site. Réponse en quelques heures ouvrables.
+#
+# VÉRIFIER APRÈS APPROBATION — envoyer un test vers une adresse EXTERNE
+# (gmail.com, pas @atelierstelme.ca : un test interne passe même sans approbation
+# et donne un faux vert). Le tableau Activity de Postmark doit montrer Delivered.
+#
+# GARDE-FOU EN PLACE : submission-created.js passe le résultat de la confirmation
+# à sendInscriptionNotification. Si la confirmation échoue, la notification interne
+# affiche un bandeau rouge « La confirmation n'a PAS été envoyée » avec l'ErrorCode.
+# L'échec ne peut plus être silencieux.
+#
+# NE PAS RÉINSTALLER l'extension Netlify Emails : le code appelle l'API Postmark en
+# direct (netlify/functions/lib/sendInscriptionConfirmation.mjs). Les variables
+# NETLIFY_EMAILS_* ont été retirées le 21 août 2026 — elles étaient inertes et
+# dupliquaient la clé API.
+#
 # Si POSTMARK_SERVER_TOKEN est absente : l’inscription est quand même enregistrée,
 # mais AUCUN courriel ne part — ni à la personne, ni à l’atelier. La fonction le
 # signale par un console.error visible dans les logs Netlify.

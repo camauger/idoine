@@ -342,7 +342,9 @@ exports.handler = async (event) => {
 
     const inscritsReels = insertedRows.map((r) => ({ nom: r.nom, enfant: r.enfant || null }));
 
-    await sendInscriptionConfirmation({
+    // Le résultat est passé à la notification interne : un échec de confirmation
+    // doit être visible par l'atelier, pas seulement dans les logs de fonctions.
+    const confirmation = await sendInscriptionConfirmation({
       to: courriel,
       participantNames: inscritsReels.map((p) => p.nom),
       courseLabel,
@@ -360,6 +362,7 @@ exports.handler = async (event) => {
       newsletter,
       message,
       ignores,
+      confirmation,
     });
 
     return {
