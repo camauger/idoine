@@ -110,6 +110,43 @@
 # NETLIFY_EMAILS_* ont été retirées le 21 août 2026 — elles étaient inertes et
 # dupliquaient la clé API.
 #
+# PIEGE N°2 — QUARANTAINE GODADDY ADVANCED EMAIL SECURITY (21 août 2026)
+#
+# Les MX du domaine pointent vers ppe-hosted.com (GoDaddy AES, moteur Proofpoint).
+# Trois courriels Postmark s'y sont fait « Quarantined (by Score) », dont la
+# notification d'une VRAIE inscription — que l'atelier n'a donc jamais vue.
+#
+# CAUSE : le courriel partait de info@atelierstelme.ca ET arrivait à
+# info@atelierstelme.ca, depuis une IP externe (Postmark). C'est le motif
+# d'usurpation type, et Proofpoint le pénalise lourdement. Ce n'était PAS le DKIM :
+# le domaine est vérifié chez Postmark (preuve : il accepte n'importe quelle adresse
+# @atelierstelme.ca comme expéditeur, ce qu'il n'autorise qu'après validation DKIM).
+#
+# CORRIGÉ : CONFIRMATION_EMAIL_FROM est passée à
+#     Ateliers St-Elme <inscription@atelierstelme.ca>
+# Le ReplyTo pointe vers info@ — et il est désormais réellement posé : le code
+# supprimait l'en-tête tant que From et ReplyTo étaient identiques.
+# Pas de boîte inscription@ à créer : envoi seul, réponses via ReplyTo, rebonds via
+# pm-bounces. NOTIFICATION_EMAIL_FROM reste absente et hérite donc du même From.
+#
+# RESTE À FAIRE HORS DÉPÔT — deux actions manuelles :
+#
+#   a) DNS (GoDaddy) — ajouter Postmark au SPF. Non requis par Postmark grâce au
+#      Return-Path personnalisé, mais les filtres heuristiques comparent l'IP au SPF
+#      du domaine du From : sans l'include, ils voient un écart et montent le score.
+#      TXT @ , remplacer la valeur actuelle par :
+#      v=spf1 include:spf.protection.outlook.com include:zohobooks.com include:spf.mtasv.net ip4:205.220.189.64/27 -all
+#      (3 lookups DNS sur un maximum de 10 — marge confortable.)
+#
+#   b) GoDaddy AES — mettre l'expéditeur en liste blanche.
+#      ⚠ SUR pm-bounces.atelierstelme.ca (l'expéditeur d'enveloppe), JAMAIS sur
+#      info@ ni sur atelierstelme.ca : autoriser son propre domaine ouvrirait une
+#      brèche d'usurpation à n'importe qui. Le lien « Release & Approve » du digest
+#      vise le bon expéditeur — vérifier qu'il approuve bien pm_bounces@... et non info@.
+#
+# DMARC est à p=none. Une fois (a) posé et la délivrabilité stable, p=quarantine
+# renforcerait la réputation du domaine. Pas avant.
+#
 # Si POSTMARK_SERVER_TOKEN est absente : l’inscription est quand même enregistrée,
 # mais AUCUN courriel ne part — ni à la personne, ni à l’atelier. La fonction le
 # signale par un console.error visible dans les logs Netlify.
