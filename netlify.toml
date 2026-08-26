@@ -165,6 +165,9 @@
 #      (celui de la personne et celui de l’atelier).
 #   3. Seulement ensuite : Settings > Forms > Form notifications → supprimer la
 #      notification « Email » du formulaire « inscription ».
+#      FAIT le 26 août 2026 (compte Postmark approuvé, test livré chez Gmail) :
+#      les deux hooks « email / submission_created » ont été supprimés via
+#      `npx netlify api listHooksBySiteId` puis `npx netlify api deleteHook --data '{"hook_id":"…"}'`.
 
 # Redirections optionnelles (décommenter si besoin)
 # [[redirects]]
