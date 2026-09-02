@@ -33,8 +33,33 @@
 // -----------------------------------------------------------------------------
 .calendar-controls {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-4);
   margin-bottom: var(--spacing-6);
+}
+
+.calendar-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--color-kiln-charcoal);
+  cursor: pointer;
+  user-select: none;
+
+  input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-terracotta);
+    cursor: pointer;
+  }
+
+  &:hover {
+    color: var(--color-terracotta);
+  }
 }
 
 .view-toggle {
@@ -216,6 +241,81 @@
   font-size: var(--text-lg);
 }
 
+// Évènements passés (vue Liste)
+.event-card.past {
+  background-color: var(--color-clay-cream);
+  opacity: 0.85;
+
+  .event-date-badge {
+    background-color: var(--color-stone);
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.past-events-toggle-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-8);
+}
+
+.past-events-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-2);
+  padding: var(--spacing-3) var(--spacing-5);
+  border: 1px solid var(--color-border);
+  background-color: var(--color-warm-white);
+  color: var(--color-kiln-charcoal);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  border-radius: var(--border-radius-full);
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  svg {
+    flex-shrink: 0;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover {
+    border-color: var(--color-terracotta);
+    color: var(--color-terracotta);
+  }
+
+  &[aria-expanded="true"] svg {
+    transform: rotate(180deg);
+  }
+}
+
+.past-events-section {
+  margin-top: var(--spacing-8);
+  padding-top: var(--spacing-8);
+  border-top: 1px solid var(--color-border);
+
+  .past-events-title {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 600;
+    color: var(--color-kiln-charcoal);
+    margin-bottom: var(--spacing-2);
+  }
+
+  .past-events-hint {
+    color: var(--color-stone);
+    font-size: var(--text-sm);
+    margin-bottom: var(--spacing-6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .past-events-toggle svg {
+    transition: none;
+  }
+}
+
 // -----------------------------------------------------------------------------
 // Grid View
 // -----------------------------------------------------------------------------
@@ -310,6 +410,13 @@
     }
   }
 
+  // Jours passés : chiffre atténué, évènements en gris
+  &.past {
+    .day-number {
+      color: var(--color-stone);
+    }
+  }
+
   .day-number {
     display: inline-flex;
     align-items: center;
@@ -346,6 +453,16 @@
 
   &:hover {
     background-color: var(--color-kiln-charcoal);
+  }
+
+  &.past {
+    background-color: var(--color-stone);
+    opacity: 0.8;
+
+    &:hover {
+      background-color: var(--color-kiln-charcoal);
+      opacity: 1;
+    }
   }
 
   @media (max-width: 768px) {

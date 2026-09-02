@@ -1,6 +1,10 @@
 /**
  * Calendar Integration - Atelier St-Elme
  * Fetches and displays events from Outlook ICS calendar
+ *
+ * - Conserve les évènements passés (vue Mois complète, section « passés » en liste)
+ * - Déplie les évènements récurrents (RRULE / EXDATE / RECURRENCE-ID)
+ * - Filtre « Cuissons seulement » (titres contenant « cuisson » ou « fournement »)
  */
 (function() {
   'use strict';
@@ -24,7 +28,7 @@
   }
 
   var ICS_URL = window.CALENDAR_ICS_URL || '';
-  
+
   // Liste de proxies à essayer (Netlify Function en premier, puis fallbacks)
   var CORS_PROXIES = [
     '/.netlify/functions/calendar-proxy?url=',
@@ -32,14 +36,23 @@
     'https://api.codetabs.com/v1/proxy?quest='
   ];
   var currentProxyIndex = 0;
-  
+
   function getProxyUrl() {
     return CORS_PROXIES[currentProxyIndex] + encodeURIComponent(ICS_URL);
   }
 
+  // Tous les évènements (passés et à venir), triés par date croissante
   var events = [];
   var currentView = 'list';
   var currentMonth = new Date();
+  var showPast = false;      // vue Liste : afficher la section des évènements passés
+  var onlyFirings = false;   // filtre « Cuissons seulement »
+
+  // Fenêtre de dépliage des récurrences sans fin (sécurité)
+  var RECURRENCE_HORIZON_MONTHS = 18;
+  var RECURRENCE_MAX_OCCURRENCES = 500;
+
+  var FIRING_PATTERN = /cuisson|fournement/i;
 
   var MONTHS_FR = [
     'Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin',
@@ -51,10 +64,23 @@
     'Jul', 'Aoû', 'Sep', 'Oct', 'Nov', 'Déc'
   ];
 
+  function startOfToday() {
+    var d = new Date();
+    d.setHours(0, 0, 0, 0);
+    return d;
+  }
+
   function formatTime(date) {
     var h = date.getHours();
     var m = date.getMinutes();
     return h + 'h' + (m < 10 ? '0' : '') + m;
+  }
+
+  function formatTimeRange(event) {
+    if (event.allDay) return 'Toute la journée';
+    var str = formatTime(event.start);
+    if (event.end) str += ' - ' + formatTime(event.end);
+    return str;
   }
 
   function formatDate(date) {
@@ -67,49 +93,141 @@
            d1.getDate() === d2.getDate();
   }
 
+  function isFiring(title) {
+    return FIRING_PATTERN.test(title || '');
+  }
+
+  // ---------------------------------------------------------------------------
+  // Parsing ICS
+  // ---------------------------------------------------------------------------
+
+  function makeEvent(summary, startTime, endTime, location, description) {
+    var start = startTime ? startTime.toJSDate() : null;
+    if (!start) return null;
+    var end = endTime ? endTime.toJSDate() : start;
+    var allDay = !!(startTime && startTime.isDate);
+    var title = summary || 'Sans titre';
+
+    return {
+      title: title,
+      start: start,
+      end: end,
+      allDay: allDay,
+      location: location || '',
+      description: description || '',
+      isFiring: isFiring(title)
+    };
+  }
+
+  function expandRecurring(icalEvent, horizon) {
+    var occurrences = [];
+    var iterator;
+    try {
+      iterator = icalEvent.iterator();
+    } catch (err) {
+      console.warn('[Calendar] Cannot iterate recurrence for "' + icalEvent.summary + '":', err);
+      return [makeEvent(icalEvent.summary, icalEvent.startDate, icalEvent.endDate,
+                        icalEvent.location, icalEvent.description)];
+    }
+
+    var next;
+    var count = 0;
+    while ((next = iterator.next()) && count < RECURRENCE_MAX_OCCURRENCES) {
+      count++;
+      var details;
+      try {
+        details = icalEvent.getOccurrenceDetails(next);
+      } catch (err) {
+        continue;
+      }
+      var occ = makeEvent(details.item.summary, details.startDate, details.endDate,
+                          details.item.location, details.item.description);
+      if (!occ) continue;
+      if (occ.start > horizon) break;
+      occurrences.push(occ);
+    }
+    return occurrences;
+  }
+
   function parseICS(icsData) {
     try {
       var parsed = ICAL.parse(icsData);
       var comp = new ICAL.Component(parsed);
       var vevents = comp.getAllSubcomponents('vevent');
 
-      var today = new Date();
-      today.setHours(0, 0, 0, 0);
+      var horizon = new Date();
+      horizon.setMonth(horizon.getMonth() + RECURRENCE_HORIZON_MONTHS);
 
-      var allEvents = vevents.map(function(vevent) {
-        var dtstart = vevent.getFirstPropertyValue('dtstart');
-        var dtend = vevent.getFirstPropertyValue('dtend');
-        var summary = vevent.getFirstPropertyValue('summary');
-        var location = vevent.getFirstPropertyValue('location');
-        var description = vevent.getFirstPropertyValue('description');
+      // 1) Séparer les évènements maîtres des exceptions (RECURRENCE-ID)
+      var masters = {};
+      var exceptions = [];
+      var singles = [];
 
-        var startDate = dtstart ? dtstart.toJSDate() : null;
-        var endDate = dtend ? dtend.toJSDate() : startDate;
+      vevents.forEach(function(vevent) {
+        var icalEvent = new ICAL.Event(vevent);
+        if (icalEvent.isRecurrenceException()) {
+          exceptions.push(icalEvent);
+        } else if (icalEvent.isRecurring()) {
+          masters[icalEvent.uid] = icalEvent;
+        } else {
+          singles.push(icalEvent);
+        }
+      });
 
-        if (!startDate) return null;
+      // 2) Rattacher les exceptions à leur maître ; orphelines → évènements simples
+      exceptions.forEach(function(ex) {
+        var master = masters[ex.uid];
+        if (master) {
+          master.relateException(ex);
+        } else {
+          singles.push(ex);
+        }
+      });
 
-        return {
-          title: summary || 'Sans titre',
-          start: startDate,
-          end: endDate,
-          location: location || '',
-          description: description || ''
-        };
-      }).filter(function(e) {
-        return e !== null && e.start >= today;
+      // 3) Construire la liste finale
+      var allEvents = [];
+
+      singles.forEach(function(icalEvent) {
+        var e = makeEvent(icalEvent.summary, icalEvent.startDate, icalEvent.endDate,
+                          icalEvent.location, icalEvent.description);
+        if (e) allEvents.push(e);
+      });
+
+      Object.keys(masters).forEach(function(uid) {
+        allEvents = allEvents.concat(expandRecurring(masters[uid], horizon));
       });
 
       allEvents.sort(function(a, b) {
         return a.start - b.start;
       });
 
-      console.log('[Calendar] Parsed ' + allEvents.length + ' upcoming events');
+      var today = startOfToday();
+      var upcoming = allEvents.filter(function(e) { return e.start >= today; }).length;
+      console.log('[Calendar] Parsed ' + allEvents.length + ' events (' +
+                  upcoming + ' upcoming, ' + (allEvents.length - upcoming) + ' past)');
       return allEvents;
     } catch (err) {
       console.error('[Calendar] Parse error:', err);
       return [];
     }
   }
+
+  // ---------------------------------------------------------------------------
+  // Sélection / filtres
+  // ---------------------------------------------------------------------------
+
+  function visibleEvents() {
+    if (!onlyFirings) return events;
+    return events.filter(function(e) { return e.isFiring; });
+  }
+
+  function isPastEvent(event, today) {
+    return event.start < today;
+  }
+
+  // ---------------------------------------------------------------------------
+  // États
+  // ---------------------------------------------------------------------------
 
   function showLoading() {
     var el = document.getElementById('calendar-loading');
@@ -142,6 +260,7 @@
     if (view === 'list') {
       if (listView) listView.style.display = 'block';
       if (gridView) gridView.style.display = 'none';
+      renderList();
     } else {
       if (listView) listView.style.display = 'none';
       if (gridView) gridView.style.display = 'block';
@@ -149,53 +268,118 @@
     }
   }
 
-  function renderList() {
-    var container = document.getElementById('events-list');
-    var noEvents = document.getElementById('no-events');
-    if (!container) return;
-
-    if (events.length === 0) {
-      container.innerHTML = '';
-      if (noEvents) noEvents.style.display = 'block';
-      return;
+  function rerender() {
+    if (currentView === 'list') {
+      renderList();
+    } else {
+      renderGrid();
     }
+  }
 
-    if (noEvents) noEvents.style.display = 'none';
+  // ---------------------------------------------------------------------------
+  // Vue Liste
+  // ---------------------------------------------------------------------------
 
-    container.innerHTML = events.map(function(event, idx) {
-      var day = event.start.getDate();
-      var month = MONTHS_SHORT_FR[event.start.getMonth()];
-      var timeStr = formatTime(event.start);
-      if (event.end) {
-        timeStr += ' - ' + formatTime(event.end);
-      }
+  function eventCardHtml(event, isPast) {
+    var idx = events.indexOf(event);
+    var day = event.start.getDate();
+    var month = MONTHS_SHORT_FR[event.start.getMonth()];
+    var year = event.start.getFullYear();
+    var showYear = year !== new Date().getFullYear();
 
-      return '<div class="event-card" data-event-idx="' + idx + '">' +
-        '<div class="event-date-badge">' +
-          '<span class="event-day">' + day + '</span>' +
-          '<span class="event-month">' + month + '</span>' +
-        '</div>' +
-        '<div class="event-info">' +
-          '<h3 class="event-title">' + escapeHtml(event.title) + '</h3>' +
-          '<p class="event-time">' +
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>' +
-            timeStr +
-          '</p>' +
-          (event.location ? '<p class="event-location">' +
-            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
-            escapeHtml(event.location) +
-          '</p>' : '') +
-        '</div>' +
-      '</div>';
-    }).join('');
+    return '<div class="event-card' + (isPast ? ' past' : '') +
+             (event.isFiring ? ' firing' : '') + '" data-event-idx="' + idx + '"' +
+             ' role="button" tabindex="0">' +
+      '<div class="event-date-badge">' +
+        '<span class="event-day">' + day + '</span>' +
+        '<span class="event-month">' + month + (showYear ? ' ' + year : '') + '</span>' +
+      '</div>' +
+      '<div class="event-info">' +
+        '<h3 class="event-title">' + escapeHtml(event.title) + '</h3>' +
+        '<p class="event-time">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>' +
+          formatTimeRange(event) +
+        '</p>' +
+        (event.location ? '<p class="event-location">' +
+          '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>' +
+          escapeHtml(event.location) +
+        '</p>' : '') +
+      '</div>' +
+    '</div>';
+  }
 
-    container.querySelectorAll('.event-card').forEach(function(card) {
-      card.addEventListener('click', function() {
-        var idx = parseInt(this.getAttribute('data-event-idx'), 10);
+  function bindEventCards(container) {
+    container.querySelectorAll('[data-event-idx]').forEach(function(card) {
+      var open = function() {
+        var idx = parseInt(card.getAttribute('data-event-idx'), 10);
         if (events[idx]) showModal(events[idx]);
+      };
+      card.addEventListener('click', open);
+      card.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open();
+        }
       });
     });
   }
+
+  function renderList() {
+    var container = document.getElementById('events-list');
+    var noEvents = document.getElementById('no-events');
+    var pastSection = document.getElementById('past-events-section');
+    var pastContainer = document.getElementById('past-events-list');
+    var toggleBtn = document.getElementById('toggle-past-events');
+    if (!container) return;
+
+    var today = startOfToday();
+    var visible = visibleEvents();
+    var upcoming = visible.filter(function(e) { return !isPastEvent(e, today); });
+    var past = visible.filter(function(e) { return isPastEvent(e, today); }).reverse();
+
+    // À venir
+    if (upcoming.length === 0) {
+      container.innerHTML = '';
+      if (noEvents) {
+        noEvents.textContent = onlyFirings
+          ? 'Aucune cuisson à venir pour le moment.'
+          : 'Aucun événement à venir pour le moment.';
+        noEvents.style.display = 'block';
+      }
+    } else {
+      if (noEvents) noEvents.style.display = 'none';
+      container.innerHTML = upcoming.map(function(e) { return eventCardHtml(e, false); }).join('');
+      bindEventCards(container);
+    }
+
+    // Bouton et section « passés »
+    if (toggleBtn) {
+      if (past.length === 0) {
+        toggleBtn.style.display = 'none';
+      } else {
+        toggleBtn.style.display = 'inline-flex';
+        toggleBtn.setAttribute('aria-expanded', showPast ? 'true' : 'false');
+        toggleBtn.querySelector('.toggle-label').textContent = showPast
+          ? 'Masquer les événements passés'
+          : 'Voir les événements passés (' + past.length + ')';
+      }
+    }
+
+    if (pastSection && pastContainer) {
+      if (showPast && past.length > 0) {
+        pastSection.style.display = 'block';
+        pastContainer.innerHTML = past.map(function(e) { return eventCardHtml(e, true); }).join('');
+        bindEventCards(pastContainer);
+      } else {
+        pastSection.style.display = 'none';
+        pastContainer.innerHTML = '';
+      }
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Vue Mois
+  // ---------------------------------------------------------------------------
 
   function renderGrid() {
     var gridContainer = document.getElementById('calendar-grid');
@@ -216,6 +400,8 @@
 
     var prevMonthLastDay = new Date(year, month, 0).getDate();
     var today = new Date();
+    var todayStart = startOfToday();
+    var visible = visibleEvents();
 
     var html = '';
 
@@ -227,19 +413,22 @@
     for (var day = 1; day <= daysInMonth; day++) {
       var date = new Date(year, month, day);
       var isToday = isSameDay(date, today);
-      var dayEvents = events.filter(function(e) {
+      var isPast = date < todayStart;
+      var dayEvents = visible.filter(function(e) {
         return isSameDay(e.start, date);
       });
 
-      html += '<div class="grid-day' + (isToday ? ' today' : '') + '">';
+      html += '<div class="grid-day' + (isToday ? ' today' : '') + (isPast ? ' past' : '') + '">';
       html += '<span class="day-number">' + day + '</span>';
 
       if (dayEvents.length > 0) {
         html += '<div class="day-events">';
         var maxShow = 2;
-        dayEvents.slice(0, maxShow).forEach(function(evt, idx) {
+        dayEvents.slice(0, maxShow).forEach(function(evt) {
           var evtIdx = events.indexOf(evt);
-          html += '<div class="grid-event" data-event-idx="' + evtIdx + '">' + escapeHtml(evt.title) + '</div>';
+          html += '<div class="grid-event' + (isPast ? ' past' : '') + (evt.isFiring ? ' firing' : '') +
+                  '" data-event-idx="' + evtIdx + '" role="button" tabindex="0" title="' +
+                  escapeHtml(evt.title) + '">' + escapeHtml(evt.title) + '</div>';
         });
         if (dayEvents.length > maxShow) {
           html += '<span class="more-events">+' + (dayEvents.length - maxShow) + ' autre(s)</span>';
@@ -261,13 +450,24 @@
     gridContainer.innerHTML = html;
 
     gridContainer.querySelectorAll('.grid-event').forEach(function(el) {
-      el.addEventListener('click', function(e) {
+      var open = function(e) {
         e.stopPropagation();
-        var idx = parseInt(this.getAttribute('data-event-idx'), 10);
+        var idx = parseInt(el.getAttribute('data-event-idx'), 10);
         if (events[idx]) showModal(events[idx]);
+      };
+      el.addEventListener('click', open);
+      el.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          open(e);
+        }
       });
     });
   }
+
+  // ---------------------------------------------------------------------------
+  // Modale
+  // ---------------------------------------------------------------------------
 
   function showModal(event) {
     var modal = document.getElementById('event-modal');
@@ -275,7 +475,7 @@
 
     modal.querySelector('.modal-event-title').textContent = event.title;
     modal.querySelector('.modal-event-date').textContent = formatDate(event.start);
-    modal.querySelector('.modal-event-time').textContent = formatTime(event.start) + ' - ' + formatTime(event.end);
+    modal.querySelector('.modal-event-time').textContent = formatTimeRange(event);
     modal.querySelector('.modal-event-location').textContent = event.location || '';
     modal.querySelector('.modal-event-description').innerHTML = event.description ? escapeHtml(event.description).replace(/\n/g, '<br>') : '';
 
@@ -302,19 +502,20 @@
       .replace(/"/g, '&quot;');
   }
 
+  // ---------------------------------------------------------------------------
+  // Chargement
+  // ---------------------------------------------------------------------------
+
   function fetchWithRetry() {
     var proxyUrl = getProxyUrl();
     console.log('[Calendar] Trying proxy:', CORS_PROXIES[currentProxyIndex]);
-    console.log('[Calendar] Full URL:', proxyUrl);
 
     return fetch(proxyUrl)
       .then(function(response) {
-        console.log('[Calendar] Response status:', response.status);
         if (!response.ok) throw new Error('HTTP ' + response.status);
         return response.text();
       })
       .then(function(icsData) {
-        console.log('[Calendar] Data received, length:', icsData.length, 'starts with:', icsData.substring(0, 50));
         if (!icsData || icsData.indexOf('BEGIN:VCALENDAR') === -1) {
           throw new Error('Invalid ICS data');
         }
@@ -348,11 +549,10 @@
         var listView = document.getElementById('calendar-list-view');
         if (listView) listView.style.display = 'block';
 
-        renderList();
+        var filterWrap = document.getElementById('calendar-filter');
+        if (filterWrap) filterWrap.style.display = 'flex';
 
-        if (currentView === 'grid') {
-          renderGrid();
-        }
+        rerender();
       })
       .catch(function(err) {
         console.error('[Calendar] Fetch error:', err);
@@ -379,6 +579,26 @@
       nextBtn.addEventListener('click', function() {
         currentMonth.setMonth(currentMonth.getMonth() + 1);
         renderGrid();
+      });
+    }
+
+    var toggleBtn = document.getElementById('toggle-past-events');
+    if (toggleBtn) {
+      toggleBtn.addEventListener('click', function() {
+        showPast = !showPast;
+        renderList();
+        if (showPast) {
+          var section = document.getElementById('past-events-section');
+          if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    }
+
+    var firingsFilter = document.getElementById('filter-firings');
+    if (firingsFilter) {
+      firingsFilter.addEventListener('change', function() {
+        onlyFirings = this.checked;
+        rerender();
       });
     }
 
