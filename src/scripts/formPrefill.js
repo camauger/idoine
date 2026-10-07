@@ -141,7 +141,8 @@
   }
 
   /**
-   * Affiche la question « propre argile » seulement pour les cours de céramique.
+   * Affiche la question « propre argile » seulement pour les cours de céramique,
+   * sauf les intensifs.
    * Masquée : radios non requises et décochées pour ne pas bloquer la soumission.
    */
   function updateArgileGroup() {
@@ -149,7 +150,8 @@
     var sel = document.getElementById('cours');
     if (!group || !sel) return;
     var c = coursesById[sel.value];
-    var show = !!c && disciplineKey(c.discipline) === 'ceramique';
+    var show = !!c && disciplineKey(c.discipline) === 'ceramique' &&
+      (c.type_cours || '').toLowerCase() !== 'intensif';
     group.hidden = !show;
     var radios = group.querySelectorAll('input[type="radio"]');
     Array.prototype.forEach.call(radios, function (radio) {
