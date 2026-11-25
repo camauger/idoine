@@ -109,6 +109,10 @@ test:
 test-cov:
     pytest tests/ --cov=scripts --cov-report=html
 
+# Lancer les tests JavaScript (node --test, tests/js/)
+test-js:
+    {{npm}} run test:js
+
 # Audit des dépendances npm
 audit:
     {{npm}} audit --audit-level=moderate || true
