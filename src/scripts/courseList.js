@@ -82,12 +82,7 @@
     return 'badge-ceramique';
   }
 
-  function labelDiscipline(discipline) {
-    var d = (discipline || '').toLowerCase();
-    if (d === 'vitrail') return 'Vitrail';
-    if (d === 'mosaique' || d === 'mosaïque') return 'Mosaïque';
-    return 'Céramique';
-  }
+  var labelDiscipline = window.CoursOrdre.libelleDiscipline;
 
   var PLACEHOLDER_GENERIC = '/assets/images/course-placeholder.svg';
 

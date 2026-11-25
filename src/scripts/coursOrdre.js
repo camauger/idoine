@@ -3,6 +3,7 @@
  * Les champs `jour`, `heure` et `date_debut` sont du texte libre en BD
  * (« Lundi », « 13h30-16h », « 15 et 29 Novembre ») : un tri alphabétique
  * mettrait le jeudi avant le lundi.
+ * Expose aussi le libellé affiché des disciplines.
  * Chargé avant courseList.js (/cours) et admin.js (/admin).
  */
 (function (global) {
@@ -55,7 +56,16 @@
     return (cleDateDebut(a.date_debut) - cleDateDebut(b.date_debut)) || parCreneau(a, b);
   }
 
+  /** Libellé affiché d'une discipline (« ceramique » en BD → « Céramique »). */
+  function libelleDiscipline(discipline) {
+    var d = sansAccents(discipline);
+    if (d === 'vitrail') return 'Vitrail';
+    if (d === 'mosaique') return 'Mosaïque';
+    return 'Céramique';
+  }
+
   global.CoursOrdre = {
+    libelleDiscipline: libelleDiscipline,
     rangJour: rangJour,
     minutesDebut: minutesDebut,
     cleDateDebut: cleDateDebut,

@@ -280,7 +280,7 @@
 
       return '<tr class="' + trClass + '" data-course-id="' + c.id + '" data-places-max="' + (c.places_max || 0) + '">' +
         '<td class="course-name">' + esc(c.nom) + '</td>' +
-        '<td><span class="badge badge-' + esc(c.discipline) + '">' + esc(c.discipline) + '</span></td>' +
+        '<td><span class="badge badge-' + esc(c.discipline) + '">' + esc(window.CoursOrdre.libelleDiscipline(c.discipline)) + '</span></td>' +
         '<td class="cell-creneau">' + esc(formatCreneau(c)) + '</td>' +
         '<td>' + esc(c.date_debut || '-') + '</td>' +
         '<td class="places-cell ' + placesClass + '">' +
