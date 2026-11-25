@@ -234,10 +234,18 @@ export default async (req, context) => {
           const groupeSlug =
             optStr(body.groupe_slug) || `grp-${slugBase}-${randomSlugSuffix()}`;
           const inserted = [];
-          // Valider toutes les dates avant d'insérer : un refus en cours de boucle laisserait des créneaux orphelins.
+          // Valider tous les créneaux avant d'insérer : un refus en cours de boucle laisserait des créneaux orphelins.
           for (let i = 0; i < creneaux.length; i++) {
-            if (optDate((creneaux[i] || {}).debut_le) === undefined) {
+            const slot = creneaux[i] || {};
+            if (optDate(slot.debut_le) === undefined) {
               return errorResponse(`Créneau ${i + 1} : debut_le invalide (AAAA-MM-JJ)`, 400, req);
+            }
+            const pm = slot.places_max;
+            if (pm !== undefined && pm !== null && String(pm).trim() !== "") {
+              const n = typeof pm === "number" && Number.isFinite(pm) ? Math.trunc(pm) : parseInt(String(pm), 10);
+              if (Number.isNaN(n) || n < 0) {
+                return errorResponse(`places_max invalide (créneau ${i + 1})`, 400, req);
+              }
             }
           }
           for (let i = 0; i < creneaux.length; i++) {
