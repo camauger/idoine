@@ -318,3 +318,52 @@ ${
     contexte: "sendInscriptionNotification",
   });
 }
+
+/**
+ * Notification interne pour le formulaire « contact » de la page À propos.
+ * Les hooks courriel Netlify Forms ont été supprimés le 26 août 2026 : sans cet
+ * envoi, les messages restent dans Netlify Forms et personne à l'atelier ne les voit.
+ * ReplyTo = courriel de l'expéditeur, pour répondre directement depuis la boîte.
+ *
+ * @param {{ nom?: string, courriel?: string, message?: string }} opts
+ */
+export async function sendContactNotification({ nom, courriel, message }) {
+  const from = process.env.NOTIFICATION_EMAIL_FROM || process.env.CONFIRMATION_EMAIL_FROM;
+  const to = (process.env.NOTIFICATION_EMAIL_TO || "info@atelierstelme.ca")
+    .split(",")
+    .map((a) => a.trim())
+    .filter(Boolean);
+  if (to.length === 0) return { sent: false, reason: "no_recipient" };
+
+  const n = String(nom || "").trim();
+  const c = String(courriel || "").trim();
+  const m = String(message || "").trim();
+
+  const text = [
+    "Nouveau message reçu par le formulaire de contact du site.",
+    "",
+    `Nom : ${n || "—"}`,
+    `Courriel : ${c || "—"}`,
+    "",
+    "Message :",
+    m || "—",
+    "",
+    "Répondre à ce courriel écrit directement à la personne.",
+  ].join("\n");
+
+  const html = `<h2>Nouveau message de contact</h2>
+<p><strong>Nom&nbsp;:</strong> ${escapeHtml(n || "—")}<br>
+<strong>Courriel&nbsp;:</strong> <a href="mailto:${escapeHtml(c)}">${escapeHtml(c || "—")}</a></p>
+<p><strong>Message&nbsp;:</strong><br>${escapeHtml(m || "—").replace(/\n/g, "<br>")}</p>
+<p style="color:#666">Répondre à ce courriel écrit directement à la personne.</p>`;
+
+  return envoyerCourriel({
+    from,
+    to,
+    subject: `Message de contact — ${n || c || "site web"}`,
+    text,
+    html,
+    replyTo: c.includes("@") ? c : undefined,
+    contexte: "sendContactNotification",
+  });
+}

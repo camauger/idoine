@@ -3,6 +3,7 @@
  *
  * Triggered automatically when a Netlify Form receives a submission.
  * Syncs the inscription data to the Neon PostgreSQL database.
+ * Formulaire « contact » : notification Postmark à l'atelier, sans base de données.
  */
 
 const { neon } = require("@neondatabase/serverless");
@@ -105,6 +106,19 @@ exports.handler = async (event) => {
       (data && data.form_name);
 
     console.log("Received submission:", JSON.stringify({ form_name, data_keys: Object.keys(data || {}) }));
+
+    const isContact =
+      form_name === "contact" || (data && data["form-name"] === "contact") || (data && data.form_name === "contact");
+    if (isContact) {
+      // Seul canal vers l'atelier depuis la suppression des hooks courriel Netlify (26 août 2026).
+      const { sendContactNotification } = await import("./lib/sendInscriptionConfirmation.mjs");
+      const envoi = await sendContactNotification({
+        nom: data.nom,
+        courriel: data.courriel,
+        message: data.message,
+      });
+      return { statusCode: 200, body: JSON.stringify({ success: envoi.sent, form: "contact" }) };
+    }
 
     const isInscription =
       form_name === "inscription" ||
