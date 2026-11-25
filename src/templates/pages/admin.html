@@ -202,10 +202,10 @@
           <table class="admin-table" id="courses-table">
             <thead>
               <tr>
-                <th>Cours</th>
-                <th>Discipline</th>
+                <th aria-sort="none" data-sort-key="nom"><button type="button" class="th-sort" data-sort-key="nom">Cours<span class="th-sort-icon" aria-hidden="true"></span></button></th>
+                <th aria-sort="none" data-sort-key="discipline"><button type="button" class="th-sort" data-sort-key="discipline">Discipline<span class="th-sort-icon" aria-hidden="true"></span></button></th>
                 <th>Créneau</th>
-                <th>Début</th>
+                <th aria-sort="none" data-sort-key="debut"><button type="button" class="th-sort" data-sort-key="debut">Début<span class="th-sort-icon" aria-hidden="true"></span></button></th>
                 <th>Places restantes</th>
                 <th>Prix</th>
                 <th>Visibilité</th>
@@ -259,5 +259,6 @@
   </div>
 </div>
 
+<script src="/scripts/coursOrdre.js"></script>
 <script src="/scripts/admin.js"></script>
 {% endblock %}

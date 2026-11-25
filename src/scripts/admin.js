@@ -177,10 +177,53 @@
         if (!gb) return -1;
         return ga.localeCompare(gb);
       }
-      var ja = (a.jour || '') + (a.creneau || '') + (a.heure || '');
-      var jb = (b.jour || '') + (b.creneau || '') + (b.heure || '');
-      var cj = ja.localeCompare(jb, 'fr');
-      return cj !== 0 ? cj : (a.id - b.id);
+      return window.CoursOrdre.parCreneau(a, b);
+    });
+  }
+
+  // Tri par colonne choisi dans l'en-tête du tableau des cours (null = tri par défaut ci-dessus).
+  var courseSort = { key: null, dir: 1 };
+
+  function cmpTexte(x, y) {
+    return String(x || '').localeCompare(String(y || ''), 'fr', { sensitivity: 'base' });
+  }
+
+  // Critère principal de chaque colonne ; seul lui s'inverse en Z→A.
+  var COURSE_SORTERS = {
+    nom: function(a, b) { return cmpTexte(a.nom, b.nom); },
+    discipline: function(a, b) { return cmpTexte(a.discipline, b.discipline) || cmpTexte(a.nom, b.nom); },
+    debut: function(a, b) {
+      return window.CoursOrdre.cleDateDebut(a.date_debut) - window.CoursOrdre.cleDateDebut(b.date_debut);
+    }
+  };
+
+  function sortCoursesForView(list) {
+    if (!courseSort.key) return sortCoursesForAdmin(list);
+    var cmp = COURSE_SORTERS[courseSort.key];
+    // Égalités : toujours dans l'ordre de la semaine, quel que soit le sens.
+    return list.slice().sort(function(a, b) {
+      return (courseSort.dir * cmp(a, b)) || window.CoursOrdre.parCreneau(a, b);
+    });
+  }
+
+  /** Clic sur un en-tête : A→Z, puis Z→A, puis retour au tri par défaut. */
+  function toggleCourseSort(key) {
+    if (courseSort.key !== key) courseSort = { key: key, dir: 1 };
+    else if (courseSort.dir === 1) courseSort.dir = -1;
+    else courseSort = { key: null, dir: 1 };
+
+    document.querySelectorAll('#courses-table th[data-sort-key]').forEach(function(th) {
+      var active = th.getAttribute('data-sort-key') === courseSort.key;
+      th.setAttribute('aria-sort', active ? (courseSort.dir === 1 ? 'ascending' : 'descending') : 'none');
+    });
+    renderCourses();
+  }
+
+  var coursesThead = document.querySelector('#courses-table thead');
+  if (coursesThead) {
+    coursesThead.addEventListener('click', function(e) {
+      var btn = e.target.closest('.th-sort');
+      if (btn) toggleCourseSort(btn.getAttribute('data-sort-key'));
     });
   }
 
@@ -221,7 +264,8 @@
       return;
     }
 
-    var sorted = sortCoursesForAdmin(courses);
+    var sorted = sortCoursesForView(courses);
+    var showGroups = !courseSort.key; // le liseré de groupe n'a de sens que dans le tri par défaut
     tbody.innerHTML = sorted.map(function(c, idx) {
       var isActif = !!(c.actif === true || c.actif === 'true' || c.actif === 1 || c.actif === 't');
       var statusClass = isActif ? 'status-active' : 'status-inactive';
@@ -231,8 +275,8 @@
       var gs = (c.groupe_slug != null && String(c.groupe_slug).trim()) ? String(c.groupe_slug).trim() : '';
       var prev = idx > 0 ? sorted[idx - 1] : null;
       var prevGs = prev && prev.groupe_slug != null ? String(prev.groupe_slug).trim() : '';
-      var isGroupStart = gs && gs !== prevGs;
-      var trClass = (rowMuted + (gs ? ' course-row-grouped' : '') + (isGroupStart ? ' course-row-group-start' : '')).trim();
+      var isGroupStart = showGroups && gs && gs !== prevGs;
+      var trClass = (rowMuted + (showGroups && gs ? ' course-row-grouped' : '') + (isGroupStart ? ' course-row-group-start' : '')).trim();
 
       return '<tr class="' + trClass + '" data-course-id="' + c.id + '" data-places-max="' + (c.places_max || 0) + '">' +
         '<td class="course-name">' + esc(c.nom) + '</td>' +
