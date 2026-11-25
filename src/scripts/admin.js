@@ -182,6 +182,8 @@
   }
 
   // Tri par colonne choisi dans l'en-tête du tableau des cours (null = tri par défaut ci-dessus).
+  // Mémorisé dans le navigateur : il survit au rechargement et aux modifications de cours.
+  var SORT_KEY = 'admin_courses_sort';
   var courseSort = { key: null, dir: 1 };
 
   function cmpTexte(x, y) {
@@ -206,18 +208,38 @@
     });
   }
 
+  function syncSortHeaders() {
+    document.querySelectorAll('#courses-table th[data-sort-key]').forEach(function(th) {
+      var active = th.getAttribute('data-sort-key') === courseSort.key;
+      th.setAttribute('aria-sort', active ? (courseSort.dir === 1 ? 'ascending' : 'descending') : 'none');
+    });
+  }
+
+  function restoreCourseSort() {
+    try {
+      var saved = JSON.parse(localStorage.getItem(SORT_KEY) || 'null');
+      if (saved && COURSE_SORTERS[saved.key] && (saved.dir === 1 || saved.dir === -1)) {
+        courseSort = { key: saved.key, dir: saved.dir };
+      }
+    } catch (e) { /* stockage indisponible ou valeur corrompue : tri par défaut */ }
+    syncSortHeaders();
+  }
+
   /** Clic sur un en-tête : A→Z, puis Z→A, puis retour au tri par défaut. */
   function toggleCourseSort(key) {
     if (courseSort.key !== key) courseSort = { key: key, dir: 1 };
     else if (courseSort.dir === 1) courseSort.dir = -1;
     else courseSort = { key: null, dir: 1 };
 
-    document.querySelectorAll('#courses-table th[data-sort-key]').forEach(function(th) {
-      var active = th.getAttribute('data-sort-key') === courseSort.key;
-      th.setAttribute('aria-sort', active ? (courseSort.dir === 1 ? 'ascending' : 'descending') : 'none');
-    });
+    try {
+      if (courseSort.key) localStorage.setItem(SORT_KEY, JSON.stringify(courseSort));
+      else localStorage.removeItem(SORT_KEY);
+    } catch (e) { /* stockage indisponible : le tri vaut pour cette visite seulement */ }
+    syncSortHeaders();
     renderCourses();
   }
+
+  restoreCourseSort();
 
   var coursesThead = document.querySelector('#courses-table thead');
   if (coursesThead) {
