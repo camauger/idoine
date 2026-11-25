@@ -106,8 +106,11 @@ export default async (req, context) => {
     if (method === "GET" && (pathname === "/api/cours" || pathname === "/api/cours/")) {
       const actifOnly = url.searchParams.get("actif_only") !== "false";
       // Jours dans l'ordre de la semaine (en alphabétique, « jeudi » passerait avant « lundi »).
+      // Liste publique : un atelier intensif disparaît le lendemain de sa date de début (debut_le).
       const courses = actifOnly
-        ? await sql`SELECT * FROM courses WHERE actif = true ORDER BY discipline, type_cours, array_position(ARRAY['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche']::text[], lower(jour)), heure`
+        ? await sql`SELECT * FROM courses WHERE actif = true
+            AND NOT (type_cours = 'intensif' AND debut_le < (now() AT TIME ZONE 'America/Toronto')::date)
+            ORDER BY discipline, type_cours, array_position(ARRAY['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche']::text[], lower(jour)), heure`
         : await sql`SELECT * FROM courses ORDER BY discipline, type_cours, array_position(ARRAY['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche']::text[], lower(jour)), heure`;
       const counts = await sql`
         SELECT course_id, COUNT(*)::int AS cnt
