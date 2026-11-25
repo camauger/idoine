@@ -55,3 +55,6 @@ coverage/
 
 # Local Netlify folder
 .netlify
+
+# Captures et journaux de Playwright MCP (vérifications locales)
+.playwright-mcp/
