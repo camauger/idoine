@@ -195,7 +195,7 @@
     nom: function(a, b) { return cmpTexte(a.nom, b.nom); },
     discipline: function(a, b) { return cmpTexte(a.discipline, b.discipline) || cmpTexte(a.nom, b.nom); },
     debut: function(a, b) {
-      return window.CoursOrdre.cleDateDebut(a.date_debut) - window.CoursOrdre.cleDateDebut(b.date_debut);
+      return window.CoursOrdre.cleDebut(a) - window.CoursOrdre.cleDebut(b);
     }
   };
 
@@ -710,6 +710,7 @@
     setVal('add-course-heure', c.heure);
     setVal('add-course-duree', c.duree_semaines != null ? c.duree_semaines : '');
     setVal('add-course-debut', c.date_debut);
+    setVal('add-course-debut-le', c.debut_le);
     setVal('add-course-places', c.places_max != null ? c.places_max : 6);
     setVal('add-course-prix', c.prix);
     setVal('add-course-prof', c.prof);
@@ -787,6 +788,23 @@
       if (!rm) return;
       var row = rm.closest('.creneau-extra-row');
       if (row) row.remove();
+    });
+  }
+
+  /**
+   * Date du calendrier choisie → remplit le libellé « Date de début (affichage) » s'il est vide
+   * (« 2027-01-11 » → « 11 janvier »). Un libellé déjà saisi n'est jamais réécrit.
+   */
+  if (formAddCourse) {
+    formAddCourse.addEventListener('change', function(e) {
+      var input = e.target;
+      if (!input || input.type !== 'date' || !input.value) return;
+      var cible = input.id === 'add-course-debut-le'
+        ? document.getElementById('add-course-debut')
+        : (input.closest('.creneau-extra-row') || document).querySelector('.creneau-date-debut');
+      if (!cible || String(cible.value || '').trim() !== '') return;
+      var p = input.value.split('-');
+      cible.value = new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString('fr-CA', { day: 'numeric', month: 'long' });
     });
   }
 
@@ -873,6 +891,7 @@
         heure: optStr('add-course-heure'),
         duree_semaines: duree_semaines,
         date_debut: optStr('add-course-debut'),
+        debut_le: optStr('add-course-debut-le'),
         places_max: placesMax,
         prix: optStr('add-course-prix'),
         prof: optStr('add-course-prof'),
@@ -942,7 +961,8 @@
             creneau: optStr('add-course-creneau'),
             heure: optStr('add-course-heure'),
             places_max: placesMax,
-            date_debut: optStr('add-course-debut')
+            date_debut: optStr('add-course-debut'),
+            debut_le: optStr('add-course-debut-le')
           }
         ];
         for (var ei = 0; ei < extraRows.length; ei++) {
@@ -957,7 +977,8 @@
             creneau: optStrEl(row.querySelector('.creneau-creneau')),
             heure: optStrEl(row.querySelector('.creneau-heure')),
             places_max: pmExtra,
-            date_debut: optStrEl(row.querySelector('.creneau-date-debut'))
+            date_debut: optStrEl(row.querySelector('.creneau-date-debut')),
+            debut_le: optStrEl(row.querySelector('.creneau-debut-le'))
           });
         }
         payload.creneaux = creneaux;
@@ -965,6 +986,7 @@
         delete payload.creneau;
         delete payload.heure;
         delete payload.date_debut;
+        delete payload.debut_le;
         delete payload.places_max;
       }
 

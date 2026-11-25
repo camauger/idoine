@@ -75,7 +75,7 @@ clear-db:
 
 # Lancer les migrations (schéma cours)
 migrate:
-    cd backend && {{python}} migrate_add_creneau.py && {{python}} migrate_add_image_url.py
+    cd backend && {{python}} migrate_add_creneau.py && {{python}} migrate_add_image_url.py && {{python}} migrate_add_debut_le.py
 
 # ============================================================================
 # IMAGES

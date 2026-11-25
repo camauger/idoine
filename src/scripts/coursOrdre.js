@@ -29,18 +29,36 @@
     return m ? (+m[1]) * 60 + (+(m[2] || 0)) : 9999;
   }
 
+  var ILLISIBLE = 99999999; // date inconnue → en fin de liste
+
   /**
-   * Clé chronologique de date_debut (« 11 Janvier », « 15 et 29 Novembre » → premier jour).
-   * Année scolaire : août → juillet, pour que novembre précède janvier.
-   * Date illisible → en fin de liste.
+   * Clé AAAAMMJJ du libellé date_debut (« 11 Janvier », « 15 et 29 Novembre » → premier jour).
+   * Sans année explicite, on la déduit de l'année scolaire en cours (août → juillet) :
+   * même règle que backend/migrate_add_debut_le.py.
    */
-  function cleDateDebut(d) {
+  function cleDateDebut(d, aujourdHui) {
     var s = sansAccents(d);
-    var jour = s.match(/\d{1,2}/);
+    var jour = s.match(/\b\d{1,2}\b/);
     var mois = -1;
     MOIS.forEach(function (nom, i) { if (mois === -1 && s.indexOf(nom) !== -1) mois = i; });
-    if (!jour || mois === -1) return 99999;
-    return ((mois - 7 + 12) % 12) * 100 + (+jour[0]);
+    if (!jour || mois === -1) return ILLISIBLE;
+    var annee = s.match(/\b20\d{2}\b/);
+    var y;
+    if (annee) {
+      y = +annee[0];
+    } else {
+      var ref = aujourdHui && typeof aujourdHui.getMonth === 'function' ? aujourdHui : new Date();
+      var debutScolaire = ref.getMonth() >= 7 ? ref.getFullYear() : ref.getFullYear() - 1;
+      y = mois >= 7 ? debutScolaire : debutScolaire + 1;
+    }
+    return y * 10000 + (mois + 1) * 100 + (+jour[0]);
+  }
+
+  /** Clé AAAAMMJJ d'un cours : debut_le (« 2027-01-11 ») si renseignée, sinon le libellé. */
+  function cleDebut(c, aujourdHui) {
+    var iso = c && c.debut_le ? String(c.debut_le).match(/^(\d{4})-(\d{2})-(\d{2})/) : null;
+    if (iso) return (+iso[1]) * 10000 + (+iso[2]) * 100 + (+iso[3]);
+    return cleDateDebut(c && c.date_debut, aujourdHui);
   }
 
   /** Ordre de la semaine : jour, heure de début, puis nom. */
@@ -53,7 +71,7 @@
 
   /** Ordre du calendrier : date de début, puis jour et heure. */
   function parDateDebut(a, b) {
-    return (cleDateDebut(a.date_debut) - cleDateDebut(b.date_debut)) || parCreneau(a, b);
+    return (cleDebut(a) - cleDebut(b)) || parCreneau(a, b);
   }
 
   /** Libellé affiché d'une discipline (« ceramique » en BD → « Céramique »). */
@@ -69,6 +87,7 @@
     rangJour: rangJour,
     minutesDebut: minutesDebut,
     cleDateDebut: cleDateDebut,
+    cleDebut: cleDebut,
     parCreneau: parCreneau,
     parDateDebut: parDateDebut
   };

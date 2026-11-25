@@ -1,6 +1,6 @@
 """SQLAlchemy models for courses and inscriptions."""
 from datetime import datetime
-from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, Text
+from sqlalchemy import Column, Integer, String, Boolean, Date, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 
 from database import Base
@@ -19,6 +19,7 @@ class Course(Base):
     heure = Column(String(100), nullable=True)
     duree_semaines = Column(Integer, nullable=True)
     date_debut = Column(String(100), nullable=True)
+    debut_le = Column(Date, nullable=True)  # vraie date de début (tri, intensifs passés)
     places_max = Column(Integer, nullable=False, default=0)
     prix = Column(String(100), nullable=True)
     prof = Column(String(100), nullable=True)

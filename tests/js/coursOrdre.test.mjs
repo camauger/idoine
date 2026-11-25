@@ -30,11 +30,27 @@ test('minutesDebut : première heure de la plage', () => {
 
 test('cleDateDebut : année scolaire août → juillet', () => {
   const ordre = ['28 Novembre', '8 Décembre', '11 Janvier', '3 Mars']
-    .map(C.cleDateDebut);
+    .map(d => C.cleDateDebut(d));
   assert.deepEqual(ordre, ordre.slice().sort((a, b) => a - b));
   assert.equal(C.cleDateDebut('15 et 29 Novembre'), C.cleDateDebut('15 Novembre'), 'premier jour retenu');
   assert.equal(C.cleDateDebut('11 decembre'), C.cleDateDebut('11 Décembre'), 'accent facultatif');
-  assert.equal(C.cleDateDebut('À venir'), 99999, 'date illisible → fin de liste');
+  assert.equal(C.cleDateDebut('À venir'), 99999999, 'date illisible → fin de liste');
+});
+
+test('cleDateDebut : année déduite de l’année scolaire en cours', () => {
+  const nov2026 = new Date(2026, 10, 24);
+  assert.equal(C.cleDateDebut('28 Novembre', nov2026), 20261128);
+  assert.equal(C.cleDateDebut('11 Janvier', nov2026), 20270111);
+  assert.equal(C.cleDateDebut('3 Mars', nov2026), 20270303);
+  const mars2027 = new Date(2027, 2, 1);
+  assert.equal(C.cleDateDebut('8 Décembre', mars2027), 20261208, 'en mars, décembre est passé');
+  assert.equal(C.cleDateDebut('27 Juin 2026', nov2026), 20260627, 'année explicite respectée');
+});
+
+test('cleDebut : debut_le prime sur le libellé', () => {
+  assert.equal(C.cleDebut({ debut_le: '2027-03-03', date_debut: '11 Janvier' }), 20270303);
+  assert.equal(C.cleDebut({ debut_le: null, date_debut: '28 Novembre' }, new Date(2026, 10, 24)), 20261128);
+  assert.equal(C.cleDebut({}), 99999999);
 });
 
 test('parCreneau : le jeudi ne passe plus avant le lundi', () => {
@@ -63,6 +79,18 @@ test('parDateDebut : calendrier d’abord, semaine ensuite', () => {
     { id: 3, nom: 'Lanterne', jour: 'Mardi', heure: '18h-21h', date_debut: '8 Décembre' },
   ];
   assert.deepEqual(tri(cours, C.parDateDebut).map(c => c.id), [2, 3, 1]);
+});
+
+test('parDateDebut : mélange de cours avec et sans debut_le', () => {
+  const cours = [
+    { id: 1, nom: 'Vitrail', jour: 'Mercredi', heure: '18h', date_debut: '3 Mars', debut_le: '2027-03-03' },
+    { id: 2, nom: 'Tournage', jour: 'Lundi', heure: '18h', date_debut: '11 Janvier', debut_le: '2027-01-11' },
+    { id: 3, nom: 'Pot', jour: 'Vendredi', heure: '18h', date_debut: '11 Décembre', debut_le: null },
+  ];
+  // id 3 n'a que son libellé : décembre de l'année scolaire en cours, avant janvier.
+  const ordre = tri(cours, C.parDateDebut).map(c => c.id);
+  assert.equal(ordre[ordre.length - 1], 1);
+  assert.ok(ordre.indexOf(2) < ordre.indexOf(1));
 });
 
 test('libelleDiscipline : libellé accentué', () => {

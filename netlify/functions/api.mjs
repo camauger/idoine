@@ -48,7 +48,29 @@ function jsonResponse(data, status = 200, req = null) {
     "Cache-Control": "private, no-store, no-cache, must-revalidate",
     ...(req ? corsHeaders(req) : {}),
   };
-  return new Response(JSON.stringify(data), { status, headers });
+  return new Response(JSON.stringify(data, dateSansHeure), { status, headers });
+}
+
+/**
+ * Colonnes DATE (debut_le) : le pilote Neon renvoie un objet Date à minuit, heure du serveur.
+ * On renvoie « AAAA-MM-JJ » pour que le navigateur ne décale pas le jour selon son fuseau.
+ */
+function dateSansHeure(key, value) {
+  const raw = this[key];
+  if (key === "debut_le" && raw instanceof Date) {
+    const p = (n) => String(n).padStart(2, "0");
+    return `${raw.getFullYear()}-${p(raw.getMonth() + 1)}-${p(raw.getDate())}`;
+  }
+  return value;
+}
+
+/** Date facultative « AAAA-MM-JJ » ; vide → null ; autre chose → undefined (invalide). */
+function optDate(v) {
+  if (v === undefined || v === null || String(v).trim() === "") return null;
+  const s = String(v).trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return undefined;
+  const d = new Date(`${s}T00:00:00Z`);
+  return Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== s ? undefined : s;
 }
 
 function errorResponse(message, status = 400, req = null) {
@@ -239,16 +261,20 @@ export default async (req, context) => {
             const creneau = optStr(slot.creneau);
             const heure = optStr(slot.heure);
             const date_debut = optStr(slot.date_debut);
+            const debut_le = optDate(slot.debut_le);
+            if (debut_le === undefined) {
+              return errorResponse(`Créneau ${i + 1} : debut_le invalide (AAAA-MM-JJ)`, 400, req);
+            }
 
             const row = await sql`
               INSERT INTO courses (
                 nom, slug, discipline, type_cours, jour, creneau, heure, duree_semaines,
-                date_debut, places_max, prix, prof, salle, description, actif, badge_new,
+                date_debut, debut_le, places_max, prix, prof, salle, description, actif, badge_new,
                 page_dediee, image_url, groupe_slug
               ) VALUES (
                 ${nom}, ${rowSlug}, ${discipline}, ${type_cours},
                 ${jour}, ${creneau}, ${heure}, ${duree_semaines},
-                ${date_debut}, ${placesMax}, ${prix}, ${prof}, ${salle}, ${description},
+                ${date_debut}, ${debut_le}, ${placesMax}, ${prix}, ${prof}, ${salle}, ${description},
                 ${actif}, ${badge_new}, ${page_dediee}, ${image_url}, ${groupeSlug}
               )
               RETURNING *
@@ -281,17 +307,21 @@ export default async (req, context) => {
         const creneau = optStr(body.creneau);
         const heure = optStr(body.heure);
         const date_debut = optStr(body.date_debut);
+        const debut_le = optDate(body.debut_le);
+        if (debut_le === undefined) {
+          return errorResponse("debut_le invalide (AAAA-MM-JJ)", 400, req);
+        }
         const groupe_slug_single = optStr(body.groupe_slug);
 
         const inserted = await sql`
           INSERT INTO courses (
             nom, slug, discipline, type_cours, jour, creneau, heure, duree_semaines,
-            date_debut, places_max, prix, prof, salle, description, actif, badge_new,
+            date_debut, debut_le, places_max, prix, prof, salle, description, actif, badge_new,
             page_dediee, image_url, groupe_slug
           ) VALUES (
             ${nom}, ${slugBase}, ${discipline}, ${type_cours},
             ${jour}, ${creneau}, ${heure}, ${duree_semaines},
-            ${date_debut}, ${placesMax}, ${prix}, ${prof}, ${salle}, ${description},
+            ${date_debut}, ${debut_le}, ${placesMax}, ${prix}, ${prof}, ${salle}, ${description},
             ${actif}, ${badge_new}, ${page_dediee}, ${image_url}, ${groupe_slug_single}
           )
           RETURNING *
@@ -373,6 +403,14 @@ export default async (req, context) => {
           touched = true;
           next.date_debut = optStrPatch(body.date_debut);
         }
+        if (body.debut_le !== undefined) {
+          touched = true;
+          const d = optDate(body.debut_le);
+          if (d === undefined) {
+            return errorResponse("debut_le invalide (AAAA-MM-JJ)", 400, req);
+          }
+          next.debut_le = d;
+        }
         if (body.places_max !== undefined) {
           touched = true;
           const pm = body.places_max;
@@ -446,6 +484,7 @@ export default async (req, context) => {
             heure = ${next.heure},
             duree_semaines = ${next.duree_semaines},
             date_debut = ${next.date_debut},
+            debut_le = ${next.debut_le},
             places_max = ${next.places_max},
             prix = ${next.prix},
             prof = ${next.prof},
