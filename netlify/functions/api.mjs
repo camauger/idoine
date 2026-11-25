@@ -234,6 +234,12 @@ export default async (req, context) => {
           const groupeSlug =
             optStr(body.groupe_slug) || `grp-${slugBase}-${randomSlugSuffix()}`;
           const inserted = [];
+          // Valider toutes les dates avant d'insérer : un refus en cours de boucle laisserait des créneaux orphelins.
+          for (let i = 0; i < creneaux.length; i++) {
+            if (optDate((creneaux[i] || {}).debut_le) === undefined) {
+              return errorResponse(`Créneau ${i + 1} : debut_le invalide (AAAA-MM-JJ)`, 400, req);
+            }
+          }
           for (let i = 0; i < creneaux.length; i++) {
             const slot = creneaux[i] || {};
             const pmRaw = slot.places_max;
@@ -264,10 +270,7 @@ export default async (req, context) => {
             const creneau = optStr(slot.creneau);
             const heure = optStr(slot.heure);
             const date_debut = optStr(slot.date_debut);
-            const debut_le = optDate(slot.debut_le);
-            if (debut_le === undefined) {
-              return errorResponse(`Créneau ${i + 1} : debut_le invalide (AAAA-MM-JJ)`, 400, req);
-            }
+            const debut_le = optDate(slot.debut_le); // déjà validée avant la boucle
 
             const row = await sql`
               INSERT INTO courses (
