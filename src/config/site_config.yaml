@@ -80,10 +80,10 @@ partners:
 # Une seule place à modifier à chaque changement de session.
 
 session:
-  title: 'Session Automne 2026'
-  start: '14 septembre'
-  duration: '8 à 10 semaines'
-  registration_open: '3 août'
+  title: 'Session Hiver 2027'
+  start: '11 janvier'
+  duration: '8 à 12 semaines'
+  registration_open: '24 novembre'
 
 # ------------------------------------------------------------
 # API COURS / INSCRIPTIONS

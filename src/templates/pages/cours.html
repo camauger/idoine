@@ -8,13 +8,13 @@
       <div class="page-intro lead">{{ content | safe }}</div>
       <div class="cours-hero-meta">
         {# Infos session centralisées dans site_config.yaml (clé `session`) #}
-        <span class="session-label">{{ site.session.title | default('Session Automne 2026') }}</span>
+        <span class="session-label">{{ site.session.title | default('Session Hiver 2027') }}</span>
         <p class="session-details">
-          <strong>Début des cours :</strong> {{ site.session.start | default('14 septembre') }} &bull;
-          <strong>Durée :</strong> {{ site.session.duration | default('8 à 10 semaines') }}
+          <strong>Début des cours :</strong> {{ site.session.start | default('11 janvier') }} &bull;
+          <strong>Durée :</strong> {{ site.session.duration | default('8 à 12 semaines') }}
         </p>
         <p class="session-registration">
-          <strong>Inscriptions :</strong> à partir du {{ site.session.registration_open | default('3 août') }} via le formulaire en ligne
+          <strong>Inscriptions :</strong> à partir du {{ site.session.registration_open | default('24 novembre') }} via le formulaire en ligne
         </p>
       </div>
       <div class="cours-hero-notes" id="notes-importantes" aria-labelledby="notes-importantes-title">
@@ -125,7 +125,7 @@
       <div class="cta-banner">
         <div class="cta-content">
           <h2 id="cta-inscription-title">Prêt à commencer?</h2>
-          <p>Inscrivez-vous dès maintenant pour la {{ site.session.title | default('Session Automne 2026') }}</p>
+          <p>Inscrivez-vous dès maintenant pour la {{ site.session.title | default('Session Hiver 2027') }}</p>
         </div>
         <a href="/inscription" class="btn btn-primary btn-lg">S'inscrire</a>
       </div>
