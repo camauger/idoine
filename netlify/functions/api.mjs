@@ -83,9 +83,10 @@ export default async (req, context) => {
     // GET /api/cours → liste des cours actifs avec places_restantes
     if (method === "GET" && (pathname === "/api/cours" || pathname === "/api/cours/")) {
       const actifOnly = url.searchParams.get("actif_only") !== "false";
+      // Jours dans l'ordre de la semaine (en alphabétique, « jeudi » passerait avant « lundi »).
       const courses = actifOnly
-        ? await sql`SELECT * FROM courses WHERE actif = true ORDER BY discipline, type_cours, jour`
-        : await sql`SELECT * FROM courses ORDER BY discipline, type_cours, jour`;
+        ? await sql`SELECT * FROM courses WHERE actif = true ORDER BY discipline, type_cours, array_position(ARRAY['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche']::text[], lower(jour)), heure`
+        : await sql`SELECT * FROM courses ORDER BY discipline, type_cours, array_position(ARRAY['lundi','mardi','mercredi','jeudi','vendredi','samedi','dimanche']::text[], lower(jour)), heure`;
       const counts = await sql`
         SELECT course_id, COUNT(*)::int AS cnt
         FROM inscriptions
