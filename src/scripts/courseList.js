@@ -480,9 +480,27 @@
       });
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
+  /**
+   * Hero : « à partir du 24 novembre » devient « ouvertes dès maintenant » une fois la date
+   * atteinte (site_config.yaml → session.registration_open_date), sans attendre un nouveau build.
+   */
+  function majOuvertureInscriptions() {
+    var el = document.querySelector('[data-inscriptions-ouverture]');
+    var iso = el && el.getAttribute('data-inscriptions-ouverture');
+    if (!iso || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return;
+    var p = iso.split('-');
+    var ouverture = new Date(+p[0], +p[1] - 1, +p[2]); // minuit, heure locale
+    if (new Date() >= ouverture) el.textContent = 'ouvertes dès maintenant';
+  }
+
+  function demarrer() {
+    majOuvertureInscriptions();
     init();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', demarrer);
+  } else {
+    demarrer();
   }
 })();

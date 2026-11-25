@@ -84,6 +84,8 @@ session:
   start: '11 janvier'
   duration: '8 à 12 semaines'
   registration_open: '24 novembre'
+  # Même date au format AAAA-MM-JJ : dès ce jour, /cours affiche « Inscriptions ouvertes ».
+  registration_open_date: '2026-11-24'
 
 # ------------------------------------------------------------
 # API COURS / INSCRIPTIONS

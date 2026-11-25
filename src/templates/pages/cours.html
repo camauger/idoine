@@ -14,7 +14,7 @@
           <strong>Durée :</strong> {{ site.session.duration | default('8 à 12 semaines') }}
         </p>
         <p class="session-registration">
-          <strong>Inscriptions :</strong> à partir du {{ site.session.registration_open | default('24 novembre') }} via le formulaire en ligne
+          <strong>Inscriptions :</strong> <span data-inscriptions-ouverture="{{ site.session.registration_open_date | default('') }}">à partir du {{ site.session.registration_open | default('24 novembre') }}</span> via le formulaire en ligne
         </p>
       </div>
       <div class="cours-hero-notes" id="notes-importantes" aria-labelledby="notes-importantes-title">
